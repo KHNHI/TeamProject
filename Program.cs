@@ -29,15 +29,14 @@ class Program
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("=== Ứng dụng Quản lý Chi tiêu ===");
-            Console.WriteLine("1: Nhập thông tin cá nhân");
-            Console.WriteLine("2: Nhập chi tiêu mới");
-            Console.WriteLine("3: Xem báo cáo tài chính");
-            Console.WriteLine("4. Đặt ngân sách");
-            Console.WriteLine("5. Xem tình trạng ngân sách");
-            Console.WriteLine("6. Xem đề xuất điều chỉnh ngân sách");
-            Console.WriteLine("7: Xuất/nhập dữ liệu");
-            Console.WriteLine("8: Thoát chương trình");
+            Console.WriteLine("===  Chào mừng đến với ứng dụng Quản lý Chi tiêu ===");
+            Console.WriteLine("1: Nhập chi tiêu mới");
+            Console.WriteLine("2: Xem báo cáo tài chính");
+            Console.WriteLine("3. Đặt ngân sách");
+            Console.WriteLine("4. Xem tình trạng ngân sách");
+            Console.WriteLine("5. Xem đề xuất điều chỉnh ngân sách");
+            Console.WriteLine("6: Xuất/nhập dữ liệu");
+            Console.WriteLine("7: Thoát chương trình");
             Console.Write("Chọn một tùy chọn: ");
             var option = Console.ReadLine();
 
