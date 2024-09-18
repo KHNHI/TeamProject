@@ -25,7 +25,7 @@ class Program
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("=== Ứng dụng Quản lý Chi tiêu ===");
+            Console.WriteLine("=== Chào mừng đến với ứng dụng Quản lý Chi tiêu ===");
             Console.WriteLine("1: Nhập chi tiêu mới");
             Console.WriteLine("2: Xem báo cáo tài chính");
             Console.WriteLine("3. Đặt ngân sách");
