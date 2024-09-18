@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Quanlychitieu
 {
@@ -10,10 +7,14 @@ namespace Quanlychitieu
         private Dictionary<string, decimal> expenses = new Dictionary<string, decimal>();
         private string filePath = "expenses.json";
 
+
+
+
         public void EnterExpense()
         {
             Console.Write("Nhập danh mục chi tiêu (ăn uống, giải trí, học tập, di chuyển,...): ");
             string category = Console.ReadLine();
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             Console.Write("Nhập số tiền: ");
             if (decimal.TryParse(Console.ReadLine(), out decimal amount))
             {
@@ -23,7 +24,8 @@ namespace Quanlychitieu
                     expenses[category] = amount;
 
                 SaveExpenses();
-                Console.WriteLine("Chi tiêu đã được ghi lại.");
+                Console.WriteLine($"Đã lưu chi tiêu: {amount} vào danh mục '{category}' vào lúc {timestamp}.");
+                //Console.WriteLine("Chi tiêu đã được ghi lại.");
             }
             else
             {
@@ -51,5 +53,6 @@ namespace Quanlychitieu
         {
             return expenses;
         }
+
     }
 }
