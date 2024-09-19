@@ -43,7 +43,7 @@ namespace Quanlychitieu
 
                 foreach (var category in expenses.OrderByDescending(e => e.Value))
                 {
-                    Console.WriteLine("__" + new string('_', tableWidth ) + "__");
+                    //Console.WriteLine("__" + new string('_', tableWidth ) + "__");
                     var barLength = (int)((category.Value / maxExpense) * maxBarLength);
                     var bar = new string('█', barLength); // Thay '█' bằng '#'
                     
