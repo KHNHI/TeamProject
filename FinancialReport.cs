@@ -35,13 +35,25 @@ namespace Quanlychitieu
             if (expenses.Any())
             {
                 var maxExpense = expenses.Max(e => e.Value);
+                var maxBarLength = 20; // Độ dài tối đa của thanh là 20 ký tự
+                var tableWidth = maxBarLength + 25;
+
+                // Vẽ đường viền trên
+                Console.WriteLine("+" + new string('-', tableWidth ) + "+");
+
                 foreach (var category in expenses.OrderByDescending(e => e.Value))
                 {
-                    var barLength = (int)((category.Value / maxExpense) * 20);  // Độ dài tối đa của thanh là 20 ký tự
-                    var bar = new string('█', barLength);
-                    Console.WriteLine($"{category.Key,-15} {bar,-20} {category.Value:C}");
-                    Console.WriteLine();
+                    Console.WriteLine("__" + new string('_', tableWidth ) + "__");
+                    var barLength = (int)((category.Value / maxExpense) * maxBarLength);
+                    var bar = new string('█', barLength); // Thay '█' bằng '#'
+                    
+                    // Hiển thị từng hàng với khung trái và phải
+                    Console.WriteLine($"  {category.Key,-10} {bar,-22} {category.Value,10:C} ");
+                    
                 }
+
+                // Vẽ đường viền dưới
+                Console.WriteLine("+" + new string('-', tableWidth - 2) + "+");
             }
             else
             {
