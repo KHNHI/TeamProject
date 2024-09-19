@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Globalization;
 
 namespace Quanlychitieu
 {
@@ -17,13 +18,17 @@ namespace Quanlychitieu
             var expenses = expenseTracker.GetExpenses();
             var totalExpense = expenses.Sum(e => e.Value);
 
+
+            CultureInfo vietnam = new CultureInfo("vi-VN");
+
             Console.WriteLine("\nBáo cáo dạng văn bản:");
-            Console.WriteLine($"Tổng chi tiêu: {totalExpense:C}");
+            Console.WriteLine($"Tổng chi tiêu: {totalExpense.ToString("C0", vietnam)}"); // Định dạng VNĐ
             Console.WriteLine("\nChi tiêu theo danh mục:");
+
             foreach (var category in expenses.OrderByDescending(e => e.Value))
             {
                 var percentage = (category.Value / totalExpense) * 100;
-                Console.WriteLine($"{category.Key,-15} {category.Value,10:C} ({percentage,5:F1}%)");
+                Console.WriteLine($"{category.Key,-15} {category.Value.ToString("C0", vietnam),10} ({percentage,5:F1}%)");
             }
         }
 
@@ -35,7 +40,7 @@ namespace Quanlychitieu
             if (expenses.Any())
             {
                 var maxExpense = expenses.Max(e => e.Value);
-                var maxBarLength = 20; // Độ dài tối đa của thanh là 20 ký tự
+                var maxBarLength = 20;// dài tối đa của thanh là 20 ký tự
                 var tableWidth = maxBarLength + 25;
 
                 // Vẽ đường viền trên
@@ -44,11 +49,12 @@ namespace Quanlychitieu
                 foreach (var category in expenses.OrderByDescending(e => e.Value))
                 {
                     /*Console.WriteLine("__" + new string('_', tableWidth ) + "__");*/
+                    Console.WriteLine();
                     var barLength = (int)((category.Value / maxExpense) * maxBarLength);
                     var bar = new string('█', barLength); // Thay '█' bằng '#'
                     
                     // Hiển thị từng hàng với khung trái và phải
-                    Console.WriteLine($"  {category.Key,-10} {bar,-22} {category.Value,10:C} ");
+                    Console.WriteLine($"  {category.Key,-10} {bar,-22} {category.Value.ToString("C0", vietnam),10} ");
                     
                 }
 
