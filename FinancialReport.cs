@@ -35,7 +35,7 @@ namespace Quanlychitieu
         {
             var expenses = expenseTracker.GetExpenses();
 
-            Console.WriteLine("\nBiểu đồ chi tiêu theo danh mục:");
+            Console.WriteLine("\nBiểu đồ ASCII chi tiêu theo danh mục:");
             if (expenses.Any())
             {
                 var maxExpense = expenses.Max(e => e.Value);
