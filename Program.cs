@@ -22,13 +22,13 @@ class Program
         DataSecurity dataSecurity = new DataSecurity();
         Notification notification = new Notification();
         expenseTracker.LoadExpenses();
-        
+
 
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("===   Ứng dụng Quản lý Chi tiêu ===");
-            Console.WriteLine("1: Nhập chi tiêu mới");
+            Console.WriteLine("\n=============  ỨNG DỤNG QUẢN LÍ THU CHI =============\n");
+            Console.WriteLine("1: Nhập biến động số dư");
             Console.WriteLine("2: Xem báo cáo tài chính");
             Console.WriteLine("3. Đặt ngân sách");
             Console.WriteLine("4. Xem tình trạng ngân sách");
@@ -40,10 +40,44 @@ class Program
 
             switch (option)
             {
-                
-
                 case "1":
-                    expenseTracker.EnterExpense();
+                    Console.Clear();
+                    Console.WriteLine("1: Nhập khoản chi");
+                    Console.WriteLine("2: Nhập khoản thu");
+                    Console.Write("Chọn một tùy chọn: ");
+                    var balanceOption = Console.ReadLine();
+
+                    switch (balanceOption)
+                    {
+                        case "1":
+                            Console.Clear();
+                            Console.WriteLine("Chọn danh mục chi tiêu:");
+                            Console.WriteLine("1. Ăn uống");
+                            Console.WriteLine("2. Đi lại");
+                            Console.WriteLine("3. Chi phí cố định (nhà ở, điện, nước, wifi...)");
+                            Console.WriteLine("4. Giải trí");
+                            Console.WriteLine("5. Giáo dục");
+                            Console.WriteLine("6. Mua sắm");
+                            Console.WriteLine("7. Khác");
+                            Console.Write("Chọn danh mục: ");
+                            var expenseCategory = Console.ReadLine();
+                            expenseTracker.EnterExpense(expenseCategory);
+                            break;
+                        case "2":
+                            Console.Clear();
+                            Console.WriteLine("Chọn danh mục thu nhập:");
+                            Console.WriteLine("1. Lương");
+                            Console.WriteLine("2. Thưởng");
+                            Console.WriteLine("3. Đầu tư");
+                            Console.WriteLine("4. Tiết kiệm");
+                            Console.Write("Chọn danh mục: ");
+                            var incomeCategory = Console.ReadLine();
+                            expenseTracker.EnterIncome(incomeCategory);
+                            break;
+                        default:
+                            Console.WriteLine("Lựa chọn không hợp lệ.");
+                            break;
+                    }
                     break;
                 case "2":
                     Console.WriteLine("Đang chuẩn bị báo cáo tài chính...");
@@ -74,7 +108,7 @@ class Program
                 case "6":
                     dataSync.HandleDataSync();
                     break;
-                    case "7":
+                case "7":
                     return;
                 default:
                     Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
@@ -82,6 +116,6 @@ class Program
             }
             Console.ReadLine();
         }
-    
+
     }
 }
