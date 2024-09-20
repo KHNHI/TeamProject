@@ -27,7 +27,7 @@ namespace Quanlychitieu
                     Console.WriteLine("Dữ liệu nhập vào:");
                     foreach (var item in expenses)
                     {
-                        Console.WriteLine($"{item.Key}: {item.Value:C}");
+                        Console.WriteLine($"{item.Key}: {item.Value:#,##0₫}");
                     }
                     break;
                 default:
