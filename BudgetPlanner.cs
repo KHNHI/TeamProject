@@ -22,6 +22,15 @@ namespace Quanlychitieu
             Console.WriteLine($"Ngân sách cho {category} đã được đặt thành {amount:#,##0₫}");
         }
 
+        private void PlaywarningSound()
+        {
+            Console.Beep();
+        }
+
+        private void ShowMessage(string message)
+        {
+            Console.WriteLine($"Cảnh báo: {message}");
+        }
         public void ShowBudgetStatus()
         {
             var expenses = expenseTracker.GetExpenses();
@@ -45,10 +54,12 @@ namespace Quanlychitieu
                 if (remaining < 0)
                 {
                     Console.WriteLine("Cảnh báo: Bạn đã vượt quá ngân sách!");
+                    PlaywarningSound();
                 }
                 else if (percentageUsed > 80)
                 {
                     Console.WriteLine("Cảnh báo: Bạn đã sử dụng hơn 80% ngân sách!");
+                    PlaywarningSound();
                 }
 
                 Console.WriteLine();
@@ -58,6 +69,12 @@ namespace Quanlychitieu
         public void SuggestBudgetAdjustments()
         {
             var expenses = expenseTracker.GetExpenses();
+            if (expenses == null || expenses.Count == 0 || categoryBudgets == null || categoryBudgets.Count == 0)
+            {
+                Console.WriteLine("Không có dữ liệu để phân tích.");
+                return;
+            }
+
             var totalBudget = categoryBudgets.Sum(b => b.Value);
             var totalExpenses = expenses.Sum(e => e.Value);
 
