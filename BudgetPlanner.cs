@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,17 +8,44 @@ namespace Quanlychitieu
     {
         private Dictionary<string, decimal> categoryBudgets;
         private ExpenseTracker expenseTracker;
+        private readonly List<string> validCategories = new List<string>
+        {
+            "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
+        };
 
-        internal BudgetPlanner (ExpenseTracker expenseTracker)
+        internal BudgetPlanner(ExpenseTracker expenseTracker)
         {
             this.expenseTracker = expenseTracker;
             categoryBudgets = new Dictionary<string, decimal>();
         }
 
-        public void SetBudget(string category, decimal amount)
+        public void SetBudget()
         {
-            categoryBudgets[category] = amount;
-            Console.WriteLine($"Ngân sách cho {category} đã được đặt thành {amount:C}");
+            Console.WriteLine("\nChọn danh mục để đặt ngân sách:");
+            for (int i = 0; i < validCategories.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {validCategories[i]}");
+            }
+
+            Console.Write("Nhập số tương ứng với danh mục: ");
+            if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= validCategories.Count)
+            {
+                string category = validCategories[choice - 1];
+                Console.Write($"Nhập số tiền ngân sách cho {category}: ");
+                if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount >= 0)
+                {
+                    categoryBudgets[category] = amount;
+                    Console.WriteLine($"Ngân sách cho {category} đã được đặt thành {amount:C}");
+                }
+                else
+                {
+                    Console.WriteLine("Số tiền không hợp lệ. Vui lòng nhập một số dương.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Lựa chọn không hợp lệ.");
+            }
         }
 
         private void PlaywarningSound()
@@ -31,19 +57,18 @@ namespace Quanlychitieu
         {
             Console.WriteLine($"Cảnh báo: {message}");
         }
+
         public void ShowBudgetStatus()
         {
             var expenses = expenseTracker.GetExpenses();
 
             Console.WriteLine("\n=== Tình trạng Ngân sách ===");
-            foreach (var budget in categoryBudgets)
+            foreach (var category in validCategories)
             {
-                string category = budget.Key;
-                decimal budgetAmount = budget.Value;
+                decimal budgetAmount = categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
                 decimal spent = expenses.ContainsKey(category) ? expenses[category] : 0;
                 decimal remaining = budgetAmount - spent;
-                decimal percentageUsed = (spent / budgetAmount) * 100;
-              
+                decimal percentageUsed = budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
 
                 Console.WriteLine($"Danh mục: {category}");
                 Console.WriteLine($"Ngân sách: {budgetAmount:C}");
@@ -85,26 +110,24 @@ namespace Quanlychitieu
                 Console.WriteLine("Bạn đang chi tiêu nhiều hơn tổng ngân sách. Hãy xem xét cắt giảm chi tiêu hoặc tăng ngân sách.");
             }
 
-            foreach (var expense in expenses)
+            foreach (var category in validCategories)
             {
-                string category = expense.Key;
-                decimal spent = expense.Value;
+                decimal spent = expenses.ContainsKey(category) ? expenses[category] : 0;
+                decimal budgetAmount = categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
 
-                if (!categoryBudgets.ContainsKey(category))
+                if (budgetAmount == 0)
                 {
                     Console.WriteLine($"Đề xuất: Thiết lập ngân sách cho danh mục '{category}'. Chi tiêu hiện tại: {spent:C}");
                 }
-                else if (spent > categoryBudgets[category])
+                else if (spent > budgetAmount)
                 {
-                    decimal overspent = spent - categoryBudgets[category];
+                    decimal overspent = spent - budgetAmount;
                     Console.WriteLine($"Đề xuất: Tăng ngân sách cho '{category}' thêm {overspent:C} hoặc cắt giảm chi tiêu.");
                 }
-            }
-
-            var unusedBudgets = categoryBudgets.Where(b => !expenses.ContainsKey(b.Key) || expenses[b.Key] < b.Value * 0.5m);
-            foreach (var budget in unusedBudgets)
-            {
-                Console.WriteLine($"Đề xuất: Xem xét giảm ngân sách cho '{budget.Key}' vì chi tiêu thấp hơn 50% ngân sách.");
+                else if (spent < budgetAmount * 0.5m)
+                {
+                    Console.WriteLine($"Đề xuất: Xem xét giảm ngân sách cho '{category}' vì chi tiêu thấp hơn 50% ngân sách.");
+                }
             }
         }
     }

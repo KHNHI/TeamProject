@@ -9,12 +9,24 @@ namespace Quanlychitieu
 
         public void EnterExpense(string categoryChoice)
         {
+            if (string.IsNullOrEmpty(categoryChoice))
+            {
+                Console.WriteLine("Danh mục không hợp lệ.");
+                return;
+            }
+
             string category = GetExpenseCategory(categoryChoice);
             EnterTransaction(category, isExpense: true);
         }
 
         public void EnterIncome(string categoryChoice)
         {
+            if (string.IsNullOrEmpty(categoryChoice))
+            {
+                Console.WriteLine("Danh mục không hợp lệ.");
+                return;
+            }
+
             string category = GetIncomeCategory(categoryChoice);
             EnterTransaction(category, isExpense: false);
         }

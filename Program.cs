@@ -1,4 +1,4 @@
-﻿using Quanlychitieu;
+using Quanlychitieu;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -61,7 +61,14 @@ class Program
                             Console.WriteLine("7. Khác");
                             Console.Write("Chọn danh mục: ");
                             var expenseCategory = Console.ReadLine();
-                            expenseTracker.EnterExpense(expenseCategory);
+                            if (!string.IsNullOrEmpty(expenseCategory))
+                            {
+                                expenseTracker.EnterExpense(expenseCategory);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Danh mục không hợp lệ.");
+                            }
                             break;
                         case "2":
                             Console.Clear();
@@ -72,7 +79,14 @@ class Program
                             Console.WriteLine("4. Tiết kiệm");
                             Console.Write("Chọn danh mục: ");
                             var incomeCategory = Console.ReadLine();
-                            expenseTracker.EnterIncome(incomeCategory);
+                            if (!string.IsNullOrEmpty(incomeCategory))
+                            {
+                                expenseTracker.EnterIncome(incomeCategory);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Danh mục không hợp lệ.");
+                            }
                             break;
                         default:
                             Console.WriteLine("Lựa chọn không hợp lệ.");
@@ -87,17 +101,7 @@ class Program
                     Console.ReadLine();
                     break;
                 case "3":
-                    Console.Write("Nhập danh mục: ");
-                    string category = Console.ReadLine();
-                    Console.Write("Nhập số tiền ngân sách: ");
-                    if (decimal.TryParse(Console.ReadLine(), out decimal amount))
-                    {
-                        budgetPlanner.SetBudget(category, amount);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Số tiền không hợp lệ.");
-                    }
+                    budgetPlanner.SetBudget();
                     break;
                 case "4":
                     budgetPlanner.ShowBudgetStatus();
