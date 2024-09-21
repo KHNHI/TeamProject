@@ -21,31 +21,54 @@ namespace Quanlychitieu
 
         public void SetBudget()
         {
-            Console.WriteLine("\nChọn danh mục để đặt ngân sách:");
-            for (int i = 0; i < validCategories.Count; i++)
+            string input;
+            do
             {
-                Console.WriteLine($"{i + 1}. {validCategories[i]}");
-            }
+                Console.WriteLine("\nChọn danh mục để đặt ngân sách:");
+                for (int i = 0; i < validCategories.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {validCategories[i]}");
+                }
 
-            Console.Write("Nhập số tương ứng với danh mục: ");
-            if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= validCategories.Count)
-            {
+                int choice;
+                // Vòng lặp để bắt buộc nhập đúng danh mục
+                while (true)
+                {
+                    Console.Write("Nhập số tương ứng với danh mục: ");
+                    if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= validCategories.Count)
+                    {
+                        break; // Thoát khỏi vòng lặp nếu nhập hợp lệ
+                    }
+                    else
+                    {
+                        Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng thử lại.");
+                    }
+                }
+
                 string category = validCategories[choice - 1];
-                Console.Write($"Nhập số tiền ngân sách cho {category}: ");
-                if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount >= 0)
+                decimal amount;
+                // Vòng lặp để bắt buộc nhập đúng số tiền
+                while (true)
                 {
-                    categoryBudgets[category] = amount;
-                    Console.WriteLine($"Ngân sách cho {category} đã được đặt thành {amount:#,##0₫}");
+                    Console.Write($"Nhập số tiền ngân sách cho {category}: ");
+                    if (decimal.TryParse(Console.ReadLine(), out amount) && amount >= 0)
+                    {
+                        break; // Thoát khỏi vòng lặp nếu nhập hợp lệ
+                    }
+                    else
+                    {
+                        Console.WriteLine("Số tiền không hợp lệ. Vui lòng nhập một số dương.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Số tiền không hợp lệ. Vui lòng nhập một số dương.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Lựa chọn không hợp lệ.");
-            }
+
+                // Lưu ngân sách vào danh mục
+                categoryBudgets[category] = amount;
+                Console.WriteLine($"Ngân sách cho {category} đã được đặt thành {amount:#,##0₫}");
+
+                // Hỏi người dùng có muốn tiếp tục đặt ngân sách cho danh mục khác
+                Console.Write("Bạn có muốn đặt ngân sách cho danh mục khác không? (y/n): ");
+                input = Console.ReadLine()?.ToLower();
+            } while (input == "y");
         }
 
         private void PlaywarningSound()
@@ -66,13 +89,13 @@ namespace Quanlychitieu
             foreach (var category in validCategories)
             {
                 decimal budgetAmount = categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
-                decimal spent = expenses.ContainsKey(category) ? expenses[category] : 0;
+                decimal spent = expenses.ContainsKey(category) ? Math.Abs(expenses[category]) : 0;
                 decimal remaining = budgetAmount - spent;
                 decimal percentageUsed = budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
 
                 Console.WriteLine($"Danh mục: {category}");
                 Console.WriteLine($"Ngân sách: {budgetAmount:#,##0₫}");
-                Console.WriteLine($"Đã chi: {spent:#,##0₫}");
+                Console.WriteLine($"Đã chi: -{spent:#,##0₫}");
                 Console.WriteLine($"Còn lại: {remaining:#,##0₫}");
                 Console.WriteLine($"Đã sử dụng: {percentageUsed:F1}%");
 

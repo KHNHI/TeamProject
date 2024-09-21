@@ -37,9 +37,6 @@ namespace Quanlychitieu
             Console.Write("Nhập số tiền: ");
             if (decimal.TryParse(Console.ReadLine(), out decimal amount))
             {
-                if (isExpense)
-                    amount = -amount; // Make expense amounts negative
-
                 if (expenses.ContainsKey(category))
                     expenses[category] += amount;
                 else

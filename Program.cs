@@ -29,10 +29,10 @@ class Program
             Console.Clear();
             Console.WriteLine("\n=============  ỨNG DỤNG QUẢN LÍ THU CHI =============\n");
             Console.WriteLine("1: Nhập biến động số dư");
-            Console.WriteLine("2: Xem báo cáo tài chính");
-            Console.WriteLine("3. Đặt ngân sách");
-            Console.WriteLine("4. Xem tình trạng ngân sách");
-            Console.WriteLine("5. Xem đề xuất điều chỉnh ngân sách");
+            Console.WriteLine("2. Đặt ngân sách");
+            Console.WriteLine("3. Xem tình trạng ngân sách");
+            Console.WriteLine("4. Xem đề xuất điều chỉnh ngân sách");
+            Console.WriteLine("5: Xem báo cáo tài chính");
             Console.WriteLine("6: Xuất/nhập dữ liệu");
             Console.WriteLine("7: Thoát chương trình");
             Console.Write("Chọn một tùy chọn: ");
@@ -94,22 +94,27 @@ class Program
                     }
                     break;
                 case "2":
-                    Console.WriteLine("Đang chuẩn bị báo cáo tài chính...");
+                    Console.Clear();
+                    budgetPlanner.SetBudget();
+                    break;
+                case "3":
+                    Console.Clear();
+                    budgetPlanner.ShowBudgetStatus();
+                    break;
+                case "4":
+                    Console.Clear();
+                    budgetPlanner.SuggestBudgetAdjustments();
+                    break;
+                case "5":
+                    Console.Clear();
                     financialReport.ShowReport(expenseTracker);
                     Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
                     Console.WriteLine("Nhấn Enter để tiếp tục...");
                     Console.ReadLine();
                     break;
-                case "3":
-                    budgetPlanner.SetBudget();
-                    break;
-                case "4":
-                    budgetPlanner.ShowBudgetStatus();
-                    break;
-                case "5":
-                    budgetPlanner.SuggestBudgetAdjustments();
-                    break;
+                   
                 case "6":
+                    Console.Clear();
                     dataSync.HandleDataSync();
                     break;
                 case "7":
