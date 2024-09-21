@@ -35,7 +35,7 @@ namespace Quanlychitieu
                 if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount >= 0)
                 {
                     categoryBudgets[category] = amount;
-                    Console.WriteLine($"Ngân sách cho {category} đã được đặt thành {amount:C}");
+                    Console.WriteLine($"Ngân sách cho {category} đã được đặt thành {amount:#,##0₫}");
                 }
                 else
                 {
@@ -71,9 +71,9 @@ namespace Quanlychitieu
                 decimal percentageUsed = budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
 
                 Console.WriteLine($"Danh mục: {category}");
-                Console.WriteLine($"Ngân sách: {budgetAmount:C}");
-                Console.WriteLine($"Đã chi: {spent:C}");
-                Console.WriteLine($"Còn lại: {remaining:C}");
+                Console.WriteLine($"Ngân sách: {budgetAmount:#,##0₫}");
+                Console.WriteLine($"Đã chi: {spent:#,##0₫}");
+                Console.WriteLine($"Còn lại: {remaining:#,##0₫}");
                 Console.WriteLine($"Đã sử dụng: {percentageUsed:F1}%");
 
                 if (remaining < 0)
@@ -117,12 +117,12 @@ namespace Quanlychitieu
 
                 if (budgetAmount == 0)
                 {
-                    Console.WriteLine($"Đề xuất: Thiết lập ngân sách cho danh mục '{category}'. Chi tiêu hiện tại: {spent:C}");
+                    Console.WriteLine($"Đề xuất: Thiết lập ngân sách cho danh mục '{category}'. Chi tiêu hiện tại: {spent:#,##0₫}");
                 }
                 else if (spent > budgetAmount)
                 {
                     decimal overspent = spent - budgetAmount;
-                    Console.WriteLine($"Đề xuất: Tăng ngân sách cho '{category}' thêm {overspent:C} hoặc cắt giảm chi tiêu.");
+                    Console.WriteLine($"Đề xuất: Tăng ngân sách cho '{category}' thêm {overspent:#,##0₫} hoặc cắt giảm chi tiêu.");
                 }
                 else if (spent < budgetAmount * 0.5m)
                 {
