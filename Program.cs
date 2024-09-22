@@ -72,20 +72,16 @@ class Program
                             break;
                         case "2":
                             Console.Clear();
-                            Console.WriteLine("Chọn danh mục thu nhập:");
-                            Console.WriteLine("1. Lương");
-                            Console.WriteLine("2. Thưởng");
-                            Console.WriteLine("3. Đầu tư");
-                            Console.WriteLine("4. Tiết kiệm");
-                            Console.Write("Chọn danh mục: ");
-                            var incomeCategory = Console.ReadLine();
-                            if (!string.IsNullOrEmpty(incomeCategory))
+                            Console.Write("Nhập số tiền thu nhập: ");
+                            string incomeInput = Console.ReadLine();
+                            if (decimal.TryParse(incomeInput, out decimal incomeAmount))
                             {
-                                expenseTracker.EnterIncome(incomeCategory);
+                                expenseTracker.EnterIncome(incomeAmount);
+                                Console.WriteLine($"Đã thêm khoản thu nhập: {incomeAmount:#,##0₫}");
                             }
                             else
                             {
-                                Console.WriteLine("Danh mục không hợp lệ.");
+                                Console.WriteLine("Số tiền không hợp lệ.");
                             }
                             break;
                         default:
@@ -112,7 +108,7 @@ class Program
                     Console.WriteLine("Nhấn Enter để tiếp tục...");
                     Console.ReadLine();
                     break;
-                   
+
                 case "6":
                     Console.Clear();
                     dataSync.HandleDataSync();

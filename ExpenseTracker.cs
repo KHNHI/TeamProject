@@ -19,16 +19,10 @@ namespace Quanlychitieu
             EnterTransaction(category, isExpense: true);
         }
 
-        public void EnterIncome(string categoryChoice)
+        public void EnterIncome(decimal amount)
         {
-            if (string.IsNullOrEmpty(categoryChoice))
-            {
-                Console.WriteLine("Danh mục không hợp lệ.");
-                return;
-            }
-
-            string category = GetIncomeCategory(categoryChoice);
-            EnterTransaction(category, isExpense: false);
+            expenses["Thu nhập"] = expenses.GetValueOrDefault("Thu nhập", 0) + amount;
+            SaveExpenses();
         }
 
         private void EnterTransaction(string category, bool isExpense)
