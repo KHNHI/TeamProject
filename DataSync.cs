@@ -9,6 +9,7 @@ namespace Quanlychitieu
     internal class DataSync
     {
         private ExpenseTracker tracker = new ExpenseTracker();
+        private const string BUDGET_FILE = "budget.csv";
 
         public void HandleDataSync()
         {
@@ -36,6 +37,18 @@ namespace Quanlychitieu
             }
         }
 
+        public void SaveBudgetToCSV(Dictionary<string, decimal> budget)
+        {
+            ExportToCSV(budget, BUDGET_FILE);
+            //Console.WriteLine("Ngân sách đã được lưu vào file CSV.");
+            Console.WriteLine("Ngân sách đã được lưu.");
+        }
+
+        public Dictionary<string, decimal> LoadBudgetFromCSV()
+        {
+            return ImportFromCSV(BUDGET_FILE);
+        }
+
         private void ExportToCSV(Dictionary<string, decimal> expenses, string filePath)
         {
             using (var writer = new StreamWriter(filePath))
@@ -45,7 +58,7 @@ namespace Quanlychitieu
                     writer.WriteLine($"{expense.Key},{expense.Value}");
                 }
             }
-            Console.WriteLine("Dữ liệu đã được xuất ra CSV.");
+            //Console.WriteLine("Dữ liệu đã được xuất ra CSV.");
         }
 
         private Dictionary<string, decimal> ImportFromCSV(string filePath)

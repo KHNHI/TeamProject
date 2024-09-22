@@ -16,7 +16,7 @@ class Program
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;
         ExpenseTracker expenseTracker = new ExpenseTracker();
-        BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker);
+        BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker, new DataSync());
         FinancialReport financialReport = new FinancialReport();
         DataSync dataSync = new DataSync();
         DataSecurity dataSecurity = new DataSecurity();

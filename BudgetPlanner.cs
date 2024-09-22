@@ -4,19 +4,21 @@ using System.Linq;
 
 namespace Quanlychitieu
 {
-    public class BudgetPlanner
+    internal class BudgetPlanner
     {
-        private Dictionary<string, decimal> categoryBudgets;
         private ExpenseTracker expenseTracker;
+        private DataSync dataSync;
+        private Dictionary<string, decimal> categoryBudgets;
         private readonly List<string> validCategories = new List<string>
         {
             "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
         };
 
-        internal BudgetPlanner(ExpenseTracker expenseTracker)
+        public BudgetPlanner(ExpenseTracker expenseTracker, DataSync dataSync)
         {
             this.expenseTracker = expenseTracker;
-            categoryBudgets = new Dictionary<string, decimal>();
+            this.dataSync = dataSync;
+            categoryBudgets = dataSync.LoadBudgetFromCSV();
         }
 
         public void SetBudget()
@@ -69,6 +71,9 @@ namespace Quanlychitieu
                 Console.Write("Bạn có muốn đặt ngân sách cho danh mục khác không? (y/n): ");
                 input = Console.ReadLine()?.ToLower();
             } while (input == "y");
+
+            // After setting the budget, save it to CSV
+            dataSync.SaveBudgetToCSV(categoryBudgets);
         }
 
         private void PlaywarningSound()
