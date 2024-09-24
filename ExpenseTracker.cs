@@ -7,6 +7,24 @@ namespace Quanlychitieu
         private Dictionary<string, decimal> expenses = new Dictionary<string, decimal>();
         private string filePath = "expenses.json";
 
+        public decimal TotalIncome { get; private set; } = 0;
+        public decimal TotalBudget { get; private set; } = 0;
+        public decimal TotalExpenses => GetTotalExpenses();
+
+        public decimal Savings => TotalIncome - TotalBudget  + GetOverspending();
+
+
+        private decimal GetOverspending()
+        {
+            // If total expenses exceed the budget, calculate overspending
+            return TotalExpenses > TotalBudget ? TotalExpenses - TotalBudget : 0;
+        }
+
+        public void SetBudget(decimal budget)
+        {
+            TotalBudget = budget;
+            
+        }
         public void EnterExpense(string categoryChoice)
         {
             if (string.IsNullOrEmpty(categoryChoice))
@@ -21,7 +39,11 @@ namespace Quanlychitieu
 
         public void EnterIncome(decimal amount)
         {
-            expenses["Thu nhập"] = expenses.GetValueOrDefault("Thu nhập", 0) + amount;
+            //expenses["Thu nhập"] = expenses.GetValueOrDefault("Thu nhập", 0) + amount;
+            //SaveExpenses();
+
+            TotalIncome += amount; // Cập nhật tổng thu nhập
+            expenses["Thu nhập"] = TotalIncome; // Lưu thu nhập vào dictionary
             SaveExpenses();
         }
 
@@ -49,10 +71,19 @@ namespace Quanlychitieu
                 SaveExpenses();
                 string transactionType = isExpense ? "chi tiêu" : "thu nhập";
                 Console.WriteLine($"Đã lưu {transactionType}: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
+                CheckOverspending();
             }
             else
             {
                 Console.WriteLine("Số tiền không hợp lệ.");
+            }
+        }
+        private void CheckOverspending()
+        {
+            if (TotalExpenses > TotalBudget)
+            {
+                decimal overspending = TotalExpenses - TotalBudget;
+                Console.WriteLine($"Bạn đang chi tiêu vượt mức dự tính: {overspending:#,##0₫}. Nếu tiếp tục chi tiêu như vậy, bạn có thể không có khoản tiết kiệm trong tháng nay.");
             }
         }
 
@@ -103,6 +134,30 @@ namespace Quanlychitieu
         {
             return expenses;
         }
+        // Lấy tổng chi tiêu
+        private decimal GetTotalExpenses()
+        {
+            decimal total = 0;
+            foreach (var expense in expenses)
+            {
+                if (expense.Key != "Thu nhập")
+                {
+                    total += expense.Value;
+                }
+            }
+            return total;
+        }
+        public string GetSavingsStatus()
+        {
+            if (Savings >= 0)
+            {
+                return $"Tiết kiệm: {Savings:#,##0₫}";
+            }
+            else
+            {
+                return $"Chi tiêu vượt mức: {-Savings:#,##0₫}";
+            }
 
+        }
     }
 }

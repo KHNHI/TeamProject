@@ -34,7 +34,8 @@ class Program
             Console.WriteLine("4. Xem đề xuất điều chỉnh ngân sách");
             Console.WriteLine("5: Xem báo cáo tài chính");
             Console.WriteLine("6: Xuất/nhập dữ liệu");
-            Console.WriteLine("7: Thoát chương trình");
+            Console.WriteLine("7: Xem tình trạng tiết kiệm");
+            Console.WriteLine("8: Thoát chương trình");
             Console.Write("Chọn một tùy chọn: ");
             var option = Console.ReadLine();
 
@@ -114,10 +115,17 @@ class Program
                     dataSync.HandleDataSync();
                     break;
                 case "7":
+                    Console.Clear();
+                    expenseTracker.GetSavingsStatus();
+                    Console.WriteLine("Nhấn Enter để tiếp tục...");
+                    Console.ReadLine();
+                    break;
+                case "8":
                     return;
                 default:
                     Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
                     break;
+
             }
             Console.ReadLine();
         }
