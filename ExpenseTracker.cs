@@ -25,16 +25,26 @@ namespace Quanlychitieu
             SaveExpenses();
         }
 
+        double[,] ArrayMoney = new double[12, 7]; // 12 tháng, 7 danh mục chi tiêu
+        string[] categories = { "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác" };
+
+        int month = DateTime.Now.Month;
+
         private void EnterTransaction(string category, bool isExpense)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             Console.Write("Nhập số tiền: ");
+
+            int categoryIndex = Array.IndexOf(categories, category);
+
             if (decimal.TryParse(Console.ReadLine(), out decimal amount))
             {
                 if (expenses.ContainsKey(category))
                     expenses[category] += amount;
                 else
                     expenses[category] = amount;
+
+                ArrayMoney[month - 1, categoryIndex] += (double)amount;
 
                 SaveExpenses();
                 string transactionType = isExpense ? "chi tiêu" : "thu nhập";
