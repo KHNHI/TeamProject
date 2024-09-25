@@ -11,7 +11,7 @@ namespace Quanlychitieu
         public decimal TotalBudget { get; private set; } = 0;
         public decimal TotalExpenses => GetTotalExpenses();
 
-        public decimal Savings => TotalIncome - TotalBudget  + GetOverspending();
+        public decimal Savings => TotalIncome - TotalBudget + GetOverspending();
 
 
         private decimal GetOverspending()
@@ -23,7 +23,7 @@ namespace Quanlychitieu
         public void SetBudget(decimal budget)
         {
             TotalBudget = budget;
-            
+
         }
         public void EnterExpense(string categoryChoice)
         {
@@ -71,6 +71,7 @@ namespace Quanlychitieu
                 SaveExpenses();
                 string transactionType = isExpense ? "chi tiêu" : "thu nhập";
                 Console.WriteLine($"Đã lưu {transactionType}: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
+                Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
                 CheckOverspending();
             }
             else
@@ -158,6 +159,88 @@ namespace Quanlychitieu
                 return $"Chi tiêu vượt mức: {-Savings:#,##0₫}";
             }
 
+        }
+
+        private string ConvertNumberToWords(long number)
+        {
+            if (number == 0) return "không đồng";
+
+            string[] units = { "", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín", "mười", "mười một", "mười hai", "mười ba", "mười bốn", "mười lăm", "mười sáu", "mười bảy", "mười tám", "mười chín" };
+            string[] tens = { "", "", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi" };
+            string[] scales = { "", "nghìn", "triệu", "tỷ" };
+
+            string result = "";
+            int scaleIndex = 0;
+
+            while (number > 0)
+            {
+                int group = (int)(number % 1000);
+                if (group > 0)
+                {
+                    string groupWords = ConvertGroupToWords(group);
+                    if (scaleIndex > 0 && !string.IsNullOrEmpty(groupWords))
+                    {
+                        result = groupWords + " " + scales[scaleIndex] + ", " + result;
+                    }
+                    else
+                    {
+                        result = groupWords + result;
+                    }
+                }
+                number /= 1000;
+                scaleIndex++;
+            }
+
+            result = result.Trim().TrimEnd(',');
+            return char.ToUpper(result[0]) + result.Substring(1) + " đồng";
+        }
+
+        private string ConvertGroupToWords(int group)
+        {
+            string[] units = { "", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín", "mười", "mười một", "mười hai", "mười ba", "mười bốn", "mười lăm", "mười sáu", "mười bảy", "mười tám", "mười chín" };
+            string[] tens = { "", "", "hai mươi", "ba mươi", "bốn mươi", "năm mươi", "sáu mươi", "bảy mươi", "tám mươi", "chín mươi" };
+
+            string result = "";
+
+            int hundreds = group / 100;
+            int tensAndUnits = group % 100;
+
+            if (hundreds > 0)
+            {
+                result += units[hundreds] + " trăm ";
+                if (tensAndUnits > 0 && tensAndUnits < 10)
+                {
+                    result += "lẻ ";
+                }
+            }
+
+            if (tensAndUnits >= 20)
+            {
+                int tensDigit = tensAndUnits / 10;
+                int unitsDigit = tensAndUnits % 10;
+                result += tens[tensDigit] + " ";
+                if (unitsDigit > 0)
+                {
+                    if (unitsDigit == 1)
+                    {
+                        result += "mốt";
+                    }
+                    else if (unitsDigit == 5)
+                    {
+                        result += "lăm";
+                    }
+                    else
+                    {
+                        result += units[unitsDigit];
+                    }
+                }
+            }
+            else if (tensAndUnits > 0)
+            {
+                result += units[tensAndUnits];
+            }
+
+            return result.Trim();
         }
     }
 }
