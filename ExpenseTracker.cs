@@ -108,7 +108,7 @@ namespace Quanlychitieu
                 Console.WriteLine($"Bạn đang chi tiêu vượt mức dự tính: {overspending:#,##0₫}.");
             }
         }
-
+       
         private string GetExpenseCategory(string choice)
         {
             switch (choice)
@@ -251,5 +251,88 @@ namespace Quanlychitieu
 
             return result.Trim();
         }
+
+
+        //=====Đây là phần dữ liệu giả lập để thống kê các chi tiêu của những tháng trước được load từ file "mock_expenses.json"=====
+        public void LoadMockExpenses()
+        {
+            string filePath = "mock_expenses.json"; // Đường dẫn đến tệp JSON
+            if (File.Exists(filePath))
+            {
+                string jsonData = File.ReadAllText(filePath);
+                var mockExpenses = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, double>>>(jsonData);
+
+                if (mockExpenses != null)
+                {
+                    foreach (var category in mockExpenses)
+                    {
+                        string categoryName = category.Key;
+                        Dictionary<int, double> monthlyData = category.Value;
+
+                        if (!monthlyExpenses.ContainsKey(categoryName))
+                        {
+                            monthlyExpenses[categoryName] = new Dictionary<int, double>();
+                        }
+
+                        foreach (var monthData in monthlyData)
+                        {
+                            monthlyExpenses[categoryName][monthData.Key] = monthData.Value;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Tệp mock_expenses.json không tồn tại.");
+            }
+        }
+        public void ShowExpenses()
+        {
+            if (monthlyExpenses.Count == 0)
+            {
+                Console.WriteLine("Không có dữ liệu chi tiêu nào để hiển thị.");
+                return;
+            }
+
+            Console.WriteLine("\nDữ liệu chi tiêu các tháng:");
+            foreach (var category in monthlyExpenses)
+            {
+                Console.WriteLine($"Danh mục: {category.Key}");
+                foreach (var monthExpense in category.Value)
+                {
+                    Console.WriteLine($"Tháng {monthExpense.Key}: {monthExpense.Value:#,##0₫}");
+                }
+                Console.WriteLine(); // Thêm dòng trống giữa các danh mục
+            }
+        }
+        public Dictionary<int, Dictionary<string, double>> GetMonthlyTotals()
+        {
+            var monthlyTotals = new Dictionary<int, Dictionary<string, double>>();
+
+            foreach (var category in monthlyExpenses)
+            {
+                foreach (var month in category.Value)
+                {
+                    int monthKey = month.Key;
+                    double amount = month.Value;
+
+                    if (!monthlyTotals.ContainsKey(monthKey))
+                    {
+                        monthlyTotals[monthKey] = new Dictionary<string, double>();
+                    }
+
+                    if (!monthlyTotals[monthKey].ContainsKey(category.Key))
+                    {
+                        monthlyTotals[monthKey][category.Key] = 0;
+                    }
+
+                    monthlyTotals[monthKey][category.Key] += amount;
+                }
+            }
+
+            return monthlyTotals;
+        }
+        
+
     }
 }

@@ -19,9 +19,9 @@ class Program
         BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker, new DataSync());
         FinancialReport financialReport = new FinancialReport();
         DataSync dataSync = new DataSync();
-        DataSecurity dataSecurity = new DataSecurity();
-        Notification notification = new Notification();
         expenseTracker.LoadExpenses();
+        expenseTracker.LoadMockExpenses();
+
 
 
         while (true)
@@ -44,6 +44,7 @@ class Program
             Console.WriteLine("6: Xuất/nhập dữ liệu");
             Console.WriteLine("7: Xem tình trạng tiết kiệm");
             Console.WriteLine("8: Thoát chương trình");
+
             Console.Write("Chọn một tùy chọn: ");
             var option = Console.ReadLine();
 
@@ -112,7 +113,7 @@ class Program
                     break;
                 case "5":
                     Console.Clear();
-                    financialReport.ShowReport(expenseTracker);
+                    financialReport.ShowFinancialReport(expenseTracker);
                     Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
                     Console.WriteLine("Nhấn Enter để tiếp tục...");
                     Console.ReadLine();
