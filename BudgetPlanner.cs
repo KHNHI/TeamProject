@@ -137,7 +137,10 @@ namespace Quanlychitieu
             {
                 Console.WriteLine("Bạn đang chi tiêu nhiều hơn tổng ngân sách. Hãy xem xét cắt giảm chi tiêu hoặc tăng ngân sách.");
             }
-
+            else
+            {
+                Console.WriteLine($"Tổng chi tiêu nằm trong ngân sách. Ngân sách tổng: {totalBudget:#,##0₫}, Chi tiêu tổng: {totalExpenses:#,##0₫}");
+            }
             foreach (var category in validCategories)
             {
                 decimal spent = expenses.ContainsKey(category) ? expenses[category] : 0;
