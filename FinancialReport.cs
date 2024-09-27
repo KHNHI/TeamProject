@@ -86,6 +86,93 @@ namespace Quanlychitieu
             {
                 Console.WriteLine("Không có dữ liệu để hiển thị.");
             }
+
+        }
+        public void ShowFinancialReport(ExpenseTracker expenseTracker)
+        {
+            Console.WriteLine("Chọn loại báo cáo tài chính:");
+            Console.WriteLine("1:Báo cáo tài chính tháng hiện tại");
+            Console.WriteLine("2:Thống kê theo tháng");
+            Console.WriteLine("3:Tổng chi tiêu trong năm");
+            Console.Write("Chọn một tùy chọn: ");
+
+            var choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    Console.Clear();
+                    ShowReport(expenseTracker);
+                    break;
+                case "2":
+                    Console.Clear();
+                    ShowMonthlyReport(expenseTracker);
+                    break;
+                case "3":
+                    Console.Clear();
+                    ShowYearlyReport(expenseTracker);
+                    break;
+                    
+                default:
+                    Console.WriteLine("Lựa chọn không hợp lệ.");
+                    break;
+            }
+        }
+
+
+        public void ShowMonthlyReport(ExpenseTracker expenseTracker)
+        {
+            var monthlyTotals = expenseTracker.GetMonthlyTotals();
+
+            Console.WriteLine("\nBáo cáo tài chính theo tháng:");
+            foreach (var month in monthlyTotals)
+            {
+                Console.WriteLine($"Tháng {month.Key}:");
+                foreach (var category in month.Value)
+                {
+                    Console.WriteLine($"  {category.Key}: {category.Value:#,##0₫}");
+                }
+                Console.WriteLine(); // Thêm dòng trống giữa các tháng
+            }
+            DrawTotalExpenseChart(expenseTracker);
+        }
+
+        public void ShowYearlyReport(ExpenseTracker expenseTracker)
+        {
+            var monthlyTotals = expenseTracker.GetMonthlyTotals();
+            var yearlyTotals = new Dictionary<string, double>();
+
+            foreach (var month in monthlyTotals)
+            {
+                foreach (var category in month.Value)
+                {
+                    if (!yearlyTotals.ContainsKey(category.Key))
+                    {
+                        yearlyTotals[category.Key] = 0;
+                    }
+                    yearlyTotals[category.Key] += category.Value;
+                }
+            }
+
+            Console.WriteLine("\nBáo cáo tài chính theo năm:");
+            foreach (var category in yearlyTotals)
+            {
+                Console.WriteLine($"  {category.Key}: {category.Value:#,##0₫}");
+            }
+        }
+
+        public void DrawTotalExpenseChart(ExpenseTracker expenseTracker)
+        {
+            var monthlyTotals = expenseTracker.GetMonthlyTotals(); // Sử dụng GetMonthlyTotals
+
+            Console.WriteLine("\nBiểu đồ chi tiêu tổng theo tháng:");
+            foreach (var month in monthlyTotals)
+            {
+                double totalExpense = month.Value.Values.Sum(); // Tính tổng chi tiêu cho tháng
+                int barLength = (int)(totalExpense / 10000); // Điều chỉnh tỷ lệ cho chiều dài thanh
+                string bar = new string('█', barLength);
+                Console.WriteLine($"Tháng {month.Key}: {bar} ({totalExpense:#,##0₫})");
+            }
         }
     }
 }
