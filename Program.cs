@@ -146,13 +146,11 @@ class Program
                     break;
                 case "5":
                     Console.Clear();
-<<<<<<< HEAD
+
                     expenseTracker.EnterIncome(500000); 
                     expenseTracker.SetBudget(500000);
                     financialReport.ShowReport(expenseTracker);
-=======
                     financialReport.ShowFinancialReport(expenseTracker);
->>>>>>> 22cd32c019a5288254d37008b9a442b8963d0777
                     Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
                     Console.WriteLine("Nhấn Enter để tiếp tục...");
                     Console.ReadLine();
