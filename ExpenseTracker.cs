@@ -6,25 +6,28 @@ namespace Quanlychitieu
     {
         private Dictionary<string, decimal> expenses = new Dictionary<string, decimal>();
         private string filePath = "expenses.json";
+        private Dictionary<string, Dictionary<int, double>> monthlyExpenses;
 
         public decimal TotalIncome { get; private set; } = 0;
         public decimal TotalBudget { get; private set; } = 0;
         public decimal TotalExpenses => GetTotalExpenses();
-
         public decimal Savings => TotalIncome - TotalBudget + GetOverspending();
 
+        public ExpenseTracker()
+        {
+            monthlyExpenses = new Dictionary<string, Dictionary<int, double>>();
+        }
 
         private decimal GetOverspending()
         {
-            // If total expenses exceed the budget, calculate overspending
             return TotalExpenses > TotalBudget ? TotalExpenses - TotalBudget : 0;
         }
 
         public void SetBudget(decimal budget)
         {
             TotalBudget = budget;
-
         }
+
         public void EnterExpense(string categoryChoice)
         {
             if (string.IsNullOrEmpty(categoryChoice))
@@ -39,11 +42,8 @@ namespace Quanlychitieu
 
         public void EnterIncome(decimal amount)
         {
-            //expenses["Thu nhập"] = expenses.GetValueOrDefault("Thu nhập", 0) + amount;
-            //SaveExpenses();
-
-            TotalIncome += amount; // Cập nhật tổng thu nhập
-            expenses["Thu nhập"] = TotalIncome; // Lưu thu nhập vào dictionary
+            TotalIncome += amount;
+            expenses["Thu nhập"] = TotalIncome;
             SaveExpenses();
         }
 
@@ -61,14 +61,29 @@ namespace Quanlychitieu
 
             if (decimal.TryParse(Console.ReadLine(), out decimal amount))
             {
-                if (expenses.ContainsKey(category))
-                    expenses[category] += amount;
-                else
-                    expenses[category] = amount;
+                if (!monthlyExpenses.ContainsKey(category))
+                {
+                    monthlyExpenses[category] = new Dictionary<int, double>();
+                }
 
-                ArrayMoney[month - 1, categoryIndex] += (double)amount;
+                if (!monthlyExpenses[category].ContainsKey(month))
+                {
+                    monthlyExpenses[category][month] = 0;
+                }
+
+                monthlyExpenses[category][month] += (double)amount;
+
+                if (expenses.ContainsKey(category))
+                {
+                    expenses[category] += amount;
+                }
+                else
+                {
+                    expenses[category] = amount;
+                }
 
                 SaveExpenses();
+
                 string transactionType = isExpense ? "chi tiêu" : "thu nhập";
                 Console.WriteLine($"Đã lưu {transactionType}: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
                 Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
@@ -79,12 +94,18 @@ namespace Quanlychitieu
                 Console.WriteLine("Số tiền không hợp lệ.");
             }
         }
+
+        public Dictionary<string, Dictionary<int, double>> GetMonthlyExpenses()
+        {
+            return monthlyExpenses;
+        }
+
         private void CheckOverspending()
         {
             if (TotalExpenses > TotalBudget)
             {
                 decimal overspending = TotalExpenses - TotalBudget;
-                Console.WriteLine($"Bạn đang chi tiêu vượt mức dự tính: {overspending:#,##0₫}. Nếu tiếp tục chi tiêu như vậy, bạn có thể không có khoản tiết kiệm trong tháng nay.");
+                Console.WriteLine($"Bạn đang chi tiêu vượt mức dự tính: {overspending:#,##0₫}.");
             }
         }
 
@@ -99,18 +120,6 @@ namespace Quanlychitieu
                 case "5": return "Giáo dục";
                 case "6": return "Mua sắm";
                 case "7": return "Khác";
-                default: return "Khác";
-            }
-        }
-
-        private string GetIncomeCategory(string choice)
-        {
-            switch (choice)
-            {
-                case "1": return "Lương";
-                case "2": return "Thưởng";
-                case "3": return "Đầu tư";
-                case "4": return "Tiết kiệm";
                 default: return "Khác";
             }
         }
@@ -135,7 +144,7 @@ namespace Quanlychitieu
         {
             return expenses;
         }
-        // Lấy tổng chi tiêu
+
         private decimal GetTotalExpenses()
         {
             decimal total = 0;
