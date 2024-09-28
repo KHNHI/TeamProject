@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Globalization;
-
+//3
 namespace Quanlychitieu
 {
     class FinancialReport
@@ -48,46 +48,57 @@ namespace Quanlychitieu
         private void ShowASCIIChart(ExpenseTracker expenseTracker)
         {
             var transactions = expenseTracker.GetExpenses();
-            var income = transactions.Where(t => t.Value > 0).ToDictionary(t => t.Key, t => t.Value);
-            var expenses = transactions.Where(t => t.Value < 0).ToDictionary(t => t.Key, t => Math.Abs(t.Value));
 
-            Console.WriteLine("\nBiểu đồ ASCII thu nhập:");
-            DrawChart(income);
-
-            Console.WriteLine("\nBiểu đồ ASCII chi tiêu:");
-            DrawChart(expenses);
+            ShowIncomeChart(transactions);
+            ShowExpenseChart(transactions);
         }
 
-        private void DrawChart(Dictionary<string, decimal> data)
+        private void ShowIncomeChart(Dictionary<string, decimal> transactions)
         {
-            if (data.Any())
+            Console.WriteLine("\nBiểu đồ ASCII thu nhập:");
+            Console.WriteLine("+" + new string('-', 50) + "+");
+            if (transactions.TryGetValue("Thu nhập", out decimal income) && income > 0)
             {
-                var maxValue = data.Max(e => e.Value);
-                var maxBarLength = 20; // dài tối đa của thanh là 20 ký tự
-                var tableWidth = maxBarLength + 25;
-
-                // Vẽ đường viền trên
-                Console.WriteLine("+" + new string('-', tableWidth) + "+");
-
-                foreach (var item in data.OrderByDescending(e => e.Value))
-                {
-                    Console.WriteLine();
-                    var barLength = (int)((item.Value / maxValue) * maxBarLength);
-                    var bar = new string('█', barLength);
-
-                    // Hiển thị từng hàng với khung trái và phải
-                    Console.WriteLine($"| {item.Key,-10} {bar,-22} {item.Value:#,##0₫} |");
-                }
-
-                // Vẽ đường viền dưới
-                Console.WriteLine("+" + new string('-', tableWidth) + "+");
+                int barLength = 20; // Độ dài cố định cho thanh thu nhập
+                var bar = new string('█', barLength);
+                Console.WriteLine($"| {"Thu nhập",-15} {bar,-20} {income,10:#,##0₫} |");
             }
             else
             {
-                Console.WriteLine("Không có dữ liệu để hiển thị.");
+                Console.WriteLine("| Không có dữ liệu thu nhập                         |");
             }
-
+            Console.WriteLine("+" + new string('-', 50) + "+");
         }
+
+        private void ShowExpenseChart(Dictionary<string, decimal> transactions)
+        {
+            var expenseCategories = new[] { "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác" };
+            var expenses = expenseCategories.ToDictionary(category => category,
+                category => transactions.TryGetValue(category, out decimal value) ? Math.Abs(value) : 0);
+
+            Console.WriteLine("\nBiểu đồ ASCII chi tiêu:");
+            if (expenses.Any(e => e.Value > 0))
+            {
+                var maxExpense = expenses.Max(e => e.Value);
+                var maxBarLength = 20; // Độ dài tối đa của thanh
+
+                Console.WriteLine("+" + new string('-', 50) + "+");
+                foreach (var expense in expenses)
+                {
+                    int barLength = maxExpense > 0 ? (int)((expense.Value / maxExpense) * maxBarLength) : 0;
+                    var bar = new string('█', barLength);
+                    Console.WriteLine($"| {expense.Key,-15} {bar,-20} {expense.Value,10:#,##0₫} |");
+                }
+                Console.WriteLine("+" + new string('-', 50) + "+");
+            }
+            else
+            {
+                Console.WriteLine("+" + new string('-', 50) + "+");
+                Console.WriteLine("| Không có dữ liệu chi tiêu                         |");
+                Console.WriteLine("+" + new string('-', 50) + "+");
+            }
+        }
+
         public void ShowFinancialReport(ExpenseTracker expenseTracker)
         {
             Console.WriteLine("Chọn loại báo cáo tài chính:");
@@ -112,13 +123,12 @@ namespace Quanlychitieu
                     Console.Clear();
                     ShowYearlyReport(expenseTracker);
                     break;
-                    
+
                 default:
                     Console.WriteLine("Lựa chọn không hợp lệ.");
                     break;
             }
         }
-
 
         public void ShowMonthlyReport(ExpenseTracker expenseTracker)
         {

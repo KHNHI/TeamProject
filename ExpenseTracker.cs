@@ -33,7 +33,7 @@ namespace Quanlychitieu
             {
                 incomeEnteredThisMonth = false;
             }
-            return !incomeEnteredThisMonth; 
+            return !incomeEnteredThisMonth;
         }
         private decimal GetOverspending()
         {
@@ -161,7 +161,7 @@ namespace Quanlychitieu
             }
         }
 
-            double[,] ArrayMoney = new double[12, 7]; // 12 tháng, 7 danh mục chi tiêu
+        double[,] ArrayMoney = new double[12, 7]; // 12 tháng, 7 danh mục chi tiêu
         string[] categories = { "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác" };
 
         int month = DateTime.Now.Month;
@@ -222,7 +222,7 @@ namespace Quanlychitieu
                 Console.WriteLine($"Bạn đang chi tiêu vượt mức dự tính: {overspending:#,##0₫}.");
             }
         }
-       
+
         private string GetExpenseCategory(string choice)
         {
             switch (choice)
@@ -448,10 +448,40 @@ namespace Quanlychitieu
 
             return monthlyTotals;
         }
-        
+
+
+        public void ShowExpenseChart()
+        {
+            Console.WriteLine("\nBiểu đồ chi tiêu:");
+            decimal maxExpense = expenses.Where(e => e.Key != "Thu nhập").Max(e => e.Value);
+            int chartWidth = 50; // Độ rộng tối đa của biểu đồ
+
+            foreach (var category in expenses)
+            {
+                if (category.Key != "Thu nhập")
+                {
+                    int barLength = (int)((category.Value / maxExpense) * chartWidth);
+                    Console.WriteLine($"{category.Key.PadRight(20)} | {new string('#', barLength)} {category.Value:#,##0₫}");
+                }
+            }
+        }
+
+        public void ShowIncomeChart()
+        {
+            Console.WriteLine("\nBiểu đồ thu nhập:");
+            if (expenses.ContainsKey("Thu nhập"))
+            {
+                int chartWidth = 50; // Độ rộng tối đa của biểu đồ
+                int barLength = chartWidth; // Thu nhập luôn chiếm toàn bộ độ rộng
+                Console.WriteLine($"{"Thu nhập".PadRight(20)} | {new string('#', barLength)} {expenses["Thu nhập"]:#,##0₫}");
+            }
+            else
+            {
+                Console.WriteLine("Chưa có dữ liệu thu nhập.");
+            }
+        }
 
     }
-    
+
 
 }
-
