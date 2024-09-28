@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Globalization;
-//36
+//3
 namespace Quanlychitieu
 {
     class FinancialReport
@@ -16,8 +16,21 @@ namespace Quanlychitieu
         private void ShowTextReport(ExpenseTracker expenseTracker)
         {
             var transactions = expenseTracker.GetExpenses();
-            var expenses = transactions.Where(e => e.Value < 0).ToDictionary(e => e.Key, e => Math.Abs(e.Value));
-            var income = transactions.Where(e => e.Value > 0).ToDictionary(e => e.Key, e => e.Value);
+            var expenses = new Dictionary<string, decimal>();
+            var income = new Dictionary<string, decimal>();
+
+            // Phân loại giao dịch dựa trên danh mục
+            foreach (var transaction in transactions)
+            {
+                if (transaction.Key == "Thu nhập")
+                {
+                    income[transaction.Key] = transaction.Value;
+                }
+                else
+                {
+                    expenses[transaction.Key] = Math.Abs(transaction.Value);
+                }
+            }
 
             var totalExpense = expenses.Sum(e => e.Value);
             var totalIncome = income.Sum(e => e.Value);
