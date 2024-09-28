@@ -6,9 +6,34 @@ namespace Quanlychitieu
 {
     class FinancialReport
     {
+        private int consoleWidth;
+
+        public FinancialReport()
+        {
+            consoleWidth = Console.WindowWidth;
+        }
+
+        private void CenterPrint(string text)
+        {
+            Console.WriteLine(string.Format("{0," + ((consoleWidth / 2) + (text.Length / 2)) + "}", text));
+        }
+
+        private void CenterPrintLine(string text)
+        {
+            int padding = (consoleWidth - text.Length) / 2;
+            string paddedText = new string(' ', padding) + text + new string(' ', padding);
+            Console.WriteLine(paddedText);
+        }
+
         public void ShowReport(ExpenseTracker expenseTracker)
         {
-            Console.WriteLine("=========== BÁO CÁO TÀI CHÍNH ===========");
+            // Hiển thị tiêu đề "FINANCIAL REPORT" không có dấu "=" ở hai bên
+            CenterPrintLine("═══════════════════════════════════════════════════════════════════════════════");
+            CenterPrintLine("╔═╗╦╔╗╔╔═╗╔╗╔╔═╗╦╔═╗╦    ╦═╗╔═╗╔═╗╔═╗╦═╗╔╦╗");
+            CenterPrintLine("╠╣ ║║║║╠═╣║║║║  ║╠═╣║    ╠╦╝║╣ ╠═╝║ ║╠╦╝ ║ ");
+            CenterPrintLine("╚  ╩╝╚╝╩ ╩╝╚╝╚═╝╩╩ ╩╩═╝  ╩╚═╚═╝╩  ╚═╝╩╚═ ╩ ");
+            CenterPrintLine("═══════════════════════════════════════════════════════════════════════════════");
+
             ShowTextReport(expenseTracker);
             ShowExpenseChart(expenseTracker.GetExpenses());
         }
@@ -36,16 +61,16 @@ namespace Quanlychitieu
             var totalIncome = income.Sum(e => e.Value);
             var accountBalance = totalIncome - totalExpense;
 
-            Console.WriteLine("\n==== BÁO CÁO DẠNG VĂN BẢN ====\n");
-            Console.WriteLine($"Tổng chi tiêu: {totalExpense:#,##0₫}");
-            Console.WriteLine($"Tổng thu nhập: {totalIncome:#,##0₫}");
-            Console.WriteLine($"Số dư tài khoản: {accountBalance:#,##0₫}");
+            CenterPrintLine(" BÁO CÁO DẠNG VĂN BẢN \n");
+            CenterPrint($"Tổng chi tiêu: {totalExpense:#,##0₫}");
+            CenterPrint($"Tổng thu nhập: {totalIncome:#,##0₫}");
+            CenterPrint($"Số dư tài khoản: {accountBalance:#,##0₫}");
 
-            Console.WriteLine("\n==== BÁO CÁO THEO DANH MỤC ====");
-            Console.WriteLine("\nChi tiết chi tiêu:");
+            CenterPrintLine(" BÁO CÁO THEO DANH MỤC \n");
+            CenterPrint("Chi tiết chi tiêu:");
             ShowCategoryDetails(expenses, totalExpense);
 
-            Console.WriteLine("\nChi tiết thu nhập:");
+            CenterPrint("Chi tiết thu nhập:");
             ShowCategoryDetails(income, totalIncome);
         }
 
@@ -54,7 +79,8 @@ namespace Quanlychitieu
             foreach (var category in data.OrderByDescending(e => e.Value))
             {
                 var percentage = (category.Value / total) * 100;
-                Console.WriteLine($"{category.Key,-15} {category.Value:#,##0₫} ({percentage,5:F1}%)");
+                string line = $"{category.Key,-15} {category.Value,10:#,##0₫} ({percentage,5:F1}%)";
+                CenterPrint(line);
             }
         }
 
@@ -65,35 +91,35 @@ namespace Quanlychitieu
                 category => transactions.TryGetValue(category, out decimal value) ? Math.Abs(value) : 0);
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.WriteLine("\nBiểu đồ ASCII chi tiêu:");
+            CenterPrintLine(" Biểu đồ ASCII chi tiêu ");
             if (expenses.Any(e => e.Value > 0))
             {
                 var maxExpense = expenses.Max(e => e.Value);
                 var maxBarLength = 40; // Tăng độ dài tối đa của thanh
                 var totalWidth = 71; // Tăng tổng chiều rộng của biểu đồ
 
-                Console.WriteLine("┌" + new string('─', totalWidth - 2) + "┐");
+                CenterPrintLine("┌" + new string('─', totalWidth - 2) + "┐");
                 foreach (var expense in expenses)
                 {
                     int barLength = maxExpense > 0 ? (int)((expense.Value / maxExpense) * maxBarLength) : 0;
                     var bar = new string('█', barLength);
                     var line = $"│ {expense.Key,-15} {bar,-40} {expense.Value,10:#,##0₫} │";
-                    Console.WriteLine(line);
+                    CenterPrint(line);
 
                     // Thêm dòng trống giữa các danh mục
                     if (expense.Key != expenseCategories.Last())
                     {
-                        Console.WriteLine("│" + new string(' ', totalWidth - 2) + "│");
+                        CenterPrint("│" + new string(' ', totalWidth - 2) + "│");
                     }
                 }
-                Console.WriteLine("└" + new string('─', totalWidth - 2) + "┘");
+                CenterPrintLine("└" + new string('─', totalWidth - 2) + "┘");
             }
             else
             {
                 var totalWidth = 71;
-                Console.WriteLine("┌" + new string('─', totalWidth - 2) + "┐");
-                Console.WriteLine("│ Không có dữ liệu chi tiêu" + new string(' ', totalWidth - 30) + "│");
-                Console.WriteLine("└" + new string('─', totalWidth - 2) + "┘");
+                CenterPrintLine("┌" + new string('─', totalWidth - 2) + "┐");
+                CenterPrint("│ Không có dữ liệu chi tiêu" + new string(' ', totalWidth - 30) + "│");
+                CenterPrintLine("└" + new string('─', totalWidth - 2) + "┘");
             }
         }
 

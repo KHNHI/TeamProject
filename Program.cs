@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 namespace Quanlychitieu;
-
+//kk
 class Program
 {
     static void Main(string[] args)
@@ -27,13 +27,18 @@ class Program
         while (true)
         {
             Console.Clear();
-            Console.WriteLine(@"
- ____  _   _ ____   ____  _____ _____   _____ ____      _    ____ _  _______ ____        _    ____  ____  
-| __ )| | | |  _ \ / ___|| ____|_   _| |_   _|  _ \    / \  / ___| |/ / ____|  _ \      / \  |  _ \|  _ \ 
-|  _ \| | | | | | | |  _ |  _|   | |     | | | |_) |  / _ \| |   | ' /|  _| | |_) |    / _ \ | |_) | |_) |
-| |_) | |_| | |_| | |_| || |___  | |     | | |  _ <  / ___ \ |___| . \| |___|  _ <    / ___ \|  __/|  __/ 
-|____/ \___/|____/ \____||_____| |_|     |_| |_| \_\/_/   \_\____|_|\_\_____|_| \_\  /__/  \_\_|   |_|    
-");
+            int consoleWidth = Console.WindowWidth;
+            string[] lines = {
+                "╔╗ ╦ ╦╔╦╗╔═╗╔═╗╔╦╗  ╔╦╗╦═╗╔═╗╔═╗╦╔═╔═╗╦═╗    ╔═╗╔═╗╔═╗",
+                "╠╩╗║ ║ ║║║ ╦║╣  ║    ║ ╠╦╝╠═╣║  ╠╩╗║╣ ╠╦╝    ╠═╣╠═╝╠═╝",
+                "╚═╝╚═╝═╩╝╚═╝╚═╝ ╩    ╩ ╩╚═╩ ╩╚═╝╩ ╩╚═╝╩╚═    ╩ ╩╩  ╩  "
+            };
+
+            foreach (string line in lines)
+            {
+                int padding = (consoleWidth - line.Length) / 2;
+                Console.WriteLine(line.PadLeft(padding + line.Length));
+            }
 
 
             Console.WriteLine("1: Nhập biến động số dư");
@@ -91,7 +96,7 @@ class Program
                                 Console.ReadLine();
                                 break; // Quay lại menu chính
                             }
-                                Console.Write("Nhập số tiền thu nhập: ");
+                            Console.Write("Nhập số tiền thu nhập: ");
                             string incomeInput = Console.ReadLine();
                             if (decimal.TryParse(incomeInput, out decimal amount))
                             {
@@ -115,7 +120,7 @@ class Program
                             }
                             Console.WriteLine("Nhập số tiền cho khoản ngân sách cố định:");
                             string incomebudget = Console.ReadLine();
-                            if(decimal.TryParse(incomebudget, out decimal budget))
+                            if (decimal.TryParse(incomebudget, out decimal budget))
                             {
                                 expenseTracker.SetBudget(budget);
                                 Console.WriteLine($"Đã thêm ngân sách: {budget:#,##0đ}");
@@ -147,7 +152,7 @@ class Program
                 case "5":
                     Console.Clear();
 
-                    expenseTracker.EnterIncome(500000); 
+                    expenseTracker.EnterIncome(500000);
                     expenseTracker.SetBudget(500000);
                     financialReport.ShowReport(expenseTracker);
                     financialReport.ShowFinancialReport(expenseTracker);
