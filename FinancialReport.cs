@@ -10,7 +10,7 @@ namespace Quanlychitieu
         {
             Console.WriteLine("=========== BÁO CÁO TÀI CHÍNH ===========");
             ShowTextReport(expenseTracker);
-            ShowASCIIChart(expenseTracker);
+            ShowExpenseChart(expenseTracker.GetExpenses());
         }
 
         private void ShowTextReport(ExpenseTracker expenseTracker)
@@ -45,31 +45,6 @@ namespace Quanlychitieu
             }
         }
 
-        private void ShowASCIIChart(ExpenseTracker expenseTracker)
-        {
-            var transactions = expenseTracker.GetExpenses();
-
-            ShowIncomeChart(transactions);
-            ShowExpenseChart(transactions);
-        }
-
-        private void ShowIncomeChart(Dictionary<string, decimal> transactions)
-        {
-            Console.WriteLine("\nBiểu đồ ASCII thu nhập:");
-            Console.WriteLine("+" + new string('-', 50) + "+");
-            if (transactions.TryGetValue("Thu nhập", out decimal income) && income > 0)
-            {
-                int barLength = 20; // Độ dài cố định cho thanh thu nhập
-                var bar = new string('█', barLength);
-                Console.WriteLine($"| {"Thu nhập",-15} {bar,-20} {income,10:#,##0₫} |");
-            }
-            else
-            {
-                Console.WriteLine("| Không có dữ liệu thu nhập                         |");
-            }
-            Console.WriteLine("+" + new string('-', 50) + "+");
-        }
-
         private void ShowExpenseChart(Dictionary<string, decimal> transactions)
         {
             var expenseCategories = new[] { "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác" };
@@ -81,26 +56,28 @@ namespace Quanlychitieu
             if (expenses.Any(e => e.Value > 0))
             {
                 var maxExpense = expenses.Max(e => e.Value);
-                var maxBarLength = 20; // Độ dài tối đa của thanh
-                var totalWidth = 51; // Tổng chiều rộng của biểu đồ, bao gồm viền
+                var maxBarLength = 40; // Tăng độ dài tối đa của thanh
+                var totalWidth = 71; // Tăng tổng chiều rộng của biểu đồ
 
                 Console.WriteLine("┌" + new string('─', totalWidth - 2) + "┐");
                 foreach (var expense in expenses)
                 {
                     int barLength = maxExpense > 0 ? (int)((expense.Value / maxExpense) * maxBarLength) : 0;
                     var bar = new string('█', barLength);
-                    var line = $"│ {expense.Key,-15} {bar,-20} {expense.Value,10:#,##0₫}";
-                    Console.WriteLine(line.PadRight(totalWidth - 1) + "│");
-                    // Add a blank line between each expense category
-                    Console.WriteLine("│" + new string(' ', totalWidth - 2) + "│");
+                    var line = $"│ {expense.Key,-15} {bar,-40} {expense.Value,10:#,##0₫} │";
+                    Console.WriteLine(line);
+
+                    // Thêm dòng trống giữa các danh mục
+                    if (expense.Key != expenseCategories.Last())
+                    {
+                        Console.WriteLine("│" + new string(' ', totalWidth - 2) + "│");
+                    }
                 }
-                // Remove the last blank line
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
                 Console.WriteLine("└" + new string('─', totalWidth - 2) + "┘");
             }
             else
             {
-                var totalWidth = 51;
+                var totalWidth = 71;
                 Console.WriteLine("┌" + new string('─', totalWidth - 2) + "┐");
                 Console.WriteLine("│ Không có dữ liệu chi tiêu" + new string(' ', totalWidth - 30) + "│");
                 Console.WriteLine("└" + new string('─', totalWidth - 2) + "┘");
