@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Globalization;
-//3
+//36
 namespace Quanlychitieu
 {
     class FinancialReport
@@ -76,26 +76,34 @@ namespace Quanlychitieu
             var expenses = expenseCategories.ToDictionary(category => category,
                 category => transactions.TryGetValue(category, out decimal value) ? Math.Abs(value) : 0);
 
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.WriteLine("\nBiểu đồ ASCII chi tiêu:");
             if (expenses.Any(e => e.Value > 0))
             {
                 var maxExpense = expenses.Max(e => e.Value);
                 var maxBarLength = 20; // Độ dài tối đa của thanh
+                var totalWidth = 51; // Tổng chiều rộng của biểu đồ, bao gồm viền
 
-                Console.WriteLine("+" + new string('-', 50) + "+");
+                Console.WriteLine("┌" + new string('─', totalWidth - 2) + "┐");
                 foreach (var expense in expenses)
                 {
                     int barLength = maxExpense > 0 ? (int)((expense.Value / maxExpense) * maxBarLength) : 0;
                     var bar = new string('█', barLength);
-                    Console.WriteLine($"| {expense.Key,-15} {bar,-20} {expense.Value,10:#,##0₫} |");
+                    var line = $"│ {expense.Key,-15} {bar,-20} {expense.Value,10:#,##0₫}";
+                    Console.WriteLine(line.PadRight(totalWidth - 1) + "│");
+                    // Add a blank line between each expense category
+                    Console.WriteLine("│" + new string(' ', totalWidth - 2) + "│");
                 }
-                Console.WriteLine("+" + new string('-', 50) + "+");
+                // Remove the last blank line
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                Console.WriteLine("└" + new string('─', totalWidth - 2) + "┘");
             }
             else
             {
-                Console.WriteLine("+" + new string('-', 50) + "+");
-                Console.WriteLine("| Không có dữ liệu chi tiêu                         |");
-                Console.WriteLine("+" + new string('-', 50) + "+");
+                var totalWidth = 51;
+                Console.WriteLine("┌" + new string('─', totalWidth - 2) + "┐");
+                Console.WriteLine("│ Không có dữ liệu chi tiêu" + new string(' ', totalWidth - 30) + "│");
+                Console.WriteLine("└" + new string('─', totalWidth - 2) + "┘");
             }
         }
 
