@@ -49,6 +49,7 @@ class Program
             Console.WriteLine("6: Xuất/nhập dữ liệu");
             Console.WriteLine("7: Xem tình trạng tiết kiệm");
             Console.WriteLine("8: Thoát chương trình");
+            Console.WriteLine("9: Chơi StockGame");
 
             Console.Write("Chọn một tùy chọn: ");
             var option = Console.ReadLine();
@@ -173,6 +174,10 @@ class Program
                     break;
                 case "8":
                     return;
+                case "9":
+                    StockGame game = new StockGame();
+                    game.Run();
+                    break;
                 default:
                     Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
                     break;
