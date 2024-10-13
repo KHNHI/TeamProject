@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Quanlychitieu
+﻿namespace Quanlychitieu
 {
     internal class BudgetPlanner
     {
         private ExpenseTracker expenseTracker;
         private DataSync dataSync;
         private Dictionary<string, decimal> categoryBudgets;
-        private readonly List<string> validCategories = new List<string>
+        private readonly string[] validCategories = new string[]
         {
-            "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
+     "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
         };
 
         public BudgetPlanner(ExpenseTracker expenseTracker, DataSync dataSync)
@@ -23,23 +19,53 @@ namespace Quanlychitieu
 
         public void SetBudget()
         {
+
             string input;
+            List<string> remainingCategories = new List<string>(validCategories);
+            HashSet<string> enteredCategories = new HashSet<string>();
+            int choice;
+            bool continueInput = true;
             do
             {
                 Console.WriteLine("\nChọn danh mục để đặt ngân sách:");
-                for (int i = 0; i < validCategories.Count; i++)
+                int index = 1;
+                if (remainingCategories.Count == 0)
                 {
-                    Console.WriteLine($"{i + 1}. {validCategories[i]}");
+                    Console.WriteLine("Bạn đã nhập ngân sách cho tất cả các danh mục.");
+                    break;
+                }
+                for (int i = 0; i < validCategories.Length; i++)
+                {
+                    if (remainingCategories.Contains(validCategories[i]))
+                    {
+                        Console.WriteLine($"{i + 1}. {validCategories[i]}");
+                    }
+
                 }
 
-                int choice;
                 // Vòng lặp để bắt buộc nhập đúng danh mục
                 while (true)
                 {
                     Console.Write("Nhập số tương ứng với danh mục: ");
-                    if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= validCategories.Count)
+                    if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= validCategories.Length)
                     {
-                        break; // Thoát khỏi vòng lặp nếu nhập hợp lệ
+                        string selectedCategory = validCategories[choice - 1];
+                        if (enteredCategories.Contains(selectedCategory))
+                        {
+                            Console.WriteLine("Bạn đã nhập ngân sách cho danh mục này. Vui lòng chọn danh mục khác.");
+                        }
+                        else if (remainingCategories.Contains(selectedCategory))
+                        {
+                            enteredCategories.Add(selectedCategory);
+                            remainingCategories.Remove(selectedCategory);
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Danh mục này không còn trong danh sách. Vui lòng chọn danh mục khác.");
+                        }
+
+
                     }
                     else
                     {
@@ -47,12 +73,12 @@ namespace Quanlychitieu
                     }
                 }
 
-                string category = validCategories[choice - 1];
+                //string category = validCategories[choice - 1];
                 decimal amount;
                 // Vòng lặp để bắt buộc nhập đúng số tiền
                 while (true)
                 {
-                    Console.Write($"Nhập số tiền ngân sách cho {category}: ");
+                    Console.Write($"Nhập số tiền ngân sách cho {validCategories[choice - 1]}: ");
                     if (decimal.TryParse(Console.ReadLine(), out amount) && amount >= 0)
                     {
                         break; // Thoát khỏi vòng lặp nếu nhập hợp lệ
@@ -64,13 +90,41 @@ namespace Quanlychitieu
                 }
 
                 // Lưu ngân sách vào danh mục
-                categoryBudgets[category] = amount;
-                Console.WriteLine($"Ngân sách cho {category} đã được đặt thành {amount:#,##0₫}");
+                categoryBudgets[validCategories[choice - 1]] = amount;
+                Console.WriteLine($"Ngân sách cho {validCategories[choice - 1]} đã được đặt thành {amount:#,##0₫}");
 
-                // Hỏi người dùng có muốn tiếp tục đặt ngân sách cho danh mục khác
-                Console.Write("Bạn có muốn đặt ngân sách cho danh mục khác không? (y/n): ");
-                input = Console.ReadLine()?.ToLower();
-            } while (input == "y");
+
+                if (remainingCategories.Count > 0)
+                {
+                    Console.WriteLine($"Bạn còn {remainingCategories.Count} danh mục chưa nhập ngân sách");
+                    Console.Write("Bạn có muốn tiếp tục nhập ngân sách cho các danh mục còn lại? (y/n): ");
+                    string input2 = Console.ReadLine()?.ToLower() ?? "n";
+                    if (input2 == "y")
+                    {
+                        continueInput = true; // Đặt biến kiểm soát thành false nếu người dùng không muốn tiếp tục
+                    }
+                    else if (input2 == "n")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Bạn vui lòng nhập hết tất cả danh mục trên.");
+                        Console.ResetColor();
+                        continueInput = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Vui lòng nhập đúng ký tự.");
+                    }
+
+
+                }
+                else
+                {
+                    Console.WriteLine("Tất cả danh mục đã được đặt ngân sách.");
+                    continueInput = false;
+                }
+
+
+            } while (continueInput);
 
             // After setting the budget, save it to CSV
             dataSync.SaveBudgetToCSV(categoryBudgets);
