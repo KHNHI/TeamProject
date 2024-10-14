@@ -373,35 +373,68 @@ namespace Quanlychitieu
         public void LoadMockExpenses()
         {
             string filePath = "mock_expenses.json"; // Đường dẫn đến tệp JSON
-            if (File.Exists(filePath))
+
+            // Kiểm tra nếu tệp không tồn tại, tạo tệp giả lập
+            if (!File.Exists(filePath))
             {
-                string jsonData = File.ReadAllText(filePath);
-                var mockExpenses = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, double>>>(jsonData);
+                Console.WriteLine("Tệp mock_expenses.json không tồn tại. Đang tạo dữ liệu giả lập...");
+                CreateMockExpenses(filePath); // Tạo dữ liệu giả lập
+            }
 
-                if (mockExpenses != null)
+            // Sau khi đảm bảo tệp tồn tại, tiến hành đọc dữ liệu
+            string jsonData = File.ReadAllText(filePath);
+            var mockExpenses = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<int, double>>>(jsonData);
+
+            if (mockExpenses != null)
+            {
+                foreach (var category in mockExpenses)
                 {
-                    foreach (var category in mockExpenses)
+                    string categoryName = category.Key;
+                    Dictionary<int, double> monthlyData = category.Value;
+
+                    if (!monthlyExpenses.ContainsKey(categoryName))
                     {
-                        string categoryName = category.Key;
-                        Dictionary<int, double> monthlyData = category.Value;
+                        monthlyExpenses[categoryName] = new Dictionary<int, double>();
+                    }
 
-                        if (!monthlyExpenses.ContainsKey(categoryName))
-                        {
-                            monthlyExpenses[categoryName] = new Dictionary<int, double>();
-                        }
-
-                        foreach (var monthData in monthlyData)
-                        {
-                            monthlyExpenses[categoryName][monthData.Key] = monthData.Value;
-                        }
+                    foreach (var monthData in monthlyData)
+                    {
+                        monthlyExpenses[categoryName][monthData.Key] = monthData.Value;
                     }
                 }
             }
-            else
+        }
+
+        // Phương thức tạo dữ liệu giả lập và ghi vào file JSON
+        private void CreateMockExpenses(string filePath)
+        {
+            // Tạo đối tượng giả lập cho các danh mục chi tiêu
+            var mockExpenses = new Dictionary<string, Dictionary<int, double>>
+        {
+            { "Ăn uống", new Dictionary<int, double> { { 1, 1500000 }, { 2, 1700000 }, { 3, 1600000 }, { 4, 1800000 }, { 5, 1900000 } } },
+            { "Đi lại", new Dictionary<int, double> { { 1, 500000 }, { 2, 600000 }, { 3, 550000 }, { 4, 700000 }, { 5, 650000 } } },
+            { "Chi phí cố định", new Dictionary<int, double> { { 1, 2500000 }, { 2, 2500000 }, { 3, 2500000 }, { 4, 2500000 }, { 5, 2500000 } } },
+            { "Giải trí", new Dictionary<int, double> { { 1, 300000 }, { 2, 400000 }, { 3, 350000 }, { 4, 450000 }, { 5, 500000 } } },
+            { "Giáo dục", new Dictionary<int, double> { { 1, 1200000 }, { 2, 1300000 }, { 3, 1250000 }, { 4, 1400000 }, { 5, 1350000 } } },
+            { "Mua sắm", new Dictionary<int, double> { { 1, 1000000 }, { 2, 1200000 }, { 3, 1100000 }, { 4, 1500000 }, { 5, 1300000 } } },
+            { "Khác", new Dictionary<int, double> { { 1, 200000 }, { 2, 300000 }, { 3, 250000 }, { 4, 400000 }, { 5, 350000 } } }
+        };
+
+            // Chuyển đổi đối tượng thành chuỗi JSON
+            string json = JsonConvert.SerializeObject(mockExpenses, Formatting.Indented);
+
+            // Ghi chuỗi JSON vào file
+            try
             {
-                Console.WriteLine("Tệp mock_expenses.json không tồn tại.");
+                File.WriteAllText(filePath, json);
+                Console.WriteLine($"Tạo tệp JSON thành công tại: {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi ghi tệp: {ex.Message}");
             }
         }
+
         public void ShowExpenses()
         {
             if (monthlyExpenses.Count == 0)
@@ -421,6 +454,7 @@ namespace Quanlychitieu
                 Console.WriteLine(); // Thêm dòng trống giữa các danh mục
             }
         }
+
         public Dictionary<int, Dictionary<string, double>> GetMonthlyTotals()
         {
             var monthlyTotals = new Dictionary<int, Dictionary<string, double>>();
@@ -449,7 +483,9 @@ namespace Quanlychitieu
             return monthlyTotals;
         }
 
-
+        /// <summary>
+        /// //////////////////////////
+        /// </summary>
         public void ShowExpenseChart()
         {
             Console.WriteLine("\nBiểu đồ chi tiêu:");

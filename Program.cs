@@ -221,7 +221,7 @@ class Program
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
-                    financialReport.ShowReport(expenseTracker);
+                    //financialReport.ShowReport(expenseTracker);
                     financialReport.ShowFinancialReport(expenseTracker);
                     Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
                     Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");

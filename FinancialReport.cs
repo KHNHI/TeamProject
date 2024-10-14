@@ -197,15 +197,30 @@ namespace Quanlychitieu
 
         public void DrawTotalExpenseChart(ExpenseTracker expenseTracker)
         {
-            var monthlyTotals = expenseTracker.GetMonthlyTotals(); // Sử dụng GetMonthlyTotals
+            var monthlyTotals = expenseTracker.GetMonthlyTotals(); // Lấy tổng chi tiêu mỗi tháng
+            int maxBarLength = 50; // Độ dài tối đa của thanh biểu đồ
+            double maxExpense = 0; // Biến để lưu chi tiêu lớn nhất
+
+            // Tìm giá trị chi tiêu lớn nhất để chuẩn hóa chiều dài thanh
+            foreach (var month in monthlyTotals)
+            {
+                double totalExpense = month.Value.Values.Sum();
+                if (totalExpense > maxExpense)
+                {
+                    maxExpense = totalExpense;
+                }
+            }
 
             Console.WriteLine("\nBiểu đồ chi tiêu tổng theo tháng:");
+
             foreach (var month in monthlyTotals)
             {
                 double totalExpense = month.Value.Values.Sum(); // Tính tổng chi tiêu cho tháng
-                int barLength = (int)(totalExpense / 10000); // Điều chỉnh tỷ lệ cho chiều dài thanh
-                string bar = new string('█', barLength);
-                Console.WriteLine($"Tháng {month.Key}: {bar} ({totalExpense:#,##0₫})");
+                int barLength = (int)((totalExpense / maxExpense) * maxBarLength); // Chuẩn hóa chiều dài thanh
+                string bar = new string('█', barLength); // Tạo thanh biểu đồ bằng ký tự '█'
+
+                // In ra biểu đồ với số liệu rõ ràng
+                Console.WriteLine($"Tháng {month.Key,-2}: {bar,-50} {totalExpense,15:#,##0₫}");
             }
         }
     }
