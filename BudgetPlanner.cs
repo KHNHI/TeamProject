@@ -7,7 +7,7 @@
         private Dictionary<string, decimal> categoryBudgets;
         private readonly string[] validCategories = new string[]
         {
-     "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
+               "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
         };
 
         public BudgetPlanner(ExpenseTracker expenseTracker, DataSync dataSync)
@@ -19,19 +19,54 @@
 
         public void SetBudget()
         {
-
-            string input;
             List<string> remainingCategories = new List<string>(validCategories);
             HashSet<string> enteredCategories = new HashSet<string>();
             int choice;
             bool continueInput = true;
+            int windowWidth = Console.WindowWidth;
+            string[] title = 
+            {
+                 "    ********  ******* **********       ******   **     ** *******    ********    ******** *********    ",
+                 "   **/////// /**///// ////**////      /*////** /**    /*/ **////**  **//////*/* /*//////  ///**///     ",
+                 "  /**        /**         /**          /*   /** /**    /*/ **    /* ***      /// /**         /**        ",
+                 "  /********  /*******    /**          /******  /**    /*/ **    /* /**          /*******    /**        ",
+                 "  ////////*  /**////     /**          /*//// * /**    /*/ **    /* /**    ****  /**////     /**        ",
+                 "        /*/  /**         /**          /*    /* /**    /*/ **    ** //**  ////*  /**         /**        ",
+                 "   ******/   /*******    /**          /******* /*******/  *******/  /********// /*******    /**        ",
+                 " ////////    ////////    /**          ///////   ///////// ///////   /////////   ////////    /**        ",
+                                             
+            }; 
+   
+        
+   
+            // string title = "ĐẶT NGÂN SÁCH";
+            
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            foreach (string line in title)
+            {
+                int padding = (windowWidth - line.Length) / 2; // Tính toán căn giữa
+                Console.WriteLine(line.PadLeft(padding + line.Length));
+            }
+            Console.ResetColor();
+            //Console.WriteLine("╔" + new string('═', windowWidth - 2) + "╗");
+            //Console.WriteLine("║" + title.PadLeft(padding + title.Length).PadRight(windowWidth - 2) + "║");
+            //Console.WriteLine("╚" + new string('═', windowWidth - 2) + "╝");
+            //Console.ResetColor();
+
+
             do
             {
-                Console.WriteLine("\nChọn danh mục để đặt ngân sách:");
-                int index = 1;
+                string categoryTitle = "CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH";
+                int padding = (windowWidth - categoryTitle.Length) / 2;
+
+                Console.WriteLine("" + categoryTitle.PadLeft(padding + categoryTitle.Length).PadRight(windowWidth - 2) + "║");
+
+
                 if (remainingCategories.Count == 0)
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Bạn đã nhập ngân sách cho tất cả các danh mục.");
+                    Console.ResetColor();
                     break;
                 }
                 for (int i = 0; i < validCategories.Length; i++)
@@ -52,7 +87,11 @@
                         string selectedCategory = validCategories[choice - 1];
                         if (enteredCategories.Contains(selectedCategory))
                         {
-                            Console.WriteLine("Bạn đã nhập ngân sách cho danh mục này. Vui lòng chọn danh mục khác.");
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("╔══════════════════════════════════════════╗");
+                            Console.WriteLine("║ ⚠ Bạn đã nhập ngân sách cho danh mục này.║");
+                            Console.WriteLine("╚══════════════════════════════════════════╝");
+                            Console.ResetColor();
                         }
                         else if (remainingCategories.Contains(selectedCategory))
                         {
@@ -62,18 +101,21 @@
                         }
                         else
                         {
-                            Console.WriteLine("Danh mục này không còn trong danh sách. Vui lòng chọn danh mục khác.");
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine("⚠ Danh mục này không còn trong danh sách. Vui lòng chọn danh mục khác.");
+                            Console.ResetColor();
                         }
 
 
                     }
                     else
                     {
-                        Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng thử lại.");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("⚠ Lựa chọn không hợp lệ. Vui lòng thử lại.");
+                        Console.ResetColor();
                     }
                 }
 
-                //string category = validCategories[choice - 1];
                 decimal amount;
                 // Vòng lặp để bắt buộc nhập đúng số tiền
                 while (true)
@@ -91,12 +133,14 @@
 
                 // Lưu ngân sách vào danh mục
                 categoryBudgets[validCategories[choice - 1]] = amount;
-                Console.WriteLine($"Ngân sách cho {validCategories[choice - 1]} đã được đặt thành {amount:#,##0₫}");
+                Console.WriteLine($"✔ Ngân sách cho {validCategories[choice - 1]} đã được đặt thành {amount:#,##0₫}");
+                Console.ResetColor();
 
 
                 if (remainingCategories.Count > 0)
                 {
                     Console.WriteLine($"Bạn còn {remainingCategories.Count} danh mục chưa nhập ngân sách");
+
                     Console.Write("Bạn có muốn tiếp tục nhập ngân sách cho các danh mục còn lại? (y/n): ");
                     string input2 = Console.ReadLine()?.ToLower() ?? "n";
                     if (input2 == "y")
@@ -106,13 +150,33 @@
                     else if (input2 == "n")
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Bạn vui lòng nhập hết tất cả danh mục trên.");
+                        Console.WriteLine("╔══════════════════════════════════════════╗");
+                        Console.WriteLine("║ LƯU Ý:                                   ║");
+                        Console.WriteLine("║ Bạn chỉ nên nhập chi tiêu cho những      ║");
+                        Console.WriteLine("║ danh mục đã đặt ngân sách (khuyến khích  ║");
+                        Console.WriteLine("║ nên đặt ngân sách cho 1 lần).            ║");
+                        Console.WriteLine("╚══════════════════════════════════════════╝");
                         Console.ResetColor();
-                        continueInput = true;
+
+                        Console.WriteLine("Nhấn phím 'c' để tiếp tục đặt ngân sách, hoặc nhấn bất kỳ phím nào khác để thoát");
+
+                        var n = Console.ReadLine()?.ToLower() ?? "c";
+                        if (n == "c")
+                        {
+                            continueInput = true;
+                        }
+                        else
+                        {
+                            continueInput = false;
+                            break;
+                        }
+
                     }
                     else
                     {
-                        Console.WriteLine("Vui lòng nhập đúng ký tự.");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Vui lòng nhập đúng ký tự (y/n/c)");
+                        Console.ResetColor();
                     }
 
 
