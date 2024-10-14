@@ -126,7 +126,7 @@
 
             } while (continueInput);
 
-            // After setting the budget, save it to CSV
+            // Lưu dữ liệu vào file csv sau khi đặt xong ngân sách
             dataSync.SaveBudgetToCSV(categoryBudgets);
         }
 
