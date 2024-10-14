@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 namespace Quanlychitieu;
-//kk
+
 class Program
 {
     static void Main(string[] args)

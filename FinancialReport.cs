@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Globalization;
-//3
+
 namespace Quanlychitieu
 {
     class FinancialReport
