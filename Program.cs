@@ -98,9 +98,7 @@ class Program
                                 Console.WriteLine("Danh mục không hợp lệ.");
                             }
 
-                            Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                            keyInfo = Console.ReadKey(true);
-                            if (keyInfo.Key == ConsoleKey.Escape)
+                            if (TurnBack())
                             {
                                 continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                             }
@@ -130,21 +128,19 @@ class Program
                             {
                                 Console.WriteLine("Số tiền không hợp lệ.");
                             }
-                            Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                            keyInfo = Console.ReadKey(true);
-                            if (keyInfo.Key == ConsoleKey.Escape)
+
+                            if (TurnBack())
                             {
                                 continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                             }
+
                             break;
                         case "3":
                             Console.Clear();
                             if (expenseTracker.TotalIncome == 0) // Kiểm tra nếu chưa có thu nhập
                             {
                                 Console.WriteLine("Bạn cần nhập khoản thu nhập trước khi thiết lập ngân sách.");
-                                Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                                keyInfo = Console.ReadKey(true);
-                                if (keyInfo.Key == ConsoleKey.Escape)
+                                if (TurnBack())
                                 {
                                     continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                                 }
@@ -160,106 +156,104 @@ class Program
                             {
                                 Console.WriteLine("Số tiền không hợp lệ.");
                             }
-                            Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                            keyInfo = Console.ReadKey(true);
-                            if (keyInfo.Key == ConsoleKey.Escape)
+
+                            if (TurnBack())
                             {
                                 continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                             }
+
                             break;
                         case "4":
                             continue;
                         default:
                             Console.WriteLine("Lựa chọn không hợp lệ.");
-                            Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                            keyInfo = Console.ReadKey(true);
-                            if (keyInfo.Key == ConsoleKey.Escape)
+
+                            if (TurnBack())
                             {
                                 continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                             }
+
                             break;
                     }
                     break;
                 case "2":
                     Console.Clear();
                     budgetPlanner.SetBudget();
-                    Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Escape)
+
+                    if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
+
                     break;
                 case "3":
                     Console.Clear();
                     budgetPlanner.ShowBudgetStatus();
-                    Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Escape)
+
+                    if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
+
                     break;
                 case "4":
                     Console.Clear();
                     budgetPlanner.SuggestBudgetAdjustments();
-                    Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Escape)
+
+                    if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
+
                     break;
                 case "5":
                     Console.Clear();
 
                     expenseTracker.EnterIncome(500000);
                     expenseTracker.SetBudget(500000);
-                    Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Escape)
+
+                    if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
+
                     //financialReport.ShowReport(expenseTracker);
                     financialReport.ShowFinancialReport(expenseTracker);
                     Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
-                    Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Escape)
+
+                    if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
+
                     break;
 
                 case "6":
                     Console.Clear();
                     dataSync.HandleDataSync();
-                    Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Escape)
+
+                    if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
+
                     break;
                 case "7":
                     Console.Clear();
                     Console.WriteLine(expenseTracker.GetSavingsStatus());
-                    Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Escape)
+
+                    if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
+
                     break;
                 case "8":
                     return;
                 case "9":
                     StockGame game = new StockGame();
                     game.Run();
-                    Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
-                    keyInfo = Console.ReadKey(true);
-                    if (keyInfo.Key == ConsoleKey.Escape)
+                    if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
@@ -272,5 +266,14 @@ class Program
             
         }
 
+
+
+    }
+
+    static bool TurnBack()
+    {
+        Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
+        var keyInfo = Console.ReadKey(true);
+        return keyInfo.Key == ConsoleKey.Escape;
     }
 }
