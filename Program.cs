@@ -13,6 +13,7 @@ class Program
 {
     static void Main(string[] args)
     {
+       
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;
         ExpenseTracker expenseTracker = new ExpenseTracker();
@@ -34,22 +35,27 @@ class Program
                 "╚═╝╚═╝═╩╝╚═╝╚═╝ ╩    ╩ ╩╚═╩ ╩╚═╝╩ ╩╚═╝╩╚═    ╩ ╩╩  ╩  "
             };
 
-            foreach (string line in lines)
-            {
-                int padding = (consoleWidth - line.Length) / 2;
-                Console.WriteLine(line.PadLeft(padding + line.Length));
-            }
 
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            DrawCenteredBorder(lines);
+            Console.ResetColor();
+            Console.WriteLine();
 
-            Console.WriteLine("1: Nhập biến động số dư");
-            Console.WriteLine("2. Đặt ngân sách");
-            Console.WriteLine("3. Xem tình trạng ngân sách");
-            Console.WriteLine("4. Xem đề xuất điều chỉnh ngân sách");
-            Console.WriteLine("5: Xem báo cáo tài chính");
-            Console.WriteLine("6: Xuất/nhập dữ liệu");
-            Console.WriteLine("7: Xem tình trạng tiết kiệm");
-            Console.WriteLine("8: Thoát chương trình");
-            Console.WriteLine("9: Chơi StockGame");
+            string[] menuOptions = {
+                "1: Nhập biến động số dư",
+                "2. Đặt ngân sách",
+                "3. Xem tình trạng ngân sách",
+                "4. Xem đề xuất điều chỉnh ngân sách",
+                "5: Xem báo cáo tài chính",
+                "6: Xuất/nhập dữ liệu",
+                "7: Xem tình trạng tiết kiệm",
+                "8: Thoát chương trình",
+                "9: Chơi StockGame"
+            };
+
+            DrawCenteredBorder(menuOptions);
+
+            
 
             Console.Write("Chọn một tùy chọn: ");
             var option = Console.ReadLine();
@@ -59,10 +65,14 @@ class Program
             {
                 case "1":
                     Console.Clear();
-                    Console.WriteLine("1: Nhập khoản chi");
-                    Console.WriteLine("2: Nhập khoản thu");
-                    Console.WriteLine("3: Nhập khoản ngân sách");
-                    Console.WriteLine("4: Quay lại menu chính");
+                    string[] balanceOptions = {
+                        "1: Nhập khoản chi",
+                        "2: Nhập khoản thu",
+                        "3: Nhập khoản ngân sách",
+                        "4: Quay lại menu chính"
+                    };
+                    DrawCenteredBorder(balanceOptions);
+
                     Console.Write("Chọn một tùy chọn: ");
                     var balanceOption = Console.ReadLine();
 
@@ -71,13 +81,16 @@ class Program
                         case "1":
                             Console.Clear();
                             Console.WriteLine("Chọn danh mục chi tiêu:");
-                            Console.WriteLine("1. Ăn uống");
-                            Console.WriteLine("2. Đi lại");
-                            Console.WriteLine("3. Chi phí cố định (nhà ở, điện, nước, wifi...)");
-                            Console.WriteLine("4. Giải trí");
-                            Console.WriteLine("5. Giáo dục");
-                            Console.WriteLine("6. Mua sắm");
-                            Console.WriteLine("7. Khác");
+                            string[] expenseCategories = {
+                                "1. Ăn uống",
+                                "2. Đi lại",
+                                "3. Chi phí cố định (nhà ở, điện, nước, wifi...)",
+                                "4. Giải trí",
+                                "5. Giáo dục",
+                                "6. Mua sắm",
+                                "7. Khác"
+                            };
+                            DrawCenteredBorder(expenseCategories);
 
                             Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục chọn danh mục chi tiêu");
                             
@@ -276,4 +289,51 @@ class Program
         var keyInfo = Console.ReadKey(true);
         return keyInfo.Key == ConsoleKey.Escape;
     }
+
+    static void DrawCenteredBorder(string[] content)
+    {
+        int consoleWidth = Console.WindowWidth;
+        int contentWidth = content.Max(line => line.Length);
+        int borderWidth = Math.Min(consoleWidth - 4, contentWidth + 4);
+
+        char[,] border = new char[3, borderWidth];
+
+        // Top border
+        border[0, 0] = '╔';
+        border[0, borderWidth - 1] = '╗';
+        for (int i = 1; i < borderWidth - 1; i++)
+            border[0, i] = '═';
+
+        // Middle border
+        border[1, 0] = '║';
+        border[1, borderWidth - 1] = '║';
+        for (int i = 1; i < borderWidth - 1; i++)
+            border[1, i] = ' ';
+
+        // Bottom border
+        border[2, 0] = '╚';
+        border[2, borderWidth - 1] = '╝';
+        for (int i = 1; i < borderWidth - 1; i++)
+            border[2, i] = '═';
+
+        // Draw top border
+        Console.WriteLine(new string(' ', (consoleWidth - borderWidth) / 2) + new string(Enumerable.Range(0, borderWidth).Select(i => border[0, i]).ToArray()));
+
+        // Draw content
+        foreach (string line in content)
+        {
+            int padding = (borderWidth - line.Length - 2) / 2;
+            string paddedLine = new string(' ', padding) + line + new string(' ', borderWidth - line.Length - padding - 2);
+            Console.WriteLine(new string(' ', (consoleWidth - borderWidth) / 2) + "║" + paddedLine + "║");
+        }
+
+        // Draw bottom border
+        Console.WriteLine(new string(' ', (consoleWidth - borderWidth) / 2) + new string(Enumerable.Range(0, borderWidth).Select(i => border[2, i]).ToArray()));
+    }
+
+    
+
+    
+
+
 }
