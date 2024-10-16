@@ -31,9 +31,9 @@ namespace Quanlychitieu
             await Task.Delay(13000); // Changed from Thread.Sleep to await Task.Delay
 
             // Hiển thị yêu cầu chấp nhận nhiệm vụ
-            Console.WriteLine("                                                         ══════════════════════════");
-            Console.WriteLine("                                                         ║    CHẤP NHẬN NHIỆM VỤ  ║");
-            Console.WriteLine("                                                         ══════════════════════════");
+            Console.WriteLine("                                                            ══════════════════════════");
+            Console.WriteLine("                                                            ║    CHẤP NHẬN NHIỆM VỤ  ║");
+            Console.WriteLine("                                                            ══════════════════════════");
             Console.WriteLine("                                                       Nhấn 'Enter' để bắt đầu nhiệm vụ");
             Console.ReadLine(); // Chờ user nhấn 'Enter'
 

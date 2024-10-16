@@ -42,15 +42,15 @@ class Program
             Console.WriteLine();
 
             string[] menuOptions = {
-                "1: Nhập biến động số dư",
-                "2. Đặt ngân sách",
-                "3. Xem tình trạng ngân sách",
-                "4. Xem đề xuất điều chỉnh ngân sách",
-                "5: Xem báo cáo tài chính",
-                "6: Xuất/nhập dữ liệu",
-                "7: Xem tình trạng tiết kiệm",
-                "8: Game Tài chính",
-                "9: Thoát chương trình"
+                "1. Nhập biến động số dư             .",
+                "2. Đặt ngân sách                    .",
+                "3. Xem tình trạng ngân sách         .",
+                "4. Xem đề xuất điều chỉnh ngân sách .",
+                "5. Xem báo cáo tài chính            .",
+                "6. Xuất/nhập dữ liệu                .",
+                "7. Xem tình trạng tiết kiệm         .",
+                "8. Game Tài chính                   .",
+                "9. Thoát chương trình               ."
             };
 
             DrawCenteredBorder(menuOptions);
@@ -66,10 +66,10 @@ class Program
                 case "1":
                     Console.Clear();
                     string[] balanceOptions = {
-                        "1: Nhập khoản chi",
-                        "2: Nhập khoản thu",
-                        "3: Nhập khoản ngân sách",
-                        "4: Quay lại menu chính"
+                        "1. Nhập khoản chi       .",
+                        "2. Nhập khoản thu       .",
+                        "3. Nhập khoản ngân sách .",
+                        "4. Quay lại menu chính  ."
                     };
                     DrawCenteredBorder(balanceOptions);
 
@@ -82,13 +82,13 @@ class Program
                             Console.Clear();
                             Console.WriteLine("Chọn danh mục chi tiêu:");
                             string[] expenseCategories = {
-                                "1. Ăn uống",
-                                "2. Đi lại",
-                                "3. Chi phí cố định (nhà ở, điện, nước, wifi...)",
-                                "4. Giải trí",
-                                "5. Giáo dục",
-                                "6. Mua sắm",
-                                "7. Khác"
+                                "1. Ăn uống                                 .",
+                                "2. Đi lại                                  .",
+                                "3. Chi phí cố định (nhà ở, điện, nước,...) .",
+                                "4. Giải trí                                .",
+                                "5. Giáo dục                                .",
+                                "6. Mua sắm                                 .",
+                                "7. Khác                                    ."
                             };
                             DrawCenteredBorder(expenseCategories);
 
@@ -266,8 +266,8 @@ class Program
 
                     // Present the user with two options
                     string[] gameOptions = {
-                        "1: Chơi StockGame",
-                        "2: Hãy trả giá đúng"
+                        "1: Chơi StockGame   .",
+                        "2: Hãy trả giá đúng ."
                     };
                     DrawCenteredBorder(gameOptions);
 
