@@ -5,12 +5,16 @@ namespace Quanlychitieu
     internal class ExpenseTracker
     {
         private Dictionary<string, decimal> expenses = new Dictionary<string, decimal>();
+
         private string filePath = "expenses.json";
         private Dictionary<string, Dictionary<int, double>> monthlyExpenses;
         private int currentMonth = DateTime.Now.Month;
+        //private DataSync dataSync;
+        private BudgetPlanner budgetPlanner;
 
         public decimal TotalIncome { get; private set; } = 0;//Tổng thu nhập
-        public decimal TotalBudget { get; private set; } = 0;//Tổng ngân sách 
+        public decimal TotalBudget => budgetPlanner.GetTotalBudget();
+
         public decimal TotalExpenses => GetTotalExpenses();//Tổng chi tiêu
         public decimal Savings => TotalIncome - TotalBudget;
 
@@ -18,14 +22,26 @@ namespace Quanlychitieu
         private DateTime lastIncomeEntryTime;// Thời gian nhập thu gần nhất 
 
 
-        public ExpenseTracker()
+        public ExpenseTracker()//BudgetPlanner budgetPlanner)
         {
+            //this.dataSync = dataSync;
+             //this.budgetPlanner = budgetPlanner;
             monthlyExpenses = new Dictionary<string, Dictionary<int, double>>();
+
             LoadExpenses();
             LoadIncomeEntryTime();
             LoadTotalIncome();
             LoadIncomeEnteredStatus();
         }
+        //public void Initialize(DataSync dataSync, BudgetPlanner budgetPlanner)
+        //{
+        //    this.dataSync = dataSync;
+        //    this.budgetPlanner = budgetPlanner;
+        //    LoadExpenses();
+        //    LoadIncomeEntryTime();
+        //    LoadTotalIncome();
+        //    LoadIncomeEnteredStatus();
+        //}
         //Kiểm tra người dùng đã nhập khoản thu nhập trong tháng này chưa 
         public bool CanEnterIncone()
         {
@@ -39,40 +55,117 @@ namespace Quanlychitieu
         {
             return TotalExpenses > TotalBudget ? TotalExpenses - TotalBudget : 0;
         }
-
-        public void SetBudget(decimal budget)//Thiết lập ngân sách cho tháng
+        private string categoryChoice;
+        private string GetExpenseCategory()
         {
-            if (TotalIncome == 0)
+            if (categoryChoice == null)
             {
-                Console.WriteLine("Bạn cần nhập khoản thu nhập trước khi thiết lập ngân sách.");
-                return;
+                return "Khác"; // Giá trị mặc định khi categoryChoice là null
+            }
+            switch (categoryChoice)
+            {
+                case "1": return "Ăn uống";
+                case "2": return "Đi lại";
+                case "3": return "Chi phí cố định";
+                case "4": return "Giải trí";
+                case "5": return "Giáo dục";
+                case "6": return "Mua sắm";
+                case "7": return "Khác";
+                default: return "Khác";
+            }
+        }
+        public void EnterExpense()
+        {
+            try
+            {
+                Console.Write("Chọn danh mục chi tiêu:");
+                string categoryChoice = Console.ReadLine();
+                string category = GetExpenseCategory(categoryChoice);
+                if (string.IsNullOrEmpty(category))
+                {
+                    Console.WriteLine("Danh mục không hợp lệ.");
+                    return;
+                }
+
+
+
+                Console.WriteLine($"Danh mục bạn đã chọn: {category}");
+                decimal budgetForCategory = budgetPlanner.GetBudgetForCategory(category);
+                Console.WriteLine($"Budget for category '{category}': {budgetForCategory:#,##0₫}");
+
+                if ( budgetForCategory<= 0)
+                {
+                   Console.WriteLine($"Chưa có ngân sách cho danh mục '{category}'. Vui lòng đặt ngân sách trước khi nhập chi tiêu.");
+                    return;
+                }
+                
+
+                Console.Write("Nhập số tiền chi tiêu: ");
+                if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
+                {
+                    EnterTransaction(category, amount, true);
+                }
+                else
+                {
+                    Console.WriteLine("Số tiền không hợp lệ.");
+                }
 
             }
-            TotalBudget = budget;
-            Console.WriteLine($"Ngân sách cho tháng này đã được đặt: {budget:#,##0₫}");
+            catch (NullReferenceException ex)
+            {
+                Console.WriteLine("Lỗi: Một giá trị null đã được tìm thấy. " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Đã xảy ra lỗi: " + ex.Message);
+            }
+            Console.WriteLine($"Danh mục '{categoryChoice}' chưa có ngân sách. Vui lòng đặt ngân sách trước.");
+            Console.Write($"Bạn có muốn đặt ngân sách không? (y/n):");
+            var input = Console.ReadLine();
+            if (input?.ToLower() == "y")
+            {
+                try
+                {
+                    budgetPlanner.SetCategoryBudget();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Đã xảy ra lỗi khi gọi SetCategoryBudget: " + ex.Message);
+                }
+              
+               
+
+            }
+
+
+
         }
 
-        public void EnterExpense(string categoryChoice)
-        {
-            if (string.IsNullOrEmpty(categoryChoice))
-            {
-                Console.WriteLine("Danh mục không hợp lệ.");
-                return;
-            }
-
-            if (TotalExpenses >= TotalBudget)
-            {
-                Console.WriteLine("Bạn đã chi tiêu vượt quá ngân sách. Những khoản chi sau này sẽ bị trừ vào khoản tiết kiệm trong tháng.");
-            }
-            string category = GetExpenseCategory(categoryChoice);
-            EnterTransaction(category, isExpense: true);
-        }
-        public void EnterIncome(decimal amount)
+        public void EnterIncome()
         {
             if (incomeEnteredThisMonth)
             {
-                Console.WriteLine("Khoản thu nhập đã được nhập cho tháng này. Không thể nhập lại.");
-                return;
+                if (DateTime.Now >= lastIncomeEntryTime.AddMonths(1))
+                {
+                    incomeEnteredThisMonth = false;
+                }
+                else
+                {
+                    Console.WriteLine("Khoản thu nhập đã được nhập cho tháng này. Không thể nhập lại.");
+                    return;
+                }
+
+            }
+            Console.WriteLine("Nhập số tiền thu nhập:");
+            string? incomeInput = Console.ReadLine();
+            decimal amount = 0;
+            if (!string.IsNullOrEmpty(incomeInput) && decimal.TryParse(incomeInput, out amount))
+            {
+                Console.WriteLine($"Đã thêm khoản thu nhập: {amount:#,##0₫}");
+            }
+            else
+            {
+                Console.WriteLine("Vui lòng nhập lại.");
             }
 
             TotalIncome += amount;
@@ -84,7 +177,7 @@ namespace Quanlychitieu
             SaveTotalIncome();
             SaveIncomeEnteredStatus();
 
-            Console.WriteLine($"Đã thêm khoản thu nhập: {amount:#,##0₫}");
+
         }
         private void SaveTotalIncome()
         {
@@ -136,6 +229,7 @@ namespace Quanlychitieu
                 TimeSpan timeRemaining = lastIncomeEntryTime.AddMonths(1) - DateTime.Now;
                 Console.WriteLine($"Bạn có thể nhập thu nhập mới sau {timeRemaining.Days} ngày nữa.");
             }
+            lastIncomeEntryTime = DateTime.Now;
         }
         private void SaveIncomeEntryTime()
         {
@@ -166,14 +260,14 @@ namespace Quanlychitieu
 
         int month = DateTime.Now.Month;
 
-        private void EnterTransaction(string category, bool isExpense)
+        private void EnterTransaction(string category, decimal amount, bool isExpense)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             Console.Write("Nhập số tiền: ");
 
             int categoryIndex = Array.IndexOf(categories, category);
 
-            if (decimal.TryParse(Console.ReadLine(), out decimal amount))
+            if (decimal.TryParse(Console.ReadLine(), out amount))
             {
                 if (!monthlyExpenses.ContainsKey(category))
                 {
@@ -273,6 +367,8 @@ namespace Quanlychitieu
         }
         public string GetSavingsStatus()
         {
+            decimal totalIcome = TotalIncome;
+            decimal totalBudget = TotalBudget;
             decimal Savings = TotalIncome - TotalBudget;
             if (Savings >= 0)
             {

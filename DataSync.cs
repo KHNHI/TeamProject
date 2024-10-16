@@ -9,6 +9,7 @@ namespace Quanlychitieu
     internal class DataSync
     {
         private ExpenseTracker tracker = new ExpenseTracker();
+        
         private const string BUDGET_FILE = "budget.csv";
 
         public void HandleDataSync()
@@ -37,16 +38,49 @@ namespace Quanlychitieu
             }
         }
 
-        public void SaveBudgetToCSV(Dictionary<string, decimal> budget)
+        public void SaveBudgetToCSV(Dictionary<string, decimal> budgets)
         {
-            ExportToCSV(budget, BUDGET_FILE);
-            //Console.WriteLine("Ngân sách đã được lưu vào file CSV.");
-            Console.WriteLine("Ngân sách đã được lưu.");
+            using (var writer = new StreamWriter(BUDGET_FILE))
+            {
+                foreach (var category in budgets)
+                {
+                    writer.WriteLine($"{category.Key},{category.Value}");
+                }
+            }
+            ExportToCSVbudget(budgets, BUDGET_FILE);
+           
+           
+        }
+        private void ExportToCSVbudget(Dictionary<string, decimal> data, string filePath)
+        {
+            using (var writer = new StreamWriter(filePath))
+            {
+                foreach (var item in data)
+                {
+                    writer.WriteLine($"{item.Key},{item.Value}");
+                }
+            }
         }
 
+       
         public Dictionary<string, decimal> LoadBudgetFromCSV()
         {
-            return ImportFromCSV(BUDGET_FILE);
+            var budgets = new Dictionary<string, decimal>();
+            if (File.Exists(BUDGET_FILE))
+            {
+                var lines = File.ReadAllLines(BUDGET_FILE);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split(',');
+                    if (parts.Length == 2 && decimal.TryParse(parts[1], out decimal amount))
+                    {
+                        budgets[parts[0]] = amount;
+                    }
+                }
+               
+            }
+            return budgets;
+          
         }
 
         private void ExportToCSV(Dictionary<string, decimal> expenses, string filePath)

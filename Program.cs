@@ -16,10 +16,20 @@ class Program
        
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;
-        ExpenseTracker expenseTracker = new ExpenseTracker();
-        BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker, new DataSync());
-        FinancialReport financialReport = new FinancialReport();
+
+
         DataSync dataSync = new DataSync();
+        ExpenseTracker expenseTracker = new ExpenseTracker();
+
+        BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker, dataSync);
+        
+        //BudgetPlanner budgetPlanner = new BudgetPlanner();
+        //ExpenseTracker expenseTracker = new ExpenseTracker(dataSync, budgetPlanner);
+
+        // budgetPlanner = new BudgetPlanner(expenseTracker, dataSync);
+     
+        FinancialReport financialReport = new FinancialReport();
+        
         expenseTracker.LoadExpenses();
         expenseTracker.LoadMockExpenses();
 
@@ -67,9 +77,8 @@ class Program
                     Console.Clear();
                     string[] balanceOptions = {
                         "1: Nhập khoản chi",
-                        "2: Nhập khoản thu",
-                        "3: Nhập khoản ngân sách",
-                        "4: Quay lại menu chính"
+                        "2: Nhập khoản thu",                       
+                        "3: Quay lại menu chính"
                     };
                     DrawCenteredBorder(balanceOptions);
 
@@ -80,7 +89,7 @@ class Program
                     {
                         case "1":
                             Console.Clear();
-                            Console.WriteLine("Chọn danh mục chi tiêu:");
+                          
                             string[] expenseCategories = {
                                 "1. Ăn uống",
                                 "2. Đi lại",
@@ -91,6 +100,7 @@ class Program
                                 "7. Khác"
                             };
                             DrawCenteredBorder(expenseCategories);
+                            expenseTracker.EnterExpense();
 
                             Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục chọn danh mục chi tiêu");
                             
@@ -98,17 +108,6 @@ class Program
                             if (keyInfo.Key == ConsoleKey.Escape)
                             {
                                 continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                            }
-
-                            Console.Write("Chọn danh mục: ");
-                            var expenseCategory = Console.ReadLine();
-                            if (!string.IsNullOrEmpty(expenseCategory))
-                            {
-                                expenseTracker.EnterExpense(expenseCategory);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Danh mục không hợp lệ.");
                             }
 
                             if (TurnBack())
@@ -119,64 +118,17 @@ class Program
                             break;
                         case "2":
                             Console.Clear();
-                            if (!expenseTracker.CanEnterIncone()) // Kiểm tra nếu đã nhập thu nhập trong tháng này
-                            {
-                                Console.WriteLine("Bạn đã nhập thu nhập cho tháng này. Không thể nhập lại.");
-                                Console.WriteLine("Nhấn ESC để quay lại menu chính");
-                                keyInfo = Console.ReadKey(true);
-                                if (keyInfo.Key == ConsoleKey.Escape)
-                                {
-                                    continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                                }
-                            }
-                            Console.Write("Nhập số tiền thu nhập: ");
-                            string incomeInput = Console.ReadLine();
-                            if (decimal.TryParse(incomeInput, out decimal amount))
-                            {
-                                expenseTracker.EnterIncome(amount);
-                                Console.WriteLine($"Đã thêm khoản thu nhập: {amount:#,##0₫}");
-                                expenseTracker.NotifyIncomeEntry();
-                            }
-                            else
-                            {
-                                Console.WriteLine("Số tiền không hợp lệ.");
-                            }
-
+                            expenseTracker.EnterIncome();
+                            
+                          
                             if (TurnBack())
                             {
                                 continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                             }
 
                             break;
+                       
                         case "3":
-                            Console.Clear();
-                            if (expenseTracker.TotalIncome == 0) // Kiểm tra nếu chưa có thu nhập
-                            {
-                                Console.WriteLine("Bạn cần nhập khoản thu nhập trước khi thiết lập ngân sách.");
-                                if (TurnBack())
-                                {
-                                    continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                                }
-                            }
-                            Console.WriteLine("Nhập số tiền cho khoản ngân sách cố định:");
-                            string incomebudget = Console.ReadLine();
-                            if (decimal.TryParse(incomebudget, out decimal budget))
-                            {
-                                expenseTracker.SetBudget(budget);
-                                Console.WriteLine($"Đã thêm ngân sách: {budget:#,##0đ}");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Số tiền không hợp lệ.");
-                            }
-
-                            if (TurnBack())
-                            {
-                                continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                            }
-
-                            break;
-                        case "4":
                             continue;
                         default:
                             Console.WriteLine("Lựa chọn không hợp lệ.");
@@ -191,7 +143,7 @@ class Program
                     break;
                 case "2":
                     Console.Clear();
-                    budgetPlanner.SetBudget();
+                    budgetPlanner.SetCategoryBudget();
 
                     if (TurnBack())
                     {
@@ -221,9 +173,6 @@ class Program
                     break;
                 case "5":
                     Console.Clear();
-
-                    expenseTracker.EnterIncome(500000);
-                    expenseTracker.SetBudget(500000);
 
                     if (TurnBack())
                     {

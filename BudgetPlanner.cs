@@ -4,24 +4,56 @@
     {
         private ExpenseTracker expenseTracker;
         private DataSync dataSync;
-        private Dictionary<string, decimal> categoryBudgets;
+        public Dictionary<string, decimal> categoryBudgets { get;  set; }
+        Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
+
         private readonly string[] validCategories = new string[]
         {
                "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
         };
-
+        private DateTime lastBudgetSetTime;
         public BudgetPlanner(ExpenseTracker expenseTracker, DataSync dataSync)
         {
             this.expenseTracker = expenseTracker;
             this.dataSync = dataSync;
-            categoryBudgets = dataSync.LoadBudgetFromCSV();
+            categoryBudgets = new Dictionary<string, decimal>();
+            LoadBudgets();
+            //categoryBudgets = dataSync.LoadBudgetFromCSV();
+            LoadLastCategoryBudgetSetTime();
+            GetTotalBudget();
+        }
+        private void LoadBudgets()
+        {
+            var loadedBudgets = dataSync.LoadBudgetFromCSV();
+            foreach (var category in validCategories)
+            {
+                if (loadedBudgets.ContainsKey(category))
+                {
+                    categoryBudgets[category] = loadedBudgets[category];
+                }
+                else
+                {
+                    categoryBudgets[category] = 0;
+                }
+            }
+        }
+        public decimal GetTotalBudget()
+        {
+            return categoryBudgets.Values.Sum();
+
+        }
+        public decimal GetBudgetForCategory(string category)
+        {
+
+            return categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
         }
 
-        public void SetBudget()
+        public void SetCategoryBudget()
         {
+
             List<string> remainingCategories = new List<string>(validCategories);
             HashSet<string> enteredCategories = new HashSet<string>();
-            int choice;
+            
             bool continueInput = true;
             int windowWidth = Console.WindowWidth;
             string[] title = 
@@ -36,11 +68,7 @@
                  " ////////    ////////    /**          ///////   ///////// ///////   /////////   ////////    /**        ",
                                              
             }; 
-   
-        
-   
-            // string title = "ĐẶT NGÂN SÁCH";
-            
+    
             Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (string line in title)
             {
@@ -48,20 +76,10 @@
                 Console.WriteLine(line.PadLeft(padding + line.Length));
             }
             Console.ResetColor();
-            //Console.WriteLine("╔" + new string('═', windowWidth - 2) + "╗");
-            //Console.WriteLine("║" + title.PadLeft(padding + title.Length).PadRight(windowWidth - 2) + "║");
-            //Console.WriteLine("╚" + new string('═', windowWidth - 2) + "╝");
-            //Console.ResetColor();
-
-
+          
             do
             {
-                string categoryTitle = "CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH";
-                int padding = (windowWidth - categoryTitle.Length) / 2;
-
-                Console.WriteLine("" + categoryTitle.PadLeft(padding + categoryTitle.Length).PadRight(windowWidth - 2) + "║");
-
-
+               
                 if (remainingCategories.Count == 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -69,6 +87,10 @@
                     Console.ResetColor();
                     break;
                 }
+                string categoryTitle = "CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH";
+                int padding = (windowWidth - categoryTitle.Length) / 2;
+
+                Console.WriteLine("" + categoryTitle.PadLeft(padding + categoryTitle.Length).PadRight(windowWidth - 2) + "║");
                 for (int i = 0; i < validCategories.Length; i++)
                 {
                     if (remainingCategories.Contains(validCategories[i]))
@@ -78,18 +100,18 @@
 
                 }
 
-                // Vòng lặp để bắt buộc nhập đúng danh mục
+                int choice;
                 while (true)
                 {
                     Console.Write("Nhập số tương ứng với danh mục: ");
                     if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= validCategories.Length)
                     {
                         string selectedCategory = validCategories[choice - 1];
-                        if (enteredCategories.Contains(selectedCategory))
+                        if (!CanSetCategoryBudget(selectedCategory))
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             Console.WriteLine("╔══════════════════════════════════════════╗");
-                            Console.WriteLine("║ ⚠ Bạn đã nhập ngân sách cho danh mục này.║");
+                            Console.WriteLine("║ ⚠ Bạn đã nhập ngân sách cho danh mục  này. Bạn chỉ có thể đặt 1 lần mỗi tháng..║");
                             Console.WriteLine("╚══════════════════════════════════════════╝");
                             Console.ResetColor();
                         }
@@ -116,26 +138,23 @@
                     }
                 }
 
-                decimal amount;
-                // Vòng lặp để bắt buộc nhập đúng số tiền
+                decimal budget; 
+              
                 while (true)
                 {
                     Console.Write($"Nhập số tiền ngân sách cho {validCategories[choice - 1]}: ");
-                    if (decimal.TryParse(Console.ReadLine(), out amount) && amount >= 0)
+                    if (decimal.TryParse(Console.ReadLine(), out budget) && budget >= 0)
                     {
-                        break; // Thoát khỏi vòng lặp nếu nhập hợp lệ
+                        categoryBudgets[validCategories[choice - 1]] = budget;
+                        categoryLastSetTimes[validCategories[choice - 1]] = DateTime.Now;
+                        Console.WriteLine($"✔ Ngân sách cho {validCategories[choice - 1]} đã được đặt {budget:#,##0₫}");
+                        break;
                     }
                     else
                     {
                         Console.WriteLine("Số tiền không hợp lệ. Vui lòng nhập một số dương.");
                     }
                 }
-
-                // Lưu ngân sách vào danh mục
-                categoryBudgets[validCategories[choice - 1]] = amount;
-                Console.WriteLine($"✔ Ngân sách cho {validCategories[choice - 1]} đã được đặt thành {amount:#,##0₫}");
-                Console.ResetColor();
-
 
                 if (remainingCategories.Count > 0)
                 {
@@ -158,10 +177,9 @@
                         Console.WriteLine("╚══════════════════════════════════════════╝");
                         Console.ResetColor();
 
-                        Console.WriteLine("Nhấn phím 'c' để tiếp tục đặt ngân sách, hoặc nhấn bất kỳ phím nào khác để thoát");
-
-                        var n = Console.ReadLine()?.ToLower() ?? "c";
-                        if (n == "c")
+                        Console.WriteLine("Nhấn phím 'c' để tiếp tục đặt ngân sách hoặc nhấn bất kỳ phím để thoát");
+                        string input3 = Console.ReadLine()?.ToLower() ?? "x";
+                        if (input3 == "c")
                         {
                             continueInput = true;
                         }
@@ -171,12 +189,15 @@
                             break;
                         }
 
+                       
+
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Vui lòng nhập đúng ký tự (y/n/c)");
                         Console.ResetColor();
+                        continueInput = true;
                     }
 
 
@@ -189,11 +210,54 @@
 
 
             } while (continueInput);
-
+            
+            //lastBudgetSetTime = DateTime.Now;
+            SaveLastCategoryBudgetSetTime();
+            
             // Lưu dữ liệu vào file csv sau khi đặt xong ngân sách
             dataSync.SaveBudgetToCSV(categoryBudgets);
+            
+           
+        }
+        private bool CanSetCategoryBudget(string category)
+        {
+            if (categoryLastSetTimes.ContainsKey(category))
+            {
+                // Kiểm tra xem có đủ một tháng kể từ lần đặt ngân sách trước hay chưa
+                return DateTime.Now >= categoryLastSetTimes[category].AddMonths(1);
+            }
+
+            // Nếu danh mục chưa có ngân sách trước đó, cho phép đặt ngân sách
+            return true;
+          
         }
 
+        private void SaveLastCategoryBudgetSetTime()
+        {
+            File.WriteAllText("last_budget_set_time.txt", lastBudgetSetTime.ToString("o"));
+        }
+
+        private void LoadLastCategoryBudgetSetTime()
+        {
+            if (File.Exists("last_budget_set_time.txt"))
+            {
+                string dateText = File.ReadAllText("last_budget_set_time.txt");
+                if (DateTime.TryParse(dateText, out DateTime savedTime))
+                {
+                    lastBudgetSetTime = savedTime;
+                }
+                else
+                {
+                    lastBudgetSetTime = DateTime.MinValue;
+                }
+            }
+            else
+            {
+                lastBudgetSetTime = DateTime.MinValue;
+            }
+        }
+      
+       
         private void PlaywarningSound()
         {
             Console.Beep();
@@ -209,6 +273,7 @@
             var expenses = expenseTracker.GetExpenses();
 
             Console.WriteLine("\n=== Tình trạng Ngân sách ===");
+            Console.WriteLine($"Tổng ngân sách: {GetTotalBudget():#,##0₫}");
             foreach (var category in validCategories)
             {
                 decimal budgetAmount = categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
@@ -245,12 +310,13 @@
                 Console.WriteLine("Không có dữ liệu để phân tích.");
                 return;
             }
-
-            var totalBudget = categoryBudgets.Sum(b => b.Value);
-            var totalExpenses = expenses.Sum(e => e.Value);
+            var totalBudget = GetTotalBudget();
+            
+            var totalExpenses = expenses.Sum(e => Math.Abs(e.Value));
 
             Console.WriteLine("\n=== Đề xuất Điều chỉnh Ngân sách ===");
-
+            Console.WriteLine($"Tổng ngân sách: {totalBudget:#,##0₫}");
+            Console.WriteLine($"Tổng chi tiêu: {totalExpenses:#,##0₫}");
             if (totalExpenses > totalBudget)
             {
                 Console.WriteLine("Bạn đang chi tiêu nhiều hơn tổng ngân sách. Hãy xem xét cắt giảm chi tiêu hoặc tăng ngân sách.");
