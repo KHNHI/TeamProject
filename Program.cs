@@ -267,7 +267,7 @@ class Program
                     // Present the user with two options
                     string[] gameOptions = {
                         "1: Chơi StockGame",
-                        "2: Hãy chọn giá đúng"
+                        "2: Hãy trả giá đúng"
                     };
                     DrawCenteredBorder(gameOptions);
 
