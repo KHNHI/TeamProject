@@ -13,7 +13,7 @@ class Program
 {
     static void Main(string[] args)
     {
-       
+
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;
 
@@ -52,15 +52,15 @@ class Program
             Console.WriteLine();
 
             string[] menuOptions = {
-                "1: Nhập biến động số dư",
-                "2. Đặt ngân sách",
-                "3. Xem tình trạng ngân sách",
-                "4. Xem đề xuất điều chỉnh ngân sách",
-                "5: Xem báo cáo tài chính",
-                "6: Xuất/nhập dữ liệu",
-                "7: Xem tình trạng tiết kiệm",
-                "8: Thoát chương trình",
-                "9: Chơi StockGame"
+                "1. Nhập biến động số dư             .",
+                "2. Đặt ngân sách                    .",
+                "3. Xem tình trạng ngân sách         .",
+                "4. Xem đề xuất điều chỉnh ngân sách .",
+                "5. Xem báo cáo tài chính            .",
+                "6. Xuất/nhập dữ liệu                .",
+                "7. Xem tình trạng tiết kiệm         .",
+                "8. Game Tài chính                   .",
+                "9. Thoát chương trình               ."
             };
 
             DrawCenteredBorder(menuOptions);
@@ -91,13 +91,13 @@ class Program
                             Console.Clear();
                           
                             string[] expenseCategories = {
-                                "1. Ăn uống",
-                                "2. Đi lại",
-                                "3. Chi phí cố định (nhà ở, điện, nước, wifi...)",
-                                "4. Giải trí",
-                                "5. Giáo dục",
-                                "6. Mua sắm",
-                                "7. Khác"
+                                "1. Ăn uống                                 .",
+                                "2. Đi lại                                  .",
+                                "3. Chi phí cố định (nhà ở, điện, nước,...) .",
+                                "4. Giải trí                                .",
+                                "5. Giáo dục                                .",
+                                "6. Mua sắm                                 .",
+                                "7. Khác                                    ."
                             };
                             DrawCenteredBorder(expenseCategories);
                             expenseTracker.EnterExpense();
@@ -127,7 +127,6 @@ class Program
                             }
 
                             break;
-                       
                         case "3":
                             continue;
                         default:
@@ -211,10 +210,34 @@ class Program
 
                     break;
                 case "8":
-                    return;
-                case "9":
-                    StockGame game = new StockGame();
-                    game.Run();
+                    Console.Clear(); // Clear the console
+
+                    // Present the user with two options
+                    string[] gameOptions = {
+                        "1: Chơi StockGame   .",
+                        "2: Hãy trả giá đúng ."
+                    };
+                    DrawCenteredBorder(gameOptions);
+
+                    Console.Write("Chọn một tùy chọn: ");
+                    var gameOption = Console.ReadLine();
+
+                    switch (gameOption)
+                    {
+                        case "1":
+                            StockGame stockGame = new StockGame();
+                            stockGame.Run();
+                            break;
+                        case "2":
+                            // Call the static method directly on the class
+                            // Use 'Wait' to block the calling thread
+                            IsPriceIsRight.BeginGameAsync().Wait();
+                            break;
+                        default:
+                            Console.WriteLine("Lựa chọn không hợp lệ.");
+                            break;
+                    }
+
                     if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
@@ -223,9 +246,12 @@ class Program
                 default:
                     Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
                     break;
+                    return;
+                case "9":
+                    return;
 
             }
-            
+
         }
 
 
