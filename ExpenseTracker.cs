@@ -10,6 +10,8 @@ namespace Quanlychitieu
         private int currentMonth = DateTime.Now.Month;
         //private DataSync dataSync;
         private BudgetPlanner budgetPlanner;
+        private string categoryChoice;
+
         public decimal TotalIncome { get; private set; } = 0;//Tổng thu nhập
         public decimal TotalBudget => budgetPlanner.GetTotalBudget();
         public decimal TotalExpenses => GetTotalExpenses();//Tổng chi tiêu
@@ -33,15 +35,6 @@ namespace Quanlychitieu
         {
             budgetPlanner = planner; // Thiết lập mối quan hệ sau khi khởi tạo
         }
-        //public void Initialize(DataSync dataSync, BudgetPlanner budgetPlanner)
-        //{
-        //    this.dataSync = dataSync;
-        //    this.budgetPlanner = budgetPlanner;
-        //    LoadExpenses();
-        //    LoadIncomeEntryTime();
-        //    LoadTotalIncome();
-        //    LoadIncomeEnteredStatus();
-        //}
         //Kiểm tra người dùng đã nhập khoản thu nhập trong tháng này chưa 
         public bool CanEnterIncome()
         {
@@ -55,7 +48,6 @@ namespace Quanlychitieu
         {
             return TotalExpenses > TotalBudget ? TotalExpenses - TotalBudget : 0;
         }
-        private string categoryChoice;
         private string GetExpenseCategory()
         {
             if (categoryChoice == null)
@@ -88,7 +80,7 @@ namespace Quanlychitieu
                 }
                 Console.WriteLine($"Danh mục bạn đã chọn: {category}");
                 decimal budgetForCategory = budgetPlanner.GetBudgetForCategory(category);
-                Console.WriteLine($"Budget for category '{category}': {budgetForCategory:#,##0₫}");
+                Console.WriteLine($"Ngân sách bạn đã đặt cho '{category}': {budgetForCategory:#,##0₫}");
 
                 if ( budgetForCategory<= 0)
                 {
@@ -109,9 +101,6 @@ namespace Quanlychitieu
                     }
                     return;
                 }
-                
-
-                Console.Write("Nhập số tiền chi tiêu: ");
                 if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                 {
                     EnterTransaction(category, amount, true);
@@ -131,7 +120,37 @@ namespace Quanlychitieu
                 Console.WriteLine("Đã xảy ra lỗi: " + ex.Message);
             }
          }
+        private void EnterTransaction(string category, decimal amount, bool isExpense)
+        {
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            int categoryIndex = Array.IndexOf(categories, category);
+            if (!monthlyExpenses.ContainsKey(category))
+                {
+                    monthlyExpenses[category] = new Dictionary<int, double>();
+                }
 
+                if (!monthlyExpenses[category].ContainsKey(month))
+                {
+                    monthlyExpenses[category][month] = 0;
+                }
+
+                monthlyExpenses[category][month] += (double)amount;
+
+                if (expenses.ContainsKey(category))
+                {
+                    expenses[category] += amount;
+                }
+                else
+                {
+                    expenses[category] = amount;
+                }
+
+                SaveExpenses();
+                string transactionType = isExpense ? "chi tiêu" : "thu nhập";
+                Console.WriteLine($"Đã lưu {transactionType}: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
+                Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
+                CheckOverspending();
+          }
         public void EnterIncome()
         {
             if (incomeEnteredThisMonth)
@@ -167,8 +186,6 @@ namespace Quanlychitieu
             SaveIncomeEntryTime();
             SaveTotalIncome();
             SaveIncomeEnteredStatus();
-
-
         }
         private void SaveTotalIncome()
         {
@@ -251,48 +268,7 @@ namespace Quanlychitieu
 
         int month = DateTime.Now.Month;
 
-        private void EnterTransaction(string category, decimal amount, bool isExpense)
-        {
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            Console.Write("Nhập số tiền: ");
-
-            int categoryIndex = Array.IndexOf(categories, category);
-
-            if (decimal.TryParse(Console.ReadLine(), out amount))
-            {
-                if (!monthlyExpenses.ContainsKey(category))
-                {
-                    monthlyExpenses[category] = new Dictionary<int, double>();
-                }
-
-                if (!monthlyExpenses[category].ContainsKey(month))
-                {
-                    monthlyExpenses[category][month] = 0;
-                }
-
-                monthlyExpenses[category][month] += (double)amount;
-
-                if (expenses.ContainsKey(category))
-                {
-                    expenses[category] += amount;
-                }
-                else
-                {
-                    expenses[category] = amount;
-                }
-
-                SaveExpenses();
-
-                string transactionType = isExpense ? "chi tiêu" : "thu nhập";
-                Console.WriteLine($"Đã lưu {transactionType}: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
-                Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
-                CheckOverspending();
-            }
-            else
-            {
-                Console.WriteLine("Số tiền không hợp lệ.");
-            }
-        }
+      
 
         public Dictionary<string, Dictionary<int, double>> GetMonthlyExpenses()
         {
@@ -307,6 +283,7 @@ namespace Quanlychitieu
                 Console.WriteLine($"Bạn đang chi tiêu vượt mức dự tính: {overspending:#,##0₫}.");
             }
         }
+
 
         private string GetExpenseCategory(string choice)
         {
@@ -363,7 +340,7 @@ namespace Quanlychitieu
             decimal Savings = TotalIncome - TotalBudget;
             if (Savings >= 0)
             {
-                return $"Tiết kiệm: {Savings:#,##0₫}";
+                return $"Tiết kiệm tạm thời: {Savings:#,##0₫}";
             }
             else
             {
