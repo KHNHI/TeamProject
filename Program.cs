@@ -30,11 +30,16 @@ class Program
         {
             Console.Clear();
             int consoleWidth = Console.WindowWidth;
-            string[] lines = {
-                "╔╗ ╦ ╦╔╦╗╔═╗╔═╗╔╦╗  ╔╦╗╦═╗╔═╗╔═╗╦╔═╔═╗╦═╗    ╔═╗╔═╗╔═╗",
-                "╠╩╗║ ║ ║║║ ╦║╣  ║    ║ ╠╦╝╠═╣║  ╠╩╗║╣ ╠╦╝    ╠═╣╠═╝╠═╝",
-                "╚═╝╚═╝═╩╝╚═╝╚═╝ ╩    ╩ ╩╚═╩ ╩╚═╝╩ ╩╚═╝╩╚═    ╩ ╩╩  ╩  "
-            };
+            string[] lines =  {
+"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗    ██████╗ ██╗   ██╗██████╗ ██████╗ ██╗   ██╗",
+"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝    ██╔══██╗██║   ██║██╔══██╗██╔══██╗╚██╗ ██╔╝",
+"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     ██████╔╝██║   ██║██║  ██║██║  ██║ ╚████╔╝ ",
+"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ██╔══██╗██║   ██║██║  ██║██║  ██║  ╚██╔╝  ",
+"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║       ██████╔╝╚██████╔╝██████╔╝██████╔╝   ██║   ",
+"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝       ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝   ",
+             
+                };
+
 
 
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -46,10 +51,10 @@ class Program
                 "1. Nhập biến động số dư             .",
                 "2. Đặt ngân sách                    .",
                 "3. Xem tình trạng ngân sách         .",
-                "4.Xem báo cáo tài chính            .",
-                "5.Xem tình trạng tiết kiệm         .",
-                "6.Game Tài chính                   .",
-                "7.Thoát chương trình               ."
+                "4. Xem báo cáo tài chính            .",
+                "5. Xem tình trạng tiết kiệm         .",
+                "6. Game Tài chính                   .",
+                "7. Thoát chương trình               ."
             };
 
             DrawCenteredBorder(menuOptions);
@@ -63,9 +68,9 @@ class Program
                 case "1":
                     Console.Clear();
                     string[] balanceOptions = {
-                        "1: Nhập khoản chi",
-                        "2: Nhập khoản thu",
-                        "3: Quay lại menu chính"
+                        "1: Nhập khoản chi      .",
+                        "2: Nhập khoản thu      .",
+                        "3: Quay lại menu chính ."
                     };
                     DrawCenteredBorder(balanceOptions);
 
