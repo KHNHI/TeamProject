@@ -18,23 +18,14 @@ class Program
         Console.InputEncoding = Encoding.UTF8;
 
 
-        DataSync dataSync = new DataSync();
+        //DataSync dataSync = new DataSync();
         ExpenseTracker expenseTracker = new ExpenseTracker();
 
-        BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker, dataSync);
-        
-        //BudgetPlanner budgetPlanner = new BudgetPlanner();
-        //ExpenseTracker expenseTracker = new ExpenseTracker(dataSync, budgetPlanner);
-
-        // budgetPlanner = new BudgetPlanner(expenseTracker, dataSync);
-     
+        BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker);
         FinancialReport financialReport = new FinancialReport();
-        
         expenseTracker.LoadExpenses();
         expenseTracker.LoadMockExpenses();
-
-
-
+        expenseTracker.SetBudgetPlanner(budgetPlanner);
         while (true)
         {
             Console.Clear();
@@ -55,17 +46,13 @@ class Program
                 "1. Nhập biến động số dư             .",
                 "2. Đặt ngân sách                    .",
                 "3. Xem tình trạng ngân sách         .",
-                "4. Xem đề xuất điều chỉnh ngân sách .",
-                "5. Xem báo cáo tài chính            .",
-                "6. Xuất/nhập dữ liệu                .",
-                "7. Xem tình trạng tiết kiệm         .",
-                "8. Game Tài chính                   .",
-                "9. Thoát chương trình               ."
+                "4.Xem báo cáo tài chính            .",
+                "5.Xem tình trạng tiết kiệm         .",
+                "6.Game Tài chính                   .",
+                "7.Thoát chương trình               ."
             };
 
             DrawCenteredBorder(menuOptions);
-
-            
 
             Console.Write("Chọn một tùy chọn: ");
             var option = Console.ReadLine();
@@ -77,7 +64,7 @@ class Program
                     Console.Clear();
                     string[] balanceOptions = {
                         "1: Nhập khoản chi",
-                        "2: Nhập khoản thu",                       
+                        "2: Nhập khoản thu",
                         "3: Quay lại menu chính"
                     };
                     DrawCenteredBorder(balanceOptions);
@@ -89,7 +76,7 @@ class Program
                     {
                         case "1":
                             Console.Clear();
-                          
+
                             string[] expenseCategories = {
                                 "1. Ăn uống                                 .",
                                 "2. Đi lại                                  .",
@@ -103,7 +90,7 @@ class Program
                             expenseTracker.EnterExpense();
 
                             Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục chọn danh mục chi tiêu");
-                            
+
                             keyInfo = Console.ReadKey(true);
                             if (keyInfo.Key == ConsoleKey.Escape)
                             {
@@ -119,8 +106,8 @@ class Program
                         case "2":
                             Console.Clear();
                             expenseTracker.EnterIncome();
-                            
-                          
+
+
                             if (TurnBack())
                             {
                                 continue; // Quay lại đầu vòng lặp, hiển thị menu chính
@@ -142,6 +129,15 @@ class Program
                     break;
                 case "2":
                     Console.Clear();
+                    if (expenseTracker.CanEnterIncome())
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("⚠ Bạn chưa nhập thu nhập cho tháng này. Vui lòng quay về menu chính và nhập thu nhập trước khi đặt ngân sách.");
+                        Console.ResetColor();
+                        Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
+                        Console.ReadKey(); // Đợi người dùng nhấn phím để quay lại menu chính
+                        break;
+                    }
                     budgetPlanner.SetCategoryBudget();
 
                     if (TurnBack())
@@ -162,8 +158,8 @@ class Program
                     break;
                 case "4":
                     Console.Clear();
-                    budgetPlanner.SuggestBudgetAdjustments();
-
+                    financialReport.ShowFinancialReport(expenseTracker);
+                    Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
                     if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
@@ -172,46 +168,14 @@ class Program
                     break;
                 case "5":
                     Console.Clear();
-
-                    if (TurnBack())
-                    {
-                        continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                    }
-
-                    //financialReport.ShowReport(expenseTracker);
-                    financialReport.ShowFinancialReport(expenseTracker);
-                    Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
-
-                    if (TurnBack())
-                    {
-                        continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                    }
-
-                    break;
-
-                case "6":
-                    Console.Clear();
-                    dataSync.HandleDataSync();
-
-                    if (TurnBack())
-                    {
-                        continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                    }
-
-                    break;
-                case "7":
-                    Console.Clear();
                     Console.WriteLine(expenseTracker.GetSavingsStatus());
-
                     if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
-
                     break;
-                case "8":
+                case "6":
                     Console.Clear(); // Clear the console
-
                     // Present the user with two options
                     string[] gameOptions = {
                         "1: Chơi StockGame   .",
@@ -237,34 +201,30 @@ class Program
                             Console.WriteLine("Lựa chọn không hợp lệ.");
                             break;
                     }
-
                     if (TurnBack())
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
                     break;
+                case "7":
+                    Environment.Exit(0);
+                    break;
                 default:
                     Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
                     break;
-                    return;
-                case "9":
-                    return;
+                    
+
 
             }
 
         }
-
-
-
     }
-
     static bool TurnBack()
     {
         Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
         var keyInfo = Console.ReadKey(true);
         return keyInfo.Key == ConsoleKey.Escape;
     }
-
     static void DrawCenteredBorder(string[] content)
     {
         int consoleWidth = Console.WindowWidth;
@@ -305,10 +265,4 @@ class Program
         // Draw bottom border
         Console.WriteLine(new string(' ', (consoleWidth - borderWidth) / 2) + new string(Enumerable.Range(0, borderWidth).Select(i => border[2, i]).ToArray()));
     }
-
-    
-
-    
-
-
 }

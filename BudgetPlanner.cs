@@ -3,7 +3,9 @@
     internal class BudgetPlanner
     {
         private ExpenseTracker expenseTracker;
-        private DataSync dataSync;
+        //private DataSync dataSync;
+        private const string BUDGET_FILE = "budget1.csv"; // Tên file bạn muốn lưu
+
         public Dictionary<string, decimal> categoryBudgets { get;  set; }
         Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
 
@@ -12,31 +14,32 @@
                "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
         };
         private DateTime lastBudgetSetTime;
-        public BudgetPlanner(ExpenseTracker expenseTracker, DataSync dataSync)
+        public BudgetPlanner(ExpenseTracker expenseTracker)
         {
+            categoryBudgets = new Dictionary<string, decimal>(); // Khởi tạo ở đây
+            LoadBudgetFromCSV(); // Tải ngân sách khi khởi tạo
             this.expenseTracker = expenseTracker;
-            this.dataSync = dataSync;
-            categoryBudgets = new Dictionary<string, decimal>();
-            LoadBudgets();
+            //this.dataSync = dataSync;
+            //LoadBudgets();
             //categoryBudgets = dataSync.LoadBudgetFromCSV();
             LoadLastCategoryBudgetSetTime();
             GetTotalBudget();
         }
-        private void LoadBudgets()
-        {
-            var loadedBudgets = dataSync.LoadBudgetFromCSV();
-            foreach (var category in validCategories)
-            {
-                if (loadedBudgets.ContainsKey(category))
-                {
-                    categoryBudgets[category] = loadedBudgets[category];
-                }
-                else
-                {
-                    categoryBudgets[category] = 0;
-                }
-            }
-        }
+        //private void LoadBudgets()
+        //{
+        //    var loadedBudgets = dataSync.LoadBudgetFromCSV();
+        //    foreach (var category in validCategories)
+        //    {
+        //        if (loadedBudgets.ContainsKey(category))
+        //        {
+        //            categoryBudgets[category] = loadedBudgets[category];
+        //        }
+        //        else
+        //        {
+        //            categoryBudgets[category] = 0;
+        //        }
+        //    }
+        //}
         public decimal GetTotalBudget()
         {
             return categoryBudgets.Values.Sum();
@@ -213,12 +216,58 @@
             
             //lastBudgetSetTime = DateTime.Now;
             SaveLastCategoryBudgetSetTime();
-            
+
             // Lưu dữ liệu vào file csv sau khi đặt xong ngân sách
-            dataSync.SaveBudgetToCSV(categoryBudgets);
-            
-           
+            SaveBudgetToCSV(categoryBudgets);
         }
+
+        public void SaveBudgetToCSV(Dictionary<string, decimal> budgets)
+        {
+            using (StreamWriter writer = new StreamWriter(BUDGET_FILE))
+            {
+                // Ghi tiêu đề cho file CSV
+                writer.WriteLine("Category,Budget");
+
+                // Duyệt qua từng danh mục và ghi ngân sách vào file
+                foreach (var category in budgets.Keys)
+                {
+                    writer.WriteLine($"{category},{budgets[category]:0.00}"); // Định dạng số với 2 chữ số thập phân
+                }
+            }
+
+            // Console.WriteLine("Ngân sách đã được lưu vào file CSV.");
+        }
+        public void LoadBudgetFromCSV()
+        {
+            if (File.Exists(BUDGET_FILE))
+            {
+                using (StreamReader reader = new StreamReader(BUDGET_FILE))
+                {
+                    // Bỏ qua tiêu đề
+                    string headerLine = reader.ReadLine();
+
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                        var parts = line.Split(',');
+
+                        if (parts.Length == 2 && decimal.TryParse(parts[1], out decimal budget))
+                        {
+                            string category = parts[0].Trim();
+                            categoryBudgets[category] = budget; // Thêm ngân sách vào dictionary
+                        }
+                    }
+                }
+
+                Console.WriteLine("Ngân sách đã được tải từ file CSV.");
+            }
+            else
+            {
+                Console.WriteLine("File ngân sách không tồn tại, khởi tạo ngân sách mới.");
+            }
+        }
+
+
         private bool CanSetCategoryBudget(string category)
         {
             if (categoryLastSetTimes.ContainsKey(category))
@@ -256,7 +305,6 @@
                 lastBudgetSetTime = DateTime.MinValue;
             }
         }
-      
        
         private void PlaywarningSound()
         {
@@ -297,53 +345,10 @@
                     Console.WriteLine("Cảnh báo: Bạn đã sử dụng hơn 80% ngân sách!");
                     PlaywarningSound();
                 }
-
                 Console.WriteLine();
             }
         }
 
-        public void SuggestBudgetAdjustments()
-        {
-            var expenses = expenseTracker.GetExpenses();
-            if (expenses == null || expenses.Count == 0 || categoryBudgets == null || categoryBudgets.Count == 0)
-            {
-                Console.WriteLine("Không có dữ liệu để phân tích.");
-                return;
-            }
-            var totalBudget = GetTotalBudget();
-            
-            var totalExpenses = expenses.Sum(e => Math.Abs(e.Value));
-
-            Console.WriteLine("\n=== Đề xuất Điều chỉnh Ngân sách ===");
-            Console.WriteLine($"Tổng ngân sách: {totalBudget:#,##0₫}");
-            Console.WriteLine($"Tổng chi tiêu: {totalExpenses:#,##0₫}");
-            if (totalExpenses > totalBudget)
-            {
-                Console.WriteLine("Bạn đang chi tiêu nhiều hơn tổng ngân sách. Hãy xem xét cắt giảm chi tiêu hoặc tăng ngân sách.");
-            }
-            else
-            {
-                Console.WriteLine($"Tổng chi tiêu nằm trong ngân sách. Ngân sách tổng: {totalBudget:#,##0₫}, Chi tiêu tổng: {totalExpenses:#,##0₫}");
-            }
-            foreach (var category in validCategories)
-            {
-                decimal spent = expenses.ContainsKey(category) ? expenses[category] : 0;
-                decimal budgetAmount = categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
-
-                if (budgetAmount == 0)
-                {
-                    Console.WriteLine($"Đề xuất: Thiết lập ngân sách cho danh mục '{category}'. Chi tiêu hiện tại: {spent:#,##0₫}");
-                }
-                else if (spent > budgetAmount)
-                {
-                    decimal overspent = spent - budgetAmount;
-                    Console.WriteLine($"Đề xuất: Tăng ngân sách cho '{category}' thêm {overspent:#,##0₫} hoặc cắt giảm chi tiêu.");
-                }
-                else if (spent < budgetAmount * 0.5m)
-                {
-                    Console.WriteLine($"Đề xuất: Xem xét giảm ngân sách cho '{category}' vì chi tiêu thấp hơn 50% ngân sách.");
-                }
-            }
-        }
+    
     }
 }

@@ -43,7 +43,7 @@ namespace Quanlychitieu
                              " Bạn sẽ là Anh Củ Cải đi chợ mua đồ dùng cho các bạn Tân sinh viên. \n" +
                              " Hãy trả giá sao cho mua được giá hời từ gợi ý của các cô bán hàng. \n" +
                              " Lưu ý: Nếu bạn trả giá quá thấp, các cô sẽ không bán nữa.          \n" +
-                             " Bạn mua thiếu đồ dùng cho các em sinh viên.                        \n";
+                             " Bạn mua thiếu đồ dùng cho các em sinh viên.                        \n" ;
 
 
             // Gọi hàm để hiển thị thông điệp
@@ -187,10 +187,9 @@ namespace Quanlychitieu
 
                 // Giá gợi ý từ "cô bán hàng"
                 decimal suggestedPrice = productPrice * 2;
-
                 Console.WriteLine($"Sản phẩm {count}: {productName}");
-                Console.WriteLine($"Giá gợi ý từ cô bán hàng: {suggestedPrice} VND");
-                Console.Write("Hãy trả giá sản phẩm này: ");
+                Console.WriteLine($"Giá cô bán hàng đưa ra:{suggestedPrice} VND");
+                Console.Write("Hãy trả giá đúng!");
                 decimal userGuess = GetUserInput();
                 Console.WriteLine();
 

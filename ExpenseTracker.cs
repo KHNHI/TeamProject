@@ -5,19 +5,15 @@ namespace Quanlychitieu
     internal class ExpenseTracker
     {
         private Dictionary<string, decimal> expenses = new Dictionary<string, decimal>();
-
         private string filePath = "expenses.json";
         private Dictionary<string, Dictionary<int, double>> monthlyExpenses;
         private int currentMonth = DateTime.Now.Month;
         //private DataSync dataSync;
         private BudgetPlanner budgetPlanner;
-
         public decimal TotalIncome { get; private set; } = 0;//Tổng thu nhập
         public decimal TotalBudget => budgetPlanner.GetTotalBudget();
-
         public decimal TotalExpenses => GetTotalExpenses();//Tổng chi tiêu
         public decimal Savings => TotalIncome - TotalBudget;
-
         private bool incomeEnteredThisMonth = false;//Kiểm tra xem đã nhập thu nhập cho tháng này chưa 
         private DateTime lastIncomeEntryTime;// Thời gian nhập thu gần nhất 
 
@@ -25,13 +21,17 @@ namespace Quanlychitieu
         public ExpenseTracker()//BudgetPlanner budgetPlanner)
         {
             //this.dataSync = dataSync;
-             //this.budgetPlanner = budgetPlanner;
+             this.budgetPlanner = budgetPlanner;
             monthlyExpenses = new Dictionary<string, Dictionary<int, double>>();
 
             LoadExpenses();
             LoadIncomeEntryTime();
             LoadTotalIncome();
             LoadIncomeEnteredStatus();
+        }
+        public void SetBudgetPlanner(BudgetPlanner planner)
+        {
+            budgetPlanner = planner; // Thiết lập mối quan hệ sau khi khởi tạo
         }
         //public void Initialize(DataSync dataSync, BudgetPlanner budgetPlanner)
         //{
@@ -43,7 +43,7 @@ namespace Quanlychitieu
         //    LoadIncomeEnteredStatus();
         //}
         //Kiểm tra người dùng đã nhập khoản thu nhập trong tháng này chưa 
-        public bool CanEnterIncone()
+        public bool CanEnterIncome()
         {
             if (DateTime.Now >= lastIncomeEntryTime.AddMonths(1))
             {
@@ -86,9 +86,6 @@ namespace Quanlychitieu
                     Console.WriteLine("Danh mục không hợp lệ.");
                     return;
                 }
-
-
-
                 Console.WriteLine($"Danh mục bạn đã chọn: {category}");
                 decimal budgetForCategory = budgetPlanner.GetBudgetForCategory(category);
                 Console.WriteLine($"Budget for category '{category}': {budgetForCategory:#,##0₫}");
@@ -96,6 +93,20 @@ namespace Quanlychitieu
                 if ( budgetForCategory<= 0)
                 {
                    Console.WriteLine($"Chưa có ngân sách cho danh mục '{category}'. Vui lòng đặt ngân sách trước khi nhập chi tiêu.");
+                   Console.Write($"Bạn có muốn đặt ngân sách không? (y/n):");
+                    var input = Console.ReadLine();
+                    if (input?.ToLower() == "y")
+                    {
+                        Console.Clear();
+                        try
+                        {
+                            budgetPlanner.SetCategoryBudget();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Đã xảy ra lỗi khi gọi SetCategoryBudget: " + ex.Message);
+                        }
+                    }
                     return;
                 }
                 
@@ -119,27 +130,7 @@ namespace Quanlychitieu
             {
                 Console.WriteLine("Đã xảy ra lỗi: " + ex.Message);
             }
-            Console.WriteLine($"Danh mục '{categoryChoice}' chưa có ngân sách. Vui lòng đặt ngân sách trước.");
-            Console.Write($"Bạn có muốn đặt ngân sách không? (y/n):");
-            var input = Console.ReadLine();
-            if (input?.ToLower() == "y")
-            {
-                try
-                {
-                    budgetPlanner.SetCategoryBudget();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Đã xảy ra lỗi khi gọi SetCategoryBudget: " + ex.Message);
-                }
-              
-               
-
-            }
-
-
-
-        }
+         }
 
         public void EnterIncome()
         {

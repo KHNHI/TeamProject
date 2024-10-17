@@ -17,7 +17,6 @@ namespace Quanlychitieu
         {
             Console.WriteLine(string.Format("{0," + ((consoleWidth / 2) + (text.Length / 2)) + "}", text));
         }
-
         private void CenterPrintLine(string text)
         {
             int padding = (consoleWidth - text.Length) / 2;
