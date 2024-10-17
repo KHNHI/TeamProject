@@ -26,6 +26,7 @@ class Program
         expenseTracker.LoadExpenses();
         expenseTracker.LoadMockExpenses();
         expenseTracker.SetBudgetPlanner(budgetPlanner);
+        budgetPlanner.GetTotalBudget();
         while (true)
         {
             Console.Clear();
@@ -143,7 +144,23 @@ class Program
                         Console.ReadKey(); // Đợi người dùng nhấn phím để quay lại menu chính
                         break;
                     }
-                    budgetPlanner.SetCategoryBudget();
+                    if (budgetPlanner.CheckAllBudgetsSet())
+                    {
+                        // Nếu hàm trả về true, nghĩa là đã đặt ngân sách cho tất cả danh mục
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Bạn đã nhập ngân sách cho tất cả các danh mục.");
+                        Console.ResetColor();
+                        Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
+                        Console.ReadKey(); // Đợi người dùng nhấn phím để quay lại menu chính
+                        decimal totalBudget = budgetPlanner.GetTotalBudget();
+                        Console.WriteLine($"Tổng ngân sách của bạn là: {totalBudget} VND");
+                        expenseTracker.GetSavingsStatus();
+
+                    }
+                    else
+                    {
+                        budgetPlanner.SetCategoryBudget();
+                    }
 
                     if (TurnBack())
                     {

@@ -3,12 +3,9 @@
      internal class BudgetPlanner
     {
 
-
-
         private ExpenseTracker expenseTracker;
         //private DataSync dataSync;
         private const string BUDGET_FILE = "budget1.csv"; // Tên file bạn muốn lưu
-
         public Dictionary<string, decimal> categoryBudgets { get;  set; }
         Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
 
@@ -22,29 +19,9 @@
             categoryBudgets = new Dictionary<string, decimal>(); // Khởi tạo ở đây
             LoadBudgetFromCSV(); // Tải ngân sách khi khởi tạo
             this.expenseTracker = expenseTracker;
-            //this.dataSync = dataSync;
-            //LoadBudgets();
-            //categoryBudgets = dataSync.LoadBudgetFromCSV();
             LoadLastCategoryBudgetSetTime();
             GetTotalBudget();
-            
-            
         }
-        //private void LoadBudgets()
-        //{
-        //    var loadedBudgets = dataSync.LoadBudgetFromCSV();
-        //    foreach (var category in validCategories)
-        //    {
-        //        if (loadedBudgets.ContainsKey(category))
-        //        {
-        //            categoryBudgets[category] = loadedBudgets[category];
-        //        }
-        //        else
-        //        {
-        //            categoryBudgets[category] = 0;
-        //        }
-        //    }
-        //}
         public decimal GetTotalBudget()
         {
             return categoryBudgets.Values.Sum();
@@ -286,6 +263,19 @@
             {
                 Console.WriteLine("File ngân sách không tồn tại, khởi tạo ngân sách mới.");
             }
+        }
+        // Kiểm tra xem có tất cả các danh mục đã có ngân sách hay không
+
+        public bool CheckAllBudgetsSet()
+        {
+            foreach (var category in validCategories)
+            {
+                if (!categoryBudgets.ContainsKey(category))
+                {
+                    return false; // Nếu có danh mục chưa có ngân sách
+                }
+            }
+            return true; // Tất cả danh mục đã có ngân sách
         }
 
 
