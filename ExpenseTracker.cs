@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Globalization;
 
 namespace Quanlychitieu
 {
@@ -21,7 +22,7 @@ namespace Quanlychitieu
         public ExpenseTracker()//BudgetPlanner budgetPlanner)
         {
             //this.dataSync = dataSync;
-             this.budgetPlanner = budgetPlanner;
+            //this.budgetPlanner = budgetPlanner;
             monthlyExpenses = new Dictionary<string, Dictionary<int, double>>();
 
             LoadExpenses();
@@ -33,16 +34,7 @@ namespace Quanlychitieu
         {
             budgetPlanner = planner; // Thiết lập mối quan hệ sau khi khởi tạo
         }
-        //public void Initialize(DataSync dataSync, BudgetPlanner budgetPlanner)
-        //{
-        //    this.dataSync = dataSync;
-        //    this.budgetPlanner = budgetPlanner;
-        //    LoadExpenses();
-        //    LoadIncomeEntryTime();
-        //    LoadTotalIncome();
-        //    LoadIncomeEnteredStatus();
-        //}
-        //Kiểm tra người dùng đã nhập khoản thu nhập trong tháng này chưa 
+
         public bool CanEnterIncome()
         {
             if (DateTime.Now >= lastIncomeEntryTime.AddMonths(1))
@@ -90,10 +82,10 @@ namespace Quanlychitieu
                 decimal budgetForCategory = budgetPlanner.GetBudgetForCategory(category);
                 Console.WriteLine($"Budget for category '{category}': {budgetForCategory:#,##0₫}");
 
-                if ( budgetForCategory<= 0)
+                if (budgetForCategory <= 0)
                 {
-                   Console.WriteLine($"Chưa có ngân sách cho danh mục '{category}'. Vui lòng đặt ngân sách trước khi nhập chi tiêu.");
-                   Console.Write($"Bạn có muốn đặt ngân sách không? (y/n):");
+                    Console.WriteLine($"Chưa có ngân sách cho danh mục '{category}'. Vui lòng đặt ngân sách trước khi nhập chi tiêu.");
+                    Console.Write($"Bạn có muốn đặt ngân sách không? (y/n):");
                     var input = Console.ReadLine();
                     if (input?.ToLower() == "y")
                     {
@@ -109,7 +101,7 @@ namespace Quanlychitieu
                     }
                     return;
                 }
-                
+
 
                 Console.Write("Nhập số tiền chi tiêu: ");
                 if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
@@ -130,7 +122,7 @@ namespace Quanlychitieu
             {
                 Console.WriteLine("Đã xảy ra lỗi: " + ex.Message);
             }
-         }
+        }
 
         public void EnterIncome()
         {
@@ -604,7 +596,321 @@ namespace Quanlychitieu
             }
         }
 
-    }
+        static int selectedYear = new int();
+        static int selectedMonth = new int();
+        static int[,] calendarTracker = new int[6, 7];
+        static int selectedRow = 0;
+        static int selectedCol = 0;
 
+        public void CalendarTracker()
+        {
+            Console.Clear();
+            int windowWidth = Console.WindowWidth;
+            string[] titleCalendar =
+            {
+                "███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗",
+                "████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝████╗ ████║██╔═══██╗██╔══██╗╚██╗ ██╔╝",
+                "██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝ ██╔████╔██║██║   ██║██████╔╝ ╚████╔╝ ",
+                "██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝  ██║╚██╔╝██║██║   ██║██╔══██╗  ╚██╔╝  ",
+                "██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║   ██║ ╚═╝ ██║╚██████╔╝██║  ██║   ██║   ",
+                "╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   "
+
+            };
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            foreach (var line in titleCalendar) 
+            { int padding = (windowWidth - line.Length)/2;
+                Console.WriteLine(line.PadLeft(padding + line.Length) );
+            }
+            Console.ResetColor();
+
+            DrawInputBox();
+            GetUserInput();
+
+            static void DrawInputBox()
+            {
+                int windowWidth = Console.WindowWidth;
+                int windowHeight = Console.WindowHeight;
+
+                
+                int boxWidth = 30;
+                int boxHeight = 5;
+                int yearBoxX = (windowWidth / 2) - boxWidth - 2; 
+                int monthBoxX = (windowWidth / 2) + 2; 
+                int boxY = 10; 
+
+               
+                DrawBox(yearBoxX, boxY, boxWidth, boxHeight, "Nhập năm bạn muốn xem:");
+
+               
+                DrawBox(monthBoxX, boxY, boxWidth, boxHeight, "Nhập tháng bạn muốn xem:");
+               
+
+            }
+
+            static void GetUserInput()
+            {
+                int yearBoxX = (Console.WindowWidth / 2) - 30;
+                Console.SetCursorPosition(yearBoxX + 11, 12); // Vị trí nhập trong khung năm
+                while (!int.TryParse(Console.ReadLine(), out selectedYear) || selectedYear < 1)
+                {
+                    Console.SetCursorPosition(yearBoxX + 11, 12);
+                    ClearCurrentLine();
+                    Console.SetCursorPosition(yearBoxX + 11, 12);
+                    Console.Write("Vui lòng nhập năm hợp lệ.");
+                }
+
+                // Input cho tháng
+                int monthBoxX = (Console.WindowWidth / 2) + 2;
+                Console.SetCursorPosition(monthBoxX + 15, 12); // Vị trí nhập trong khung tháng
+                while (!int.TryParse(Console.ReadLine(), out selectedMonth) || selectedMonth < 1 || selectedMonth > 12)
+                {
+                    Console.SetCursorPosition(monthBoxX + 15, 12);
+                    ClearCurrentLine();
+                    Console.SetCursorPosition(monthBoxX + 15, 12);
+                    Console.Write("Vui lòng nhập tháng hợp lệ (1-12).");
+                }
+               
+            }
+            static void DrawBox(int x, int y, int width, int height, string title)
+            {
+
+                Console.ForegroundColor = ConsoleColor.DarkYellow; 
+                // Draw top border
+                Console.SetCursorPosition(x, y);
+                Console.Write("╔" + new string('═', width - 2) + "╗");
+
+                // Draw title
+                Console.SetCursorPosition(x + 4, y);
+                Console.Write(title);
+
+                // Draw side borders
+                for (int i = 1; i < height - 1; i++)
+                {
+                    Console.SetCursorPosition(x, y + i);
+                    Console.Write("║" + new string(' ', width - 2) + "║");
+                }
+
+                // Draw bottom border
+                Console.SetCursorPosition(x, y + height - 1);
+                Console.Write("╚" + new string('═', width -2) + "╝");
+                Console.ResetColor();
+            }
+            static void ClearCurrentLine()
+            {
+                int currentLineCursor = Console.CursorTop;
+                Console.SetCursorPosition(0, currentLineCursor);
+                Console.Write(new string(' ', Console.WindowWidth));
+                Console.SetCursorPosition(0, currentLineCursor);
+            }
+           
+            
+            
+            bool move = true;
+            while (move)
+            {
+                Console.Clear();
+                DrawHeader();
+                DrawCalendarBox();
+                FillCalendar();
+                DrawCalendar();
+                DrawOptions();
+                
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                switch (keyInfo.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        MoveSelection(-1, 0);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        MoveSelection(0, 1);
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        MoveSelection(0, -1);
+                        break;
+                    case ConsoleKey.RightArrow:
+                        MoveSelection(0, 1);
+                        break;
+                    case ConsoleKey.Escape:
+                        move = false;
+                        Console.WriteLine("Nhấm phím ESC để thoát:");
+                        break;
+
+
+                        //case ConsoleKey.Tab:
+                }
+            }
+        }
+        static void DrawHeader()
+        {
+            Console.Clear();
+            string titleYear = "CALENDAR OF THE YEAR " + selectedYear;
+            Console.SetCursorPosition((Console.WindowWidth - titleYear.Length) / 2, 1);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(titleYear);
+            Console.ResetColor();
+            
+        }
+        static void FillCalendar()
+        {
+            int day = DateTime.DaysInMonth(selectedYear, selectedMonth);
+            int firstDayOfMonth = (int)new DateTime(selectedYear,selectedMonth ,1).DayOfWeek;
+            if (firstDayOfMonth == 0) firstDayOfMonth = 7; // Make Sunday the last column
+
+            int currentDay = 1;
+            for (int i = 0; i < calendarTracker.GetLength(0); i++)
+            {
+                for (int j = 0; j < calendarTracker.GetLength(1); j++)
+                {
+                    if (i == 0 && j < firstDayOfMonth - 1)
+                    {
+                        calendarTracker[i, j] = 0;
+                    }
+                    else if (currentDay <= day)
+                    {
+                        calendarTracker[i, j] = currentDay;
+                        currentDay++;
+                    }
+                    else
+                    {
+                        calendarTracker[i, j] = 0;
+                    }
+                }
+            }
+        }
+        static void DrawCalendarBox()
+        {
+            // Drawing a box to contain the calendar
+            int boxWidth = 29;
+            int boxHeight = 8;
+            int startX = (Console.WindowWidth - boxWidth) / 2;
+            int startY = 3;
+
+            Console.SetCursorPosition(startX, startY);
+            Console.Write("╔" + new string('═', boxWidth) + "╗");
+
+            for (int i = 0; i < boxHeight; i++)
+            {
+                Console.SetCursorPosition(startX, startY + i + 1);
+                Console.Write("║" + new string(' ', boxWidth) + "║");
+            }
+
+            Console.SetCursorPosition(startX, startY + boxHeight + 1);
+            Console.Write("╚" + new string('═', boxWidth) + "╝");
+
+            // Display current month inside the box
+            string monthName = new DateTime(selectedYear, selectedMonth, 1).ToString("MMMM");
+            string monthDisplay = $" {monthName} {selectedYear} ";
+            Console.SetCursorPosition(startX + (boxWidth - monthDisplay.Length) / 2, startY + 1);
+            Console.WriteLine(monthDisplay);
+        }
+        static void DrawOptions()
+        {
+            // Drawing bottom options
+            string options = "[Up/Down: Change Year] [Left/Right: Change Month] [Esc: Exit]";
+            Console.SetCursorPosition((Console.WindowWidth - options.Length) / 2, Console.WindowHeight - 2);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(options);
+            Console.ResetColor();
+        }
+        static void DrawCalendar()
+        {
+            string[] dayNames = { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
+            int startX = (Console.WindowWidth - 29) / 2 + 2;
+            int startY = 5;
+
+            // Display day names
+
+            Console.SetCursorPosition(startX, startY);
+            foreach (var day in dayNames)
+            {
+                Console.Write(day + " ");
+            }
+            for (int i = 0; i < calendarTracker.GetLength(0); i++)
+            {
+                Console.SetCursorPosition(startX, startY + i + 1);
+                for (int j = 0; j < calendarTracker.GetLength(1); j++)
+                {
+                    if (calendarTracker[i, j] > 0)
+                    {
+                        if (j == 6) // Sunday in red
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+
+                        Console.Write(calendarTracker[i, j].ToString("D2") + " ");
+                    }
+                    else
+                    {
+                        Console.Write("   ");
+                    }
+                    
+                    Console.ResetColor();
+                }
+            }
+
+            //for (int i = 0; i < calendarTracker.GetLength(0); i++)
+            //{
+            //    for (int j = 0; j < calendarTracker.GetLength(1); j++)
+            //    {
+            //        if (calendarTracker[i, j] > 0)
+            //        {
+            //            if (i == selectedRow && j == selectedCol)
+            //            {
+            //                Console.BackgroundColor= ConsoleColor.Green;
+            //                Console.ForegroundColor = ConsoleColor.White;
+
+            //            }
+
+            //            if (calendarTracker[i, j] < 10)
+            //            {
+            //                Console.Write(calendarTracker[i, j].ToString("D2") + " ");
+            //            }
+
+            //            else
+            //            {
+            //                Console.Write(calendarTracker[i, j] + " ");
+            //            }
+
+
+            //        }
+            //        else
+            //        {
+            //            Console.Write("   ");
+            //        }
+            //    }
+            //    Console.WriteLine();
+            //}
+            //Console.WriteLine("──────────────────────");
+        }
+        static void MoveSelection(int rowChange, int colChange)
+
+        {
+            int newRow = selectedRow + rowChange;
+            int newCol = selectedCol + colChange;
+            if (newRow >= 0 && newRow < calendarTracker.GetLength(0) && newCol >= 0 && newCol < calendarTracker.GetLength(1) && calendarTracker[newRow, newCol] > 0)
+            {
+                selectedRow = newRow;
+                selectedCol = newCol;
+            }
+            DrawHeader();
+            DrawCalendar();
+            
+        }
+        static void ShowDayInfo()
+        {
+            int selectedDay = calendarTracker[selectedRow, selectedCol];
+            if (selectedDay >= 0 && selectedDay < calendarTracker.GetLength(0) && selectedDay < calendarTracker.GetLength(1)) 
+            {
+                Console.Clear();
+                DrawHeader();
+                DrawCalendar();
+
+            }
+        }
+    }
 
 }

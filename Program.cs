@@ -54,7 +54,8 @@ class Program
                 "4. Xem báo cáo tài chính            .",
                 "5. Xem tình trạng tiết kiệm         .",
                 "6. Game Tài chính                   .",
-                "7. Thoát chương trình               ."
+                "7. Lịch theo dõi thông tin chi tiêu .",
+                "8. Thoát chương trình               ."
             };
 
             DrawCenteredBorder(menuOptions);
@@ -180,8 +181,7 @@ class Program
                     }
                     break;
                 case "6":
-                    Console.Clear(); // Clear the console
-                    // Present the user with two options
+                    Console.Clear(); 
                     string[] gameOptions = {
                         "1: Chơi StockGame   .",
                         "2: Hãy trả giá đúng ."
@@ -210,8 +210,12 @@ class Program
                     {
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
-                    break;
+                    break;               
                 case "7":
+                    
+                    expenseTracker.CalendarTracker();
+                    break;
+                case "8":
                     Environment.Exit(0);
                     break;
                 default:
