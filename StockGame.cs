@@ -9,6 +9,8 @@ using System.Text.Json;
 using Newtonsoft.Json;
 using static Quanlychitieu.StockGame;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using CsvHelper.Configuration;
+using System.Reflection.Metadata;
 
 
 namespace Quanlychitieu
@@ -98,6 +100,8 @@ namespace Quanlychitieu
             string jsonData = File.ReadAllText("Companies.json");
             Companies = JsonSerializer.Deserialize<List<Company>>(jsonData);
 
+       
+
             if (Companies == null)
             {
                 Console.WriteLine("Failed to load companies from JSON.");
@@ -113,18 +117,23 @@ namespace Quanlychitieu
 
 
                 StringBuilder prompt = new StringBuilder();
-                prompt.AppendLine("\n     ███████╗████████╗ ██████╗  ██████╗██╗  ██╗██╗   ██╗");
-                prompt.AppendLine("     ██╔════╝╚══██╔══╝██╔═══██╗██╔════╝██║ ██╔╝╚██╗ ██╔╝");
-                prompt.AppendLine("     ███████╗   ██║   ██║   ██║██║     █████╔╝  ╚████╔╝ ");
-                prompt.AppendLine("     ╚════██║   ██║   ██║   ██║██║     ██╔═██╗   ╚██╔╝  ");
-                prompt.AppendLine("     ███████║   ██║   ╚██████╔╝╚██████╗██║  ██╗   ██║   ");
-                prompt.AppendLine("     ╚══════╝   ╚═╝    ╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝   ");
+                prompt.AppendLine("\n███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗              ███████╗████████╗ ██████╗  ██████╗██╗  ██╗██╗   ██╗    ");
+                prompt.AppendLine("████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝              ██╔════╝╚══██╔══╝██╔═══██╗██╔════╝██║ ██╔╝╚██╗ ██╔╝    ");
+                prompt.AppendLine("██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     █████╗    ███████╗   ██║   ██║   ██║██║     █████╔╝  ╚████╔╝     ");
+                prompt.AppendLine("██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ╚════╝    ╚════██║   ██║   ██║   ██║██║     ██╔═██╗   ╚██╔╝      ");
+                prompt.AppendLine("██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║                 ███████║   ██║   ╚██████╔╝╚██████╗██║  ██╗   ██║       ");
+                prompt.AppendLine("╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝                 ╚══════╝   ╚═╝    ╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝       ");
 
+
+                //string[] content = prompt.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+                //Program.DrawCenteredBorder(content);
 
                 prompt.AppendLine("\nBạn có thể thoát khỏi trò chơi bất cứ lúc nào bằng cách nhấn ESC.");
                 prompt.AppendLine("Sử dụng phím mũi tên lên xuống và Enter để chọn một tùy chọn:");
 
-          
+
+
                 int selectedIndex = HandleMenuWithOptions(prompt.ToString(),
                     new string[] { "Chơi", "Thông tin", "Thoát" });
 

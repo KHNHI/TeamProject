@@ -200,8 +200,8 @@ class Program
                 case "6":
                     Console.Clear(); 
                     string[] gameOptions = {
-                        "1: Chơi StockGame   .",
-                        "2: Hãy trả giá đúng ."
+                        "1: MONEY - STOCKY  .",
+                        "2: MONEY - MATCH   ."
                     };
                     DrawCenteredBorder(gameOptions);
 
@@ -251,7 +251,7 @@ class Program
         var keyInfo = Console.ReadKey(true);
         return keyInfo.Key == ConsoleKey.Escape;
     }
-    static void DrawCenteredBorder(string[] content)
+    public static void DrawCenteredBorder(string[] content)
     {
         int consoleWidth = Console.WindowWidth;
         int contentWidth = content.Max(line => line.Length);

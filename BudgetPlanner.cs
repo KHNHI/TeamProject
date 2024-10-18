@@ -55,15 +55,15 @@
 
 
       };
-
-          
-
             Console.ForegroundColor = ConsoleColor.Yellow;
-            foreach (string line in title)
-            {
-                int padding = (windowWidth - line.Length) / 2; // Tính toán căn giữa
-                Console.WriteLine(line.PadLeft(padding + line.Length));
-            }
+            Program.DrawCenteredBorder(title);
+
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            //foreach (string line in title)
+            //{
+            //    int padding = (windowWidth - line.Length) / 2; // Tính toán căn giữa
+            //    Console.WriteLine(line.PadLeft(padding + line.Length));
+            //}
             Console.ResetColor();
           
             do
