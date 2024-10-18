@@ -121,38 +121,38 @@ namespace Quanlychitieu
             {
                 Console.WriteLine("Đã xảy ra lỗi: " + ex.Message);
             }
-         }
+        }
         private void EnterTransaction(string category, decimal amount, bool isExpense)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             int categoryIndex = Array.IndexOf(categories, category);
             if (!monthlyExpenses.ContainsKey(category))
-                {
-                    monthlyExpenses[category] = new Dictionary<int, double>();
-                }
+            {
+                monthlyExpenses[category] = new Dictionary<int, double>();
+            }
 
-                if (!monthlyExpenses[category].ContainsKey(month))
-                {
-                    monthlyExpenses[category][month] = 0;
-                }
+            if (!monthlyExpenses[category].ContainsKey(month))
+            {
+                monthlyExpenses[category][month] = 0;
+            }
 
-                monthlyExpenses[category][month] += (double)amount;
+            monthlyExpenses[category][month] += (double)amount;
 
-                if (expenses.ContainsKey(category))
-                {
-                    expenses[category] += amount;
-                }
-                else
-                {
-                    expenses[category] = amount;
-                }
+            if (expenses.ContainsKey(category))
+            {
+                expenses[category] += amount;
+            }
+            else
+            {
+                expenses[category] = amount;
+            }
 
-                SaveExpenses();
-                string transactionType = isExpense ? "chi tiêu" : "thu nhập";
-                Console.WriteLine($"Đã lưu {transactionType}: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
-                Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
-                CheckOverspending();
-          }
+            SaveExpenses();
+            string transactionType = isExpense ? "chi tiêu" : "thu nhập";
+            Console.WriteLine($"Đã lưu {transactionType}: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
+            Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
+            CheckOverspending();
+        }
         public void EnterIncome()
         {
             if (incomeEnteredThisMonth)
@@ -191,7 +191,7 @@ namespace Quanlychitieu
         }
         private void SaveTotalIncome()
         {
-            File.WriteAllText("total_income.txt", TotalIncome.ToString("F2")); // Lưu tổng thu nhập với 2 chữ số thập phân
+            File.WriteAllText("total_income.txt", TotalIncome.ToString("F2")); // Lưu tổng thu nhập v��i 2 chữ số thập phân
         }
         private void LoadTotalIncome()
         {
@@ -270,7 +270,7 @@ namespace Quanlychitieu
 
         int month = DateTime.Now.Month;
 
-      
+
 
         public Dictionary<string, Dictionary<int, double>> GetMonthlyExpenses()
         {
@@ -604,9 +604,10 @@ namespace Quanlychitieu
 
             };
             Console.ForegroundColor = ConsoleColor.Yellow;
-            foreach (var line in titleCalendar) 
-            { int padding = (windowWidth - line.Length)/2;
-                Console.WriteLine(line.PadLeft(padding + line.Length) );
+            foreach (var line in titleCalendar)
+            {
+                int padding = (windowWidth - line.Length) / 2;
+                Console.WriteLine(line.PadLeft(padding + line.Length));
             }
             Console.ResetColor();
 
@@ -618,19 +619,19 @@ namespace Quanlychitieu
                 int windowWidth = Console.WindowWidth;
                 int windowHeight = Console.WindowHeight;
 
-                
+
                 int boxWidth = 30;
                 int boxHeight = 5;
-                int yearBoxX = (windowWidth / 2) - boxWidth - 2; 
-                int monthBoxX = (windowWidth / 2) + 2; 
-                int boxY = 10; 
+                int yearBoxX = (windowWidth / 2) - boxWidth - 2;
+                int monthBoxX = (windowWidth / 2) + 2;
+                int boxY = 10;
 
-               
+
                 DrawBox(yearBoxX, boxY, boxWidth, boxHeight, "Nhập năm bạn muốn xem:");
 
-               
+
                 DrawBox(monthBoxX, boxY, boxWidth, boxHeight, "Nhập tháng bạn muốn xem:");
-               
+
 
             }
 
@@ -656,12 +657,12 @@ namespace Quanlychitieu
                     Console.SetCursorPosition(monthBoxX + 15, 12);
                     Console.Write("Vui lòng nhập tháng hợp lệ (1-12).");
                 }
-               
+
             }
             static void DrawBox(int x, int y, int width, int height, string title)
             {
 
-                Console.ForegroundColor = ConsoleColor.DarkYellow; 
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 // Draw top border
                 Console.SetCursorPosition(x, y);
                 Console.Write("╔" + new string('═', width - 2) + "╗");
@@ -679,7 +680,7 @@ namespace Quanlychitieu
 
                 // Draw bottom border
                 Console.SetCursorPosition(x, y + height - 1);
-                Console.Write("╚" + new string('═', width -2) + "╝");
+                Console.Write("╚" + new string('═', width - 2) + "╝");
                 Console.ResetColor();
             }
             static void ClearCurrentLine()
@@ -689,9 +690,9 @@ namespace Quanlychitieu
                 Console.Write(new string(' ', Console.WindowWidth));
                 Console.SetCursorPosition(0, currentLineCursor);
             }
-           
-            
-            
+
+
+
             bool move = true;
             while (move)
             {
@@ -701,7 +702,7 @@ namespace Quanlychitieu
                 FillCalendar();
                 DrawCalendar();
                 DrawOptions();
-                
+
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
                 switch (keyInfo.Key)
                 {
@@ -735,12 +736,12 @@ namespace Quanlychitieu
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(titleYear);
             Console.ResetColor();
-            
+
         }
         static void FillCalendar()
         {
             int day = DateTime.DaysInMonth(selectedYear, selectedMonth);
-            int firstDayOfMonth = (int)new DateTime(selectedYear,selectedMonth ,1).DayOfWeek;
+            int firstDayOfMonth = (int)new DateTime(selectedYear, selectedMonth, 1).DayOfWeek;
             if (firstDayOfMonth == 0) firstDayOfMonth = 7; // Make Sunday the last column
 
             int currentDay = 1;
@@ -834,7 +835,7 @@ namespace Quanlychitieu
                     {
                         Console.Write("   ");
                     }
-                    
+
                     Console.ResetColor();
                 }
             }
@@ -885,12 +886,12 @@ namespace Quanlychitieu
             }
             DrawHeader();
             DrawCalendar();
-            
+
         }
         static void ShowDayInfo()
         {
             int selectedDay = calendarTracker[selectedRow, selectedCol];
-            if (selectedDay >= 0 && selectedDay < calendarTracker.GetLength(0) && selectedDay < calendarTracker.GetLength(1)) 
+            if (selectedDay >= 0 && selectedDay < calendarTracker.GetLength(0) && selectedDay < calendarTracker.GetLength(1))
             {
                 Console.Clear();
                 DrawHeader();

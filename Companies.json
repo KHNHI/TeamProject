@@ -1,0 +1,37 @@
+﻿[
+  {
+    "Name": "Vingroup",
+    "Industry": "Đa ngành",
+    "SharePrice": 100.00,
+    "NumberOfShares": 0,
+    "Description": "Tập đoàn đa ngành hàng đầu Việt Nam, với các lĩnh vực kinh doanh chính bao gồm bất động sản, du lịch, giáo dục, y tế, công nghệ và sản xuất ô tô. Tình hình kinh doanh: Vingroup đang mở rộng quy mô kinh doanh và đầu tư vào các lĩnh vực mới, tạo ra nhiều cơ hội phát triển."
+  },
+  {
+    "Name": "Viettel",
+    "Industry": "Viễn thông",
+    "SharePrice": 50.00,
+    "NumberOfShares": 0,
+    "Description": "Tập đoàn viễn thông và công nghệ thông tin lớn nhất Việt Nam, cung cấp các dịch vụ viễn thông, công nghệ thông tin và các giải pháp công nghệ cho các doanh nghiệp và cá nhân. Tình hình kinh doanh: Viettel đang mở rộng quy mô kinh doanh và đầu tư vào các lĩnh vực mới, tạo ra nhiều cơ hội phát triển."
+  },
+  {
+    "Name": "VNPay",
+    "Industry": "Fintech",
+    "SharePrice": 80.00,
+    "NumberOfShares": 0,
+    "Description": "Công ty công nghệ tài chính hàng đầu, chuyên cung cấp các giải pháp thanh toán điện tử, ví điện tử và các dịch vụ tài chính khác. Tình hình kinh doanh: VNPay đang mở rộng quy mô kinh doanh và đầu tư vào các lĩnh vực mới, tạo ra nhiều cơ hội phát triển."
+  },
+  {
+    "Name": "Masan Group",
+    "Industry": "Hàng tiêu dùng",
+    "SharePrice": 70.00,
+    "NumberOfShares": 0,
+    "Description": "Tập đoàn kinh tế tư nhân hàng đầu Việt Nam, hoạt động trong các lĩnh vực kinh doanh chính bao gồm thực phẩm, đồ uống, hàng tiêu dùng và tài nguyên. Tình hình kinh doanh: Masan Group đang mở rộng quy mô kinh doanh và đầu tư vào các lĩnh vực mới, tạo ra nhiều cơ hội phát triển."
+  },
+  {
+    "Name": "FPT",
+    "Industry": "Công nghệ",
+    "SharePrice": 90.00,
+    "NumberOfShares": 0,
+    "Description": "Công ty công nghệ thông tin và dịch vụ viễn thông lớn nhất Việt Nam, cung cấp các giải pháp công nghệ, dịch vụ viễn thông và các sản phẩm công nghệ khác. Tình hình kinh doanh: FPT đang mở rộng quy mô kinh doanh và đầu tư vào các lĩnh vực mới, tạo ra nhiều cơ hội phát triển."
+  }
+]

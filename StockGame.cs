@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
-//h
+using Newtonsoft.Json;
+using static Quanlychitieu.StockGame;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
+
 namespace Quanlychitieu
 {
     internal class StockGame
@@ -42,6 +46,7 @@ namespace Quanlychitieu
         {
             try
             {
+                InitializeDefaultData(); // Ensure companies are initialized
                 MainMenuScreen();
             }
             finally
@@ -77,8 +82,8 @@ namespace Quanlychitieu
                     }
                 }
 
-                // Tạm thời bỏ qua phần Event.json
-                // InitializeEvents();
+                // Initialize events after loading companies
+                InitializeEvents();
             }
             catch (Exception ex)
             {
@@ -89,16 +94,15 @@ namespace Quanlychitieu
 
         private void InitializeDefaultData()
         {
-            Companies = new List<Company>
-            {
-                new Company { Name = "Vingroup", Industry = "Đa ngành", SharePrice = 100.00m, NumberOfShares = 0, Description = "Tập đoàn đa ngành hàng đầu Việt Nam" },
-                new Company { Name = "Viettel", Industry = "Viễn thông", SharePrice = 50.00m, NumberOfShares = 0, Description = "Tập đoàn viễn thông và công nghệ thông tin lớn nhất Việt Nam" },
-                new Company { Name = "VNPay", Industry = "Fintech", SharePrice = 80.00m, NumberOfShares = 0, Description = "Công ty công nghệ tài chính hàng đầu" },
-                new Company { Name = "Masan Group", Industry = "Hàng tiêu dùng", SharePrice = 70.00m, NumberOfShares = 0, Description = "Tập đoàn kinh tế tư nhân hàng đầu Việt Nam" },
-                new Company { Name = "FPT", Industry = "Công nghệ", SharePrice = 90.00m, NumberOfShares = 0, Description = "Công ty công nghệ thông tin và dịch vụ viễn thông lớn nhất Việt Nam" }
-            };
+            // Load company data from a JSON file
+            string jsonData = File.ReadAllText("Companies.json");
+            Companies = JsonSerializer.Deserialize<List<Company>>(jsonData);
 
-            // Tạm thời bỏ qua phần Event
+            if (Companies == null)
+            {
+                Console.WriteLine("Failed to load companies from JSON.");
+                CloseRequested = true; // or handle it as needed
+            }
         }
 
         private void MainMenuScreen()
@@ -110,18 +114,17 @@ namespace Quanlychitieu
 
                 StringBuilder prompt = new StringBuilder();
                 prompt.AppendLine("\n     ███████╗████████╗ ██████╗  ██████╗██╗  ██╗██╗   ██╗");
-                  prompt.AppendLine("     ██╔════╝╚══██╔══╝██╔═══██╗██╔════╝██║ ██╔╝╚██╗ ██╔╝");
-                  prompt.AppendLine("     ███████╗   ██║   ██║   ██║██║     █████╔╝  ╚████╔╝ ");
-                  prompt.AppendLine("     ╚════██║   ██║   ██║   ██║██║     ██╔═██╗   ╚██╔╝  ");
-                  prompt.AppendLine("     ███████║   ██║   ╚██████╔╝╚██████╗██║  ██╗   ██║   ");
-                  prompt.AppendLine("     ╚══════╝   ╚═╝    ╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝   ");
-                                
+                prompt.AppendLine("     ██╔════╝╚══██╔══╝██╔═══██╗██╔════╝██║ ██╔╝╚██╗ ██╔╝");
+                prompt.AppendLine("     ███████╗   ██║   ██║   ██║██║     █████╔╝  ╚████╔╝ ");
+                prompt.AppendLine("     ╚════██║   ██║   ██║   ██║██║     ██╔═██╗   ╚██╔╝  ");
+                prompt.AppendLine("     ███████║   ██║   ╚██████╔╝╚██████╗██║  ██╗   ██║   ");
+                prompt.AppendLine("     ╚══════╝   ╚═╝    ╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝   ");
+
 
                 prompt.AppendLine("\nBạn có thể thoát khỏi trò chơi bất cứ lúc nào bằng cách nhấn ESC.");
                 prompt.AppendLine("Sử dụng phím mũi tên lên xuống và Enter để chọn một tùy chọn:");
 
-                       
-
+          
                 int selectedIndex = HandleMenuWithOptions(prompt.ToString(),
                     new string[] { "Chơi", "Thông tin", "Thoát" });
 
@@ -138,12 +141,19 @@ namespace Quanlychitieu
         {
             Money = 3000.00m;
             LoadEmbeddedResources();
+            InitializeEvents(); // Ensure events are initialized
         }
 
         private void GameLoop()
         {
             while (!CloseRequested && CalculateNetWorth() > LosingNetWorth && CalculateNetWorth() < WinningNetWorth)
             {
+                // Randomly trigger an event
+                if (Random.Shared.Next(0, 5) == 0) // 20% chance to trigger an event
+                {
+                    EventScreen();
+                }
+
                 int selectedIndex = HandleMenuWithOptions(RenderCompanyStocksTable().ToString(),
                     new string[] { "Đợi Thay Đổi Thị Trường", "Mua", "Bán", "Thông Tin Về Các Công Ty" });
 
@@ -168,32 +178,29 @@ namespace Quanlychitieu
 
         private void EventScreen()
         {
-            // Tạo một sự kiện ngẫu nhiên
-            string[] eventTypes = { "tích cực", "tiêu cực", "trung lập" };
-            string eventType = eventTypes[Random.Shared.Next(eventTypes.Length)];
+            // Randomly select an event
+            if (Events.Count > 0)
+            {
+                Event randomEvent = Events[Random.Shared.Next(Events.Count)];
 
-            // Chọn một công ty ngẫu nhiên
-            Company affectedCompany = Companies[Random.Shared.Next(Companies.Count)];
+                // Apply the event effect to the corresponding company
+                Company affectedCompany = Companies.FirstOrDefault(c => c.Name == randomEvent.CompanyName);
+                if (affectedCompany != null)
+                {
+                    affectedCompany.SharePrice += affectedCompany.SharePrice * randomEvent.Effect / 100;
+                }
 
-            // Tạo hiệu ứng ngẫu nhiên (từ -10% đến +10%)
-            int effect = Random.Shared.Next(-10, 11);
+                StringBuilder prompt = RenderCompanyStocksTable();
+                prompt.AppendLine();
+                prompt.AppendLine($"Tin tức thị trường: {randomEvent.Description}");
+                prompt.AppendLine();
+                prompt.Append("Nhấn phím bất kỳ để tiếp tục...");
 
-            // Tạo mô tả sự kiện
-            string eventDescription = GenerateEventDescription(affectedCompany.Name, eventType, effect);
-
-            // Áp dụng hiệu ứng
-            affectedCompany.SharePrice += affectedCompany.SharePrice * effect / 100;
-
-            StringBuilder prompt = RenderCompanyStocksTable();
-            prompt.AppendLine();
-            prompt.AppendLine($"Tin tức thị trường: {eventDescription}");
-            prompt.AppendLine();
-            prompt.Append("Nhấn phím bất kỳ để tiếp tục...");
-
-            Console.Clear();
-            Console.Write(prompt);
-            Console.CursorVisible = false;
-            CloseRequested = CloseRequested || Console.ReadKey(true).Key == ConsoleKey.Escape;
+                Console.Clear();
+                Console.Write(prompt);
+                Console.CursorVisible = false;
+                CloseRequested = CloseRequested || Console.ReadKey(true).Key == ConsoleKey.Escape;
+            }
         }
 
         private string GenerateEventDescription(string companyName, string eventType, int effect)
@@ -357,13 +364,13 @@ namespace Quanlychitieu
             Console.WriteLine(@"
    
                          ,,,,,              ╓æ▓▓▓▓▓▓▄,
-              ╓▄▓▓▓▓▓▓▓▓▓▓▓▓▓▓Wç     ,╦▓╣╢╢╣▓▓▓▓▓▓▓▄
+              ╓▄▓▓▓▓▓▓▓▓▓▓▓▓▓▓Wç     ,╦▓╣╢╣╣▓▓▓▓▓▓▓▄
           ╓@▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▄  ╔▒╢╢╢╢╢▓╢▓▓▓▓▓▓▓▓      ,,,
        ,@▓▓╣╢╢╣▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▄▒╢╢╢╢╢╢▓╢▓▓▓▒▒▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▓▓▄
-     ╓╣╢╢╢╢╢╢╢╢▓▓▓▓▓▓▓▓▓▓▓╢╢╣▓▓▓▓▓▓▓▓╢╢╢╢╢╢▓╣╢▓▓▓▒▒▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▓▓▄
+     ╓╣╢╢╢╢╢╢╢╢▓▓▓▓▓▓▓▓▓▓▓╢╢╣▓▓▓▓▓▓▓▓╢╢╢╢╢╢▓╣╢▓▓▓▒▒▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▄
     ╣║╢╢╢╢╢╢╢╢╢╢╣▓▓▓▓▓▓▓▓╣╢╢╢╢╣▓▓▓▓▓▓▓╢╢╢╢╢▓╣▒▓▒▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▄
    ╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▓▓▓▒╢╢╢╫▓▓▒▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▓µ
-  ║╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▓▓▓▓▓╢╢╢▓▒╢▓▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▓▄
+  ║╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▓▓▓▓▓╢╢╢▓▒╢▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▓▄
   ║╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▓▓▓▓▒╢▒▒╢▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▓▓▌
   ╘╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▌║▒╢▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣╣╣╢╢▓▓▓▓▓▌
    ╙╣╢╢╣╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╫▓▓▓▒╢╫╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▓▓▓▓▓▓▓▓▓▓▓▌
@@ -376,12 +383,12 @@ namespace Quanlychitieu
                             ╢╢╢╫╝'╙╨╜    ╙╜`   ╩╢╣╢╢▓▓▄
                            /╨╙'   r^          '═  '╙╙╙▀L
                           ╒                            ▒,
-                                  💖         💖         └▒
+                                  💖         💖        └▒
                [ *`ⁿ.    ╛                              ▒▒    ' M`]
-              ]`╙     ⌐ ▓█▄           ▐╦╥▄╦▓            └▒▄ ^    '`ƒ
+              ]`╙     ⌐ ▓█▄            ╦╥▄╦             └▒▄ ^    '`ƒ
               ┐        ▓▓▓▓▓▄          └╙▀            ,▄█▓▓▀       ;
                \        ╘▀▓▓▓▓▄                     ,█▓▓▓▀        ╒
-                Y         ╙▓▓▓▓█                   ▄▓▓▓▓╘        ¿
+                Y         ╙▓▓▓▓█                   ▐▓▓▓▓▌        ¿
                  ^         ▓▓▓▓▓█                 ▐▓▓▓▓▌        ╛
                    \       ▐▓▓▓▓▓▓▄▄▄▓████▓▄▄▄▄▄,,▓▓▓▓▓▌      ⌐
                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
@@ -517,35 +524,24 @@ namespace Quanlychitieu
             return netWorth;
         }
 
+
+
         private void InitializeEvents()
         {
-            Events = new List<Event>
+            string jsonFilePath = "events.json"; // Đường dẫn đến file JSON của bạn
+            if (File.Exists(jsonFilePath))
             {
-                // Vingroup
-                new Event { Title = "Vingroup ra mắt mẫu xe điện mới", Description = "VinFast, công ty con của Vingroup, vừa ra mắt mẫu xe điện mới với công nghệ tiên tiến.", CompanyName = "Vingroup", Effect = 8 },
-                new Event { Title = "Vingroup mở rộng chuỗi bệnh viện", Description = "Vinmec, hệ thống y tế của Vingroup, công bố kế hoạch mở thêm nhiều bệnh viện trên cả nước.", CompanyName = "Vingroup", Effect = 5 },
-                new Event { Title = "Vingroup gặp khó khăn trong dự án bất động sản", Description = "Một dự án bất động sản lớn của Vingroup bị trì hoãn do vấn đề pháp lý.", CompanyName = "Vingroup", Effect = -7 },
+                // Đọc nội dung của file JSON
+                string jsonContent = File.ReadAllText(jsonFilePath);
 
-                // Viettel
-                new Event { Title = "Viettel triển khai 5G trên toàn quốc", Description = "Viettel công bố kế hoạch triển khai mạng 5G trên toàn quốc trong năm nay.", CompanyName = "Viettel", Effect = 10 },
-                new Event { Title = "Viettel giành được hợp đồng quốc phòng lớn", Description = "Viettel ký kết hợp đồng cung cấp giải pháp an ninh mạng cho Bộ Quốc phòng.", CompanyName = "Viettel", Effect = 12 },
-                new Event { Title = "Viettel gặp sự cố mạng lưới", Description = "Mạng di động của Viettel gặp sự cố trên diện rộng, ảnh hưởng đến nhiều khách hàng.", CompanyName = "Viettel", Effect = -8 },
-
-                // VNPay
-                new Event { Title = "VNPay hợp tác với chuỗi bán lẻ lớn", Description = "VNPay ký kết thỏa thuận hợp tác với một trong những chuỗi siêu thị lớn nhất Việt Nam.", CompanyName = "VNPay", Effect = 9 },
-                new Event { Title = "VNPay ra mắt tính năng thanh toán mới", Description = "VNPay giới thiệu tính năng thanh toán bằng nhận diện khuôn mặt, nâng cao trải nghiệm người dùng.", CompanyName = "VNPay", Effect = 7 },
-                new Event { Title = "VNPay bị điều tra về bảo mật dữ liệu", Description = "Cơ quan chức năng mở cuộc điều tra về cách VNPay xử lý dữ liệu cá nhân của khách hàng.", CompanyName = "VNPay", Effect = -10 },
-
-                // Masan Group
-                new Event { Title = "Masan mua lại chuỗi cửa hàng tiện lợi", Description = "Masan Group thông báo mua lại một chuỗi cửa hàng tiện lợi lớn, mở rộng mạng lưới bán lẻ.", CompanyName = "Masan Group", Effect = 11 },
-                new Event { Title = "Masan ra mắt sản phẩm thực phẩm mới", Description = "Masan Consumer, công ty con của Masan Group, giới thiệu dòng sản phẩm thực phẩm chức năng mới.", CompanyName = "Masan Group", Effect = 6 },
-                new Event { Title = "Masan gặp khó khăn trong hoạt động khai thác", Description = "Masan High-Tech Materials báo cáo sản lượng khai thác giảm do điều kiện thị trường không thuận lợi.", CompanyName = "Masan Group", Effect = -9 },
-
-                // FPT
-                new Event { Title = "FPT ký hợp đồng outsourcing lớn", Description = "FPT Software ký kết hợp đồng phát triển phần mềm trị giá hàng trăm triệu đô la với đối tác nước ngoài.", CompanyName = "FPT", Effect = 13 },
-                new Event { Title = "FPT mở rộng đầu tư vào AI và IoT", Description = "FPT công bố kế hoạch đầu tư mạnh mẽ vào nghiên cứu và phát triển AI và IoT.", CompanyName = "FPT", Effect = 8 },
-                new Event { Title = "FPT Education gặp khó khăn trong tuyển sinh", Description = "Hệ thống giáo dục của FPT báo cáo số lượng sinh viên đăng ký giảm trong năm học mới.", CompanyName = "FPT", Effect = -6 }
-            };
+                // Deserialize JSON thành danh sách các sự kiện
+                Events = JsonSerializer.Deserialize<List<Event>>(jsonContent);
+            }
+            else
+            {
+                Console.WriteLine("File JSON không tồn tại!");
+                Events = new List<Event>();  // Khởi tạo danh sách rỗng nếu file không tồn tại
+            }
         }
     }
 }

@@ -1,0 +1,390 @@
+﻿[
+
+  {
+    "Title": "Vingroup khai trương trung tâm thương mại lớn tại Hà Nội",
+    "Description": "Vingroup chính thức khai trương một trung tâm thương mại quy mô lớn tại Hà Nội, với hàng loạt thương hiệu quốc tế và khu vực giải trí hiện đại, thu hút đông đảo khách hàng.",
+    "CompanyName": "Vingroup",
+    "Effect": 7
+  },
+  {
+    "Title": "VinFast mở rộng thị trường sang Châu Âu",
+    "Description": "VinFast, công ty con của Vingroup, công bố kế hoạch mở rộng hoạt động kinh doanh xe điện sang thị trường châu Âu, với mục tiêu cạnh tranh trực tiếp với các hãng xe lớn.",
+    "CompanyName": "Vingroup",
+    "Effect": 7
+  },
+
+
+  {
+    "Title": "Vingroup đầu tư vào ngành công nghiệp thực phẩm sạch",
+    "Description": "Vingroup chính thức tham gia vào ngành công nghiệp thực phẩm sạch, với các trang trại và công nghệ sản xuất tiên tiến, đảm bảo cung cấp sản phẩm an toàn và bền vững.",
+    "CompanyName": "Vingroup",
+    "Effect": 7
+  },
+
+
+  {
+    "Title": "Vingroup ra mắt mẫu xe điện mới",
+    "Description": "VinFast, công ty con của Vingroup, vừa ra mắt mẫu xe điện mới với công nghệ tiên tiến.",
+    "CompanyName": "Vingroup",
+    "Effect": 8
+  },
+  {
+    "Title": "Vingroup công bố kế hoạch xây dựng bệnh viện quốc tế",
+    "Description": "Vingroup công bố dự án xây dựng một bệnh viện quốc tế hiện đại tại TP.HCM, với đội ngũ y tế hàng đầu và trang thiết bị công nghệ tiên tiến.",
+    "CompanyName": "Vingroup",
+    "Effect": 5
+  },
+  {
+    "Title": "Vingroup gặp khó khăn trong dự án bất động sản",
+    "Description": "Một dự án bất động sản lớn của Vingroup bị trì hoãn do vấn đề pháp lý.",
+    "CompanyName": "Vingroup",
+    "Effect": -7
+  },
+  {
+    "Title": "Vingroup hợp tác với đối tác trong lĩnh vực năng lượng tái tạo",
+    "Description": "Vingroup ký kết hợp đồng hợp tác với một công ty nước ngoài để phát triển các dự án năng lượng tái tạo tại Việt Nam, nhắm đến việc giảm lượng khí thải và sử dụng năng lượng bền vững.",
+    "CompanyName": "Vingroup",
+    "Effect": 9
+  },
+  {
+    "Title": "Vingroup ra mắt ứng dụng giáo dục mới",
+    "Description": "Vingroup giới thiệu ứng dụng giáo dục mới, cung cấp các khóa học trực tuyến cho học sinh và sinh viên.",
+    "CompanyName": "Vingroup",
+    "Effect": 6
+  },
+  {
+    "Title": "Vingroup ký kết hợp đồng với đối tác nước ngoài",
+    "Description": "Vingroup ký kết hợp đồng với một công ty nước ngoài để phát triển các dự án công nghệ cao.",
+    "CompanyName": "Vingroup",
+    "Effect": 10
+  },
+  {
+    "Title": "Vingroup mở rộng mạng lưới bán lẻ",
+    "Description": "Vingroup công bố kế hoạch mở rộng mạng lưới bán lẻ trên toàn quốc, bao gồm các siêu thị và cửa hàng tiện lợi.",
+    "CompanyName": "Vingroup",
+    "Effect": 8
+  },
+  {
+    "Title": "Vingroup gặp vấn đề về an toàn lao động",
+    "Description": "Một số công nhân của Vingroup bị tai nạn lao động, ảnh hưởng đến uy tín của công ty.",
+    "CompanyName": "Vingroup",
+    "Effect": -5
+  },
+  {
+    "Title": "Vingroup được vinh danh là doanh nghiệp hàng đầu",
+    "Description": "Vingroup được vinh danh là một trong những doanh nghiệp hàng đầu Việt Nam về đổi mới và phát triển.",
+    "CompanyName": "Vingroup",
+    "Effect": 12
+  },
+
+  {
+    "Title": "Vingroup triển khai dự án nghỉ dưỡng cao cấp tại Phú Quốc",
+    "Description": "Vingroup công bố dự án nghỉ dưỡng cao cấp tại Phú Quốc, với các biệt thự sang trọng và khu giải trí đẳng cấp, nhắm đến khách hàng quốc tế và trong nước.",
+    "CompanyName": "Vingroup",
+    "Effect": 10
+  },
+
+  {
+    "Title": "Vingroup gặp phản đối từ cộng đồng về dự án lấn biển",
+    "Description": "Một dự án lấn biển của Vingroup tại miền Trung gặp phản đối từ cộng đồng địa phương và các nhà hoạt động môi trường, gây áp lực lên tiến độ dự án.",
+    "CompanyName": "Vingroup",
+    "Effect": -6
+  },
+
+  {
+    "Title": "Viettel triển khai 5G trên toàn quốc",
+    "Description": "Viettel công bố kế hoạch triển khai mạng 5G trên toàn quốc trong năm nay.",
+    "CompanyName": "Viettel",
+    "Effect": 10
+  },
+  {
+    "Title": "Viettel giành được hợp đồng quốc phòng lớn",
+    "Description": "Viettel ký kết hợp đồng cung cấp giải pháp an ninh mạng cho Bộ Quốc phòng.",
+    "CompanyName": "Viettel",
+    "Effect": 12
+  },
+  {
+    "Title": "Viettel gặp sự cố mạng lưới",
+    "Description": "Mạng di động của Viettel gặp sự cố trên diện rộng, ảnh hưởng đến nhiều khách hàng.",
+    "CompanyName": "Viettel",
+    "Effect": -8
+  },
+  {
+    "Title": "Viettel ra mắt dịch vụ 5G thương mại",
+    "Description": "Viettel trở thành nhà mạng đầu tiên tại Việt Nam ra mắt dịch vụ 5G thương mại.",
+    "CompanyName": "Viettel",
+    "Effect": 15
+  },
+  {
+    "Title": "Viettel đầu tư vào công nghệ AI",
+    "Description": "Viettel công bố kế hoạch đầu tư vào nghiên cứu và phát triển công nghệ trí tuệ nhân tạo.",
+    "CompanyName": "Viettel",
+    "Effect": 11
+  },
+  {
+    "Title": "Viettel mở rộng mạng lưới quốc tế",
+    "Description": "Viettel công bố kế hoạch mở rộng mạng lưới viễn thông quốc tế, bao gồm các tuyến cáp quang biển.",
+    "CompanyName": "Viettel",
+    "Effect": 9
+  },
+  {
+    "Title": "Viettel gặp vấn đề về bảo mật dữ liệu",
+    "Description": "Viettel bị cáo buộc về vấn đề bảo mật dữ liệu của khách hàng, ảnh hưởng đến uy tín của công ty.",
+    "CompanyName": "Viettel",
+    "Effect": -10
+  },
+
+  {
+    "Title": "Viettel bị phạt vì vi phạm quy định về quảng cáo",
+    "Description": "Viettel bị cơ quan chức năng xử phạt vì vi phạm các quy định về quảng cáo dịch vụ viễn thông, với các chiến dịch quảng cáo không tuân thủ quy định hiện hành.",
+    "CompanyName": "Viettel",
+    "Effect": -7
+  },
+  {
+    "Title": "Viettel được công nhận là nhà mạng tốt nhất",
+    "Description": "Viettel được công nhận là nhà mạng tốt nhất Việt Nam về chất lượng dịch vụ và tốc độ mạng.",
+    "CompanyName": "Viettel",
+    "Effect": 14
+  },
+  {
+    "Title": "Viettel ra mắt dịch vụ chăm sóc sức khỏe trực tuyến",
+    "Description": "Viettel chính thức ra mắt dịch vụ chăm sóc sức khỏe trực tuyến, cho phép người dùng kết nối với các bác sĩ và chuyên gia y tế qua ứng dụng di động, cải thiện tiếp cận y tế.",
+    "CompanyName": "Viettel",
+    "Effect": 11
+  },
+
+  {
+    "Title": "Viettel triển khai công nghệ Blockchain trong quản lý dữ liệu",
+    "Description": "Viettel công bố kế hoạch triển khai công nghệ Blockchain trong việc quản lý dữ liệu khách hàng, nhằm tăng cường tính bảo mật và hiệu quả vận hành.",
+    "CompanyName": "Viettel",
+    "Effect": 8
+  },
+
+  {
+    "Title": "Viettel ký kết hợp đồng xây dựng mạng lưới tại Trung Đông",
+    "Description": "Viettel ký kết hợp đồng với một đối tác lớn tại Trung Đông để phát triển hạ tầng viễn thông và triển khai mạng lưới 5G, mở rộng thị phần quốc tế.",
+    "CompanyName": "Viettel",
+    "Effect": 9
+  },
+
+
+  {
+    "Title": "VNPay triển khai dịch vụ thanh toán bằng mã QR tại các cửa hàng tiện lợi",
+    "Description": "VNPay công bố việc triển khai dịch vụ thanh toán bằng mã QR tại hàng ngàn cửa hàng tiện lợi trên toàn quốc, giúp người dùng thanh toán nhanh chóng và tiện lợi hơn.",
+    "CompanyName": "VNPay",
+    "Effect": 12
+  },
+
+  {
+    "Title": "VNPay hợp tác với chuỗi bán lẻ lớn",
+    "Description": "VNPay ký kết thỏa thuận hợp tác với một trong những chuỗi siêu thị lớn nhất Việt Nam.",
+    "CompanyName": "VNPay",
+    "Effect": 9
+  },
+  {
+    "Title": "VNPay ra mắt tính năng thanh toán mới",
+    "Description": "VNPay giới thiệu tính năng thanh toán bằng nhận diện khuôn mặt, nâng cao trải nghiệm người dùng.",
+    "CompanyName": "VNPay",
+    "Effect": 7
+  },
+  {
+    "Title": "VNPay bị điều tra về bảo mật dữ liệu",
+    "Description": "Cơ quan chức năng mở cuộc điều tra về cách VNPay xử lý dữ liệu cá nhân của khách hàng.",
+    "CompanyName": "VNPay",
+    "Effect": -10
+  },
+  {
+    "Title": "VNPay mở rộng mạng lưới thanh toán",
+    "Description": "VNPay công bố kế hoạch mở rộng mạng lưới thanh toán trên toàn quốc, bao gồm các điểm giao dịch mới.",
+    "CompanyName": "VNPay",
+    "Effect": 8
+  },
+  {
+    "Title": "VNPay ra mắt ứng dụng di động mới",
+    "Description": "VNPay giới thiệu ứng dụng di động mới, cung cấp các tính năng thanh toán và quản lý tài chính.",
+    "CompanyName": "VNPay",
+    "Effect": 6
+  },
+  {
+    "Title": "VNPay ký kết hợp đồng với ngân hàng lớn",
+    "Description": "VNPay ký kết hợp đồng với một ngân hàng lớn để phát triển các dịch vụ tài chính.",
+    "CompanyName": "VNPay",
+    "Effect": 11
+  },
+  {
+    "Title": "VNPay gặp trục trặc trong hệ thống thanh toán trực tuyến",
+    "Description": "Hệ thống thanh toán trực tuyến của VNPay gặp sự cố kỹ thuật, gây ra tình trạng gián đoạn trong quá trình giao dịch của người dùng, ảnh hưởng đến uy tín công ty.",
+    "CompanyName": "VNPay",
+    "Effect": -9
+  },
+  {
+    "Title": "VNPay được công nhận là công ty fintech hàng đầu",
+    "Description": "VNPay được công nhận là một trong những công ty fintech hàng đầu Việt Nam về đổi mới và phát triển.",
+    "CompanyName": "VNPay",
+    "Effect": 13
+  },
+
+  {
+    "Title": "VNPay bị kiện về vấn đề bản quyền công nghệ",
+    "Description": "VNPay bị một công ty công nghệ nước ngoài kiện về vấn đề vi phạm bản quyền liên quan đến giải pháp thanh toán, khiến công ty phải đối mặt với các vụ kiện pháp lý nghiêm trọng.",
+    "CompanyName": "VNPay",
+    "Effect": -10
+  },
+  {
+    "Title": "VNPay ra mắt tính năng thanh toán đa tiền tệ",
+    "Description": "VNPay giới thiệu tính năng thanh toán đa tiền tệ, cho phép người dùng thực hiện giao dịch bằng nhiều loại tiền khác nhau trên cùng một nền tảng, mở rộng tính năng quốc tế.",
+    "CompanyName": "VNPay",
+    "Effect": 6
+  },
+
+
+
+  {
+    "Title": "Masan mua lại chuỗi cửa hàng tiện lợi",
+    "Description": "Masan Group thông báo mua lại một chuỗi cửa hàng tiện lợi lớn, mở rộng mạng lưới bán lẻ.",
+    "CompanyName": "Masan Group",
+    "Effect": 11
+  },
+  {
+    "Title": "Masan ra mắt sản phẩm thực phẩm mới",
+    "Description": "Masan Consumer, công ty con của Masan Group, giới thiệu dòng sản phẩm thực phẩm chức năng mới.",
+    "CompanyName": "Masan Group",
+    "Effect": 6
+  },
+  {
+    "Title": "Masan gặp khó khăn trong hoạt động khai thác",
+    "Description": "Masan High-Tech Materials báo cáo sản lượng khai thác giảm do điều kiện thị trường không thuận lợi.",
+    "CompanyName": "Masan Group",
+    "Effect": -9
+  },
+  {
+    "Title": "Masan đầu tư vào công nghệ nông nghiệp",
+    "Description": "Masan Group công bố kế hoạch đầu tư vào công nghệ nông nghiệp để nâng cao hiệu quả sản xuất.",
+    "CompanyName": "Masan Group",
+    "Effect": 10
+  },
+  {
+    "Title": "Masan tham gia hội chợ thương mại quốc tế tại Hà Nội",
+    "Description": "Masan sẽ tham gia hội chợ thương mại quốc tế tại Hà Nội, giới thiệu các sản phẩm thực phẩm và giải pháp công nghệ mới. Sự kiện hứa hẹn thu hút nhiều nhà đầu tư và khách hàng, giúp Masan mở rộng mạng lưới và tăng cường mối quan hệ với các đối tác toàn cầu.",
+    "CompanyName": "Masan Group",
+    "Effect": 10
+  },
+
+  {
+    "Title": "Masan ra mắt sản phẩm thực phẩm bổ sung vitamin",
+    "Description": "Để đáp ứng nhu cầu chăm sóc sức khỏe, Masan vừa công bố dòng sản phẩm thực phẩm bổ sung vitamin và khoáng chất. Sản phẩm này được thiết kế dành riêng cho người lớn và trẻ em, hứa hẹn mang lại lợi ích sức khỏe vượt trội cho người tiêu dùng.",
+    "CompanyName": "Masan Group",
+    "Effect": 12
+  },
+
+  {
+    "Title": "Masan hỗ trợ nông dân trong sản xuất nông nghiệp bền vững",
+    "Description": "Masan đã phát động chương trình hỗ trợ nông dân áp dụng công nghệ và kỹ thuật canh tác bền vững. Chương trình sẽ cung cấp tài liệu hướng dẫn và các khóa đào tạo miễn phí, nhằm cải thiện năng suất và giảm thiểu tác động đến môi trường trong sản xuất nông nghiệp.",
+    "CompanyName": "Masan Group",
+    "Effect": 8
+  },
+
+  {
+    "Title": "Masan mở rộng mạng lưới phân phối",
+    "Description": "Masan Group công bố kế hoạch mở rộng mạng lưới phân phối trên toàn quốc, bao gồm các kênh bán lẻ mới.",
+    "CompanyName": "Masan Group",
+    "Effect": 8
+  },
+  {
+    "Title": "Masan ký kết hợp đồng với đối tác nước ngoài",
+    "Description": "Masan Group ký kết hợp đồng với một công ty nước ngoài để phát triển các dự án nông nghiệp.",
+    "CompanyName": "Masan Group",
+    "Effect": 12
+  },
+  {
+    "Title": "Masan gặp vấn đề về an toàn thực phẩm",
+    "Description": "Một số sản phẩm của Masan Group bị cáo buộc về vấn đề an toàn thực phẩm, ảnh hưởng đến uy tín của công ty.",
+    "CompanyName": "Masan Group",
+    "Effect": -8
+  },
+  {
+    "Title": "Masan được vinh danh là doanh nghiệp phát triển bền vững",
+    "Description": "Masan Group được vinh danh là một trong những doanh nghiệp phát triển bền vững nhất Việt Nam.",
+    "CompanyName": "Masan Group",
+    "Effect": 14
+  },
+
+
+  {
+    "Title": "FPT ký hợp đồng outsourcing lớn",
+    "Description": "FPT Software ký kết hợp đồng phát triển phần mềm trị giá hàng trăm triệu đô la với đối tác nước ngoài.",
+    "CompanyName": "FPT",
+    "Effect": 13
+  },
+
+  {
+    "Title": "FPT tổ chức hội thảo về công nghệ blockchain",
+    "Description": "FPT sẽ tổ chức hội thảo về công nghệ blockchain, quy tụ nhiều chuyên gia trong ngành để chia sẻ những xu hướng mới và ứng dụng thực tiễn của công nghệ này. Sự kiện sẽ là nơi để các doanh nghiệp tìm hiểu và trao đổi thông tin, mở rộng cơ hội hợp tác.",
+    "CompanyName": "FPT",
+    "Effect": 13
+  },
+
+  {
+    "Title": "FPT mở khóa đào tạo về chuyển đổi số cho doanh nghiệp nhỏ",
+    "Description": "FPT vừa công bố mở khóa đào tạo miễn phí về chuyển đổi số dành cho các doanh nghiệp nhỏ và vừa. Khóa học sẽ cung cấp kiến thức cơ bản và các giải pháp thực tiễn giúp doanh nghiệp nâng cao hiệu quả hoạt động và cạnh tranh trong thời đại số hóa.",
+    "CompanyName": "FPT",
+    "Effect": 13
+  },
+
+  {
+    "Title": "FPT mở rộng đầu tư vào AI và IoT",
+    "Description": "FPT công bố kế hoạch đầu tư mạnh mẽ vào nghiên cứu và phát triển AI và IoT.",
+    "CompanyName": "FPT",
+    "Effect": 8
+  },
+  {
+    "Title": "FPT Education gặp khó khăn trong tuyển sinh",
+    "Description": "Hệ thống giáo dục của FPT báo cáo số lượng sinh viên đăng ký giảm trong năm học mới.",
+    "CompanyName": "FPT",
+    "Effect": -6
+  },
+  {
+    "Title": "FPT ra mắt sản phẩm công nghệ mới",
+    "Description": "FPT giới thiệu sản phẩm công nghệ mới, bao gồm các giải pháp AI và IoT.",
+    "CompanyName": "FPT",
+    "Effect": 9
+  },
+  {
+    "Title": "FPT ký kết hợp đồng với đối tác công nghệ",
+    "Description": "FPT ký kết hợp đồng với một công ty công nghệ để phát triển các dự án mới.",
+    "CompanyName": "FPT",
+    "Effect": 10
+  },
+  {
+    "Title": "FPT hợp tác với các trường đại học trong nghiên cứu AI",
+    "Description": "FPT đã ký kết hợp tác với một số trường đại học hàng đầu tại Việt Nam nhằm nghiên cứu và phát triển các ứng dụng trí tuệ nhân tạo. Hợp tác này không chỉ nâng cao chất lượng nghiên cứu mà còn tạo cơ hội cho sinh viên tham gia thực tập và phát triển sự nghiệp trong lĩnh vực công nghệ.",
+    "CompanyName": "FPT",
+    "Effect": 10
+  },
+
+  {
+    "Title": "FPT gặp vấn đề về an toàn mạng",
+    "Description": "FPT bị cáo buộc về vấn đề an toàn mạng, ảnh hưởng đến uy tín của công ty.",
+    "CompanyName": "FPT",
+    "Effect": -11
+  },
+  {
+    "Title": "FPT được công nhận là công ty công nghệ hàng đầu",
+    "Description": "FPT được công nhận là một trong những công ty công nghệ hàng đầu Việt Nam về đổi mới và phát triển.",
+    "CompanyName": "FPT",
+    "Effect": 15
+  },
+  {
+    "Title": "FPT phát động cuộc thi khởi nghiệp đổi mới sáng tạo",
+    "Description": "FPT đã phát động cuộc thi khởi nghiệp đổi mới sáng tạo với mục tiêu tìm kiếm và hỗ trợ các ý tưởng sáng tạo trong lĩnh vực công nghệ thông tin. Cuộc thi hứa hẹn sẽ mang đến nhiều cơ hội cho các startup trẻ, giúp họ hiện thực hóa ý tưởng và phát triển sản phẩm.",
+    "CompanyName": "FPT",
+    "Effect": 17
+  },
+
+  {
+    "Title": "FPT mở rộng mạng lưới quốc tế",
+    "Description": "FPT công bố kế hoạch mở rộng mạng lưới viễn thông quốc tế, bao gồm các tuyến cáp quang biển.",
+    "CompanyName": "FPT",
+    "Effect": 12
+  }
+]
