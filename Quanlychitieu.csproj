@@ -24,6 +24,9 @@
     </None>
     <None Update="Lack.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None> 
+    <None Update="loto.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Overpriced.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
