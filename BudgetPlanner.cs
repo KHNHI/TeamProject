@@ -8,7 +8,9 @@
         private const string BUDGET_FILE = "budget1.csv"; // Tên file bạn muốn lưu
         public Dictionary<string, decimal> categoryBudgets { get;  set; }
         Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
-
+        private Dictionary<string, bool> categoryBudgetSet; // Tracks if a budget is set for each category
+        private HashSet<string> enteredCategories; // Khai báo biến thành viên
+        private List<string> remainingCategories; // Khai báo biến thành viên
         private readonly string[] validCategories = new string[]
         {
                "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
@@ -16,7 +18,10 @@
         private DateTime lastBudgetSetTime;
         public BudgetPlanner(ExpenseTracker expenseTracker)
         {
+            enteredCategories = new HashSet<string>(); // Khởi tạo HashSet
+            remainingCategories = new List<string>(); // Khởi tạo List
             categoryBudgets = new Dictionary<string, decimal>(); // Khởi tạo ở đây
+            categoryBudgetSet = new Dictionary<string, bool>(); // Initialize the budget set tracking dictionary
             LoadBudgetFromCSV(); // Tải ngân sách khi khởi tạo
             this.expenseTracker = expenseTracker;
             LoadLastCategoryBudgetSetTime();
@@ -38,9 +43,10 @@
 
             List<string> remainingCategories = new List<string>(validCategories);
             HashSet<string> enteredCategories = new HashSet<string>();
-            
-            bool continueInput = true;
+
+            //bool continueInput = true;
             int windowWidth = Console.WindowWidth;
+            int originalTop = Console.CursorTop;
 
 
             string[] title =
@@ -65,147 +71,105 @@
             //    Console.WriteLine(line.PadLeft(padding + line.Length));
             //}
             Console.ResetColor();
-          
-            do
-            {
-               
-                if (remainingCategories.Count == 0)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Bạn đã nhập ngân sách cho tất cả các danh mục.");
-                    Console.ResetColor();
-                    break;
-                }
-                string categoryTitle = "CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH";
-                int padding = (windowWidth - categoryTitle.Length) / 2;
 
-                Console.WriteLine("" + categoryTitle.PadLeft(padding + categoryTitle.Length).PadRight(windowWidth - 2) + "║");
+            // Initialize categoryBudgetSet for valid categories
+            foreach (var category in validCategories)
+            {
+                if (!categoryBudgetSet.ContainsKey(category))
+                {
+                    categoryBudgetSet[category] = false; // Not set yet
+                }
+            }
+            if (CheckAllBudgetsSet())
+            {
+                // If the method returns true, it means budgets have been set for all categories
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Bạn đã nhập ngân sách cho tất cả các danh mục.");
+                Console.ResetColor();
+
+                // Display total budget and savings status
+                decimal totalBudget = GetTotalBudget();
+                Console.WriteLine($"Tổng ngân sách của bạn là: {totalBudget:#,##0₫}");
+                Console.WriteLine(expenseTracker.GetSavingsStatus()); // Display savings status
+                Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
+                Console.ReadKey(); // Wait for user to press a key to return to the main menu
+                return;
+            }
+
+            bool continueInput = true;
+            while (continueInput)
+            {
+                Console.Clear();
+                Console.SetCursorPosition(0, originalTop);
+
+                // Redraw the title
+                Console.ForegroundColor = ConsoleColor.Yellow;
+
+                foreach (string line in title)
+                {
+                    Console.WriteLine(line);
+                }
+                Console.ResetColor();
+
+                Console.WriteLine("CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH");
+
+                // Display categories with numbers
                 for (int i = 0; i < validCategories.Length; i++)
                 {
-                    if (remainingCategories.Contains(validCategories[i]))
+                    if (!categoryBudgetSet[validCategories[i]]) // Only show categories that haven't been budgeted
                     {
                         Console.WriteLine($"{i + 1}. {validCategories[i]}");
                     }
-
+                }
+                // Prompt user to enter a category number or exit
+                Console.WriteLine("Chọn danh mục (1-7) để đặt ngân sách hoặc nhấn ESC để thoát: ");
+                ConsoleKeyInfo keyInfo = Console.ReadKey(); // true to not display the pressed key
+                if (keyInfo.Key == ConsoleKey.Escape) // Check if the Esc key is pressed
+                {
+                    break; // Exit the loop
                 }
 
-                int choice;
-                while (true)
+                // Validate input and convert to an index
+                if (int.TryParse(keyInfo.KeyChar.ToString(), out int categoryIndex) && categoryIndex >= 1 && categoryIndex <= validCategories.Length)
                 {
-                    Console.Write("Nhập số tương ứng với danh mục: ");
-                    if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= validCategories.Length)
+                    string selectedCategory = validCategories[categoryIndex - 1]; // Get the category based on user input
+
+                    // Check if the budget for this category has already been set
+                    if (categoryBudgetSet[selectedCategory])
                     {
-                        string selectedCategory = validCategories[choice - 1];
-                        if (!CanSetCategoryBudget(selectedCategory))
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("╔══════════════════════════════════════════╗");
-                            Console.WriteLine("║ ⚠ Bạn đã nhập ngân sách cho danh mục  này. Bạn chỉ có thể đặt 1 lần mỗi tháng..║");
-                            Console.WriteLine("╚══════════════════════════════════════════╝");
-                            Console.ResetColor();
-                        }
-                        else if (remainingCategories.Contains(selectedCategory))
-                        {
-                            enteredCategories.Add(selectedCategory);
-                            remainingCategories.Remove(selectedCategory);
-                            break;
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("⚠ Danh mục này không còn trong danh sách. Vui lòng chọn danh mục khác.");
-                            Console.ResetColor();
-                        }
-
-
+                        Console.WriteLine("\nNgân sách cho danh mục này đã được đặt. Vui lòng chọn danh mục khác.");
+                        continue; // Skip to the next iteration
                     }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("⚠ Lựa chọn không hợp lệ. Vui lòng thử lại.");
-                        Console.ResetColor();
-                    }
-                }
-
-                decimal budget; 
-              
-                while (true)
-                {
-                    Console.Write($"Nhập số tiền ngân sách cho {validCategories[choice - 1]}: ");
+                    // Prompt for budget amount
+                    decimal budget;
+                    Console.WriteLine($"\nNhập ngân sách cho {selectedCategory}: ");
                     if (decimal.TryParse(Console.ReadLine(), out budget) && budget >= 0)
                     {
-                        categoryBudgets[validCategories[choice - 1]] = budget;
-                        categoryLastSetTimes[validCategories[choice - 1]] = DateTime.Now;
-                        Console.WriteLine($"✔ Ngân sách cho {validCategories[choice - 1]} đã được đặt {budget:#,##0₫}");
-                        break;
+                        // Set the budget for the selected category
+                        categoryBudgets[selectedCategory] = budget;
+                        categoryBudgetSet[selectedCategory] = true; // Mark as set
+                        Console.WriteLine($"Ngân sách cho {selectedCategory} đã được đặt: {budget:#,##0₫}");
+                        // Yêu cầu người dùng nhấn phím để tiếp tục
+                        Console.WriteLine("Nhấn phím bất kỳ để tiếp tục...");
+                        Console.ReadKey(); // Chờ người dùng nhấn phím
                     }
                     else
                     {
-                        Console.WriteLine("Số tiền không hợp lệ. Vui lòng nhập một số dương.");
+                        Console.WriteLine("Số tiền không hợp lệ. Vui lòng nhập lại.");
                     }
-                }
-
-                if (remainingCategories.Count > 0)
-                {
-                    Console.WriteLine($"Bạn còn {remainingCategories.Count} danh mục chưa nhập ngân sách");
-
-                    Console.Write("Bạn có muốn tiếp tục nhập ngân sách cho các danh mục còn lại? (y/n): ");
-                    string input2 = Console.ReadLine()?.ToLower() ?? "n";
-                    if (input2 == "y")
-                    {
-                        continueInput = true; // Đặt biến kiểm soát thành false nếu người dùng không muốn tiếp tục
-                    }
-                    else if (input2 == "n")
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("╔══════════════════════════════════════════╗");
-                        Console.WriteLine("║ LƯU Ý:                                   ║");
-                        Console.WriteLine("║ Bạn chỉ nên nhập chi tiêu cho những      ║");
-                        Console.WriteLine("║ danh mục đã đặt ngân sách (khuyến khích  ║");
-                        Console.WriteLine("║ nên đặt ngân sách cho 1 lần).            ║");
-                        Console.WriteLine("╚══════════════════════════════════════════╝");
-                        Console.ResetColor();
-
-                        Console.WriteLine("Nhấn phím 'c' để tiếp tục đặt ngân sách hoặc nhấn bất kỳ phím để thoát");
-                        string input3 = Console.ReadLine()?.ToLower() ?? "x";
-                        if (input3 == "c")
-                        {
-                            continueInput = true;
-                        }
-                        else
-                        {
-                            continueInput = false;
-                            break;
-                        }
-
-                       
-
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Vui lòng nhập đúng ký tự (y/n/c)");
-                        Console.ResetColor();
-                        continueInput = true;
-                    }
-
-
                 }
                 else
                 {
-                    Console.WriteLine("Tất cả danh mục đã được đặt ngân sách.");
-                    continueInput = false;
+                    Console.WriteLine("Danh mục không hợp lệ. Vui lòng thử lại.");
                 }
 
-
-            } while (continueInput);
-            
-            //lastBudgetSetTime = DateTime.Now;
-            SaveLastCategoryBudgetSetTime();
-
+            }
             // Lưu dữ liệu vào file csv sau khi đặt xong ngân sách
             SaveBudgetToCSV(categoryBudgets);
-        }
+            SaveLastCategoryBudgetSetTime();
+
+             }
+
 
         public void SaveBudgetToCSV(Dictionary<string, decimal> budgets)
         {
@@ -241,6 +205,8 @@
                         {
                             string category = parts[0].Trim();
                             categoryBudgets[category] = budget; // Thêm ngân sách vào dictionary
+                            categoryBudgetSet[category] = true; // Mark as set
+
                         }
                     }
                 }
@@ -266,18 +232,18 @@
             return true; // Tất cả danh mục đã có ngân sách
         }
 
-
         private bool CanSetCategoryBudget(string category)
-        {
-            if (categoryLastSetTimes.ContainsKey(category))
+        { // Kiểm tra nếu categoryLastSetTimes không có danh mục đó => được phép đặt ngân sách mới
+            if (!categoryLastSetTimes.ContainsKey(category))
             {
-                // Kiểm tra xem có đủ một tháng kể từ lần đặt ngân sách trước hay chưa
-                return DateTime.Now >= categoryLastSetTimes[category].AddMonths(1);
+                return true;
             }
+            // Kiểm tra thời gian hiện tại so với lần đặt ngân sách cuối cùng cho danh mục này
+            DateTime lastSetTime = categoryLastSetTimes[category];
+            DateTime nextAllowedSetTime = lastSetTime.AddMonths(1);
 
-            // Nếu danh mục chưa có ngân sách trước đó, cho phép đặt ngân sách
-            return true;
-          
+            // Nếu thời gian hiện tại >= thời gian được phép đặt tiếp, trả về true, ngược lại trả về false
+            return DateTime.Now >= nextAllowedSetTime;
         }
 
         private void SaveLastCategoryBudgetSetTime()

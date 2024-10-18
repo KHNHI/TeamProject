@@ -16,15 +16,12 @@ class Program
 
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;
-
-
-        //DataSync dataSync = new DataSync();
         ExpenseTracker expenseTracker = new ExpenseTracker();
-
         BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker);
         FinancialReport financialReport = new FinancialReport();
         expenseTracker.LoadExpenses();
         expenseTracker.LoadMockExpenses();
+        budgetPlanner.LoadBudgetFromCSV();
         expenseTracker.SetBudgetPlanner(budgetPlanner);
         budgetPlanner.GetTotalBudget();
         while (true)
@@ -95,25 +92,10 @@ class Program
                             };
                             DrawCenteredBorder(expenseCategories);
                             expenseTracker.EnterExpense();
-
-                            Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục chọn danh mục chi tiêu");
-
-                            keyInfo = Console.ReadKey(true);
-                            if (keyInfo.Key == ConsoleKey.Escape)
-                            {
-                                continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                            }
-
-                            if (TurnBack())
-                            {
-                                continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                            }
-
                             break;
                         case "2":
                             Console.Clear();
                             expenseTracker.EnterIncome();
-
 
                             if (TurnBack())
                             {
@@ -145,29 +127,11 @@ class Program
                         Console.ReadKey(); // Đợi người dùng nhấn phím để quay lại menu chính
                         break;
                     }
-                    if (budgetPlanner.CheckAllBudgetsSet())
-                    {
-                        // Nếu hàm trả về true, nghĩa là đã đặt ngân sách cho tất cả danh mục
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Bạn đã nhập ngân sách cho tất cả các danh mục.");
-                        Console.ResetColor();
-                        Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
-                        Console.ReadKey(); // Đợi người dùng nhấn phím để quay lại menu chính
-                        decimal totalBudget = budgetPlanner.GetTotalBudget();
-                        Console.WriteLine($"Tổng ngân sách của bạn là: {totalBudget} VND");
-                        expenseTracker.GetSavingsStatus();
-
-                    }
                     else
                     {
                         budgetPlanner.SetCategoryBudget();
                     }
-
-                    if (TurnBack())
-                    {
-                        continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                    }
-
+                  
                     break;
                 case "3":
                     Console.Clear();
