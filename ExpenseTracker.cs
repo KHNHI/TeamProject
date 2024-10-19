@@ -77,7 +77,7 @@ namespace Quanlychitieu
         }
         public void EnterExpense()
         {
-            while (true) // Start an infinite loop
+            while (true) 
             {
                 try
                 {
@@ -847,8 +847,8 @@ namespace Quanlychitieu
                 int windowHeight = Console.WindowHeight;
 
 
-                int boxWidth = 30;
-                int boxHeight = 5;
+                int boxWidth = 40;
+                int boxHeight = 10;
                 int yearBoxX = (windowWidth / 2) - boxWidth - 2;
                 int monthBoxX = (windowWidth / 2) + 2;
                 int boxY = 10;
@@ -861,30 +861,43 @@ namespace Quanlychitieu
 
 
             }
-
+            
             static void GetUserInput()
             {
-                int yearBoxX = (Console.WindowWidth / 2) - 30;
-                Console.SetCursorPosition(yearBoxX + 11, 12); // Vị trí nhập trong khung năm
+                int yearBoxX = (Console.WindowWidth / 2) - 40;
+                int inputY = 14;
+                Console.SetCursorPosition(yearBoxX + 9, inputY);
+                //Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(yearBoxX + 9, inputY); // Vị trí nhập trong khung năm
                 while (!int.TryParse(Console.ReadLine(), out selectedYear) || selectedYear < 1)
                 {
-                    Console.SetCursorPosition(yearBoxX + 11, 12);
-                    ClearCurrentLine();
-                    Console.SetCursorPosition(yearBoxX + 11, 12);
-                    Console.Write("Vui lòng nhập năm hợp lệ.");
+                    Console.SetCursorPosition(yearBoxX + 9, inputY);
+                   ClearCurrentLine(yearBoxX + 9, inputY);
+                   Console.SetCursorPosition(yearBoxX + 9, inputY);
+                   Console.Write("Vui lòng nhập năm hợp lệ.");
+                    System.Threading.Thread.Sleep(1000);
+                    ClearCurrentLine(yearBoxX +9, inputY);
+                    Console.SetCursorPosition(yearBoxX + 9, inputY);
                 }
-
+                Console.ResetColor();   
                 // Input cho tháng
                 int monthBoxX = (Console.WindowWidth / 2) + 2;
-                Console.SetCursorPosition(monthBoxX + 15, 12); // Vị trí nhập trong khung tháng
+                
+                Console.SetCursorPosition(monthBoxX + 12, inputY ); 
+               // Console.ForegroundColor = ConsoleColor.White;
                 while (!int.TryParse(Console.ReadLine(), out selectedMonth) || selectedMonth < 1 || selectedMonth > 12)
                 {
-                    Console.SetCursorPosition(monthBoxX + 15, 12);
-                    ClearCurrentLine();
-                    Console.SetCursorPosition(monthBoxX + 15, 12);
+                    Console.SetCursorPosition(monthBoxX + 12, inputY);
+                    ClearCurrentLine(monthBoxX +12,inputY);
+                   
                     Console.Write("Vui lòng nhập tháng hợp lệ (1-12).");
+                    System.Threading.Thread.Sleep(1000);
+                    ClearCurrentLine(monthBoxX+12, inputY);
+                    Console.SetCursorPosition(monthBoxX + 12, inputY);
+                    //ClearCurrentLine();
+                    
                 }
-
+                Console.ResetColor();
             }
             static void DrawBox(int x, int y, int width, int height, string title)
             {
@@ -895,8 +908,11 @@ namespace Quanlychitieu
                 Console.Write("╔" + new string('═', width - 2) + "╗");
 
                 // Draw title
-                Console.SetCursorPosition(x + 4, y);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.SetCursorPosition(x + 9, y);
                 Console.Write(title);
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
 
                 // Draw side borders
                 for (int i = 1; i < height - 1; i++)
@@ -910,16 +926,23 @@ namespace Quanlychitieu
                 Console.Write("╚" + new string('═', width - 2) + "╝");
                 Console.ResetColor();
             }
-            static void ClearCurrentLine()
+            static void ClearCurrentLine(int startX, int startY)
             {
-                int currentLineCursor = Console.CursorTop;
-                Console.SetCursorPosition(0, currentLineCursor);
-                Console.Write(new string(' ', Console.WindowWidth));
-                Console.SetCursorPosition(0, currentLineCursor);
+                Console.SetCursorPosition(startX, startY);
+
+              
+                Console.Write(new string(' ', Console.WindowWidth - startX));
+
+                
+                Console.SetCursorPosition(startX, startY);
+
+                //int currentLineCursor = Console.CursorTop;
+                //Console.SetCursorPosition(0, currentLineCursor);
+                //Console.Write(new string(' ', Console.WindowWidth));
+                //Console.SetCursorPosition(Console.CursorLeft, currentLineCursor);
             }
 
-
-
+            bool isSelectingDay = false; // Thêm biến để theo dõi trạng thái chọn ngày
             bool move = true;
             while (move)
             {
@@ -934,35 +957,95 @@ namespace Quanlychitieu
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        MoveSelection(-1, 0);
+                        if (isSelectingDay)
+                        {
+                            MoveSelection(-1, 0); 
+                        }
+                        else
+                        {
+                            selectedYear++; // Tăng năm nếu không chọn ngày
+                        }
                         break;
                     case ConsoleKey.DownArrow:
-                        MoveSelection(0, 1);
+                        if (isSelectingDay)
+                        {
+                            MoveSelection(1, 0); // Di chuyển xuống nếu đang chọn ngày
+                        }
+                        else
+                        {
+                            selectedYear--; // Giảm năm nếu không chọn ngày
+                        }
                         break;
                     case ConsoleKey.LeftArrow:
-                        MoveSelection(0, -1);
+                        if (isSelectingDay)
+                        {
+                            MoveSelection(0, -1); // Di chuyển sang trái nếu đang chọn ngày
+                        }
+                        else
+                        {
+                            selectedMonth--; // Giảm tháng nếu không chọn ngày
+                            if (selectedMonth < 1)
+                            {
+                                selectedMonth = 12; // Quay về tháng 12
+                                selectedYear--; // Giảm năm
+                            }
+                        }
                         break;
                     case ConsoleKey.RightArrow:
-                        MoveSelection(0, 1);
+                        if (isSelectingDay)
+                        {
+                            MoveSelection(0, 1); // Di chuyển sang phải nếu đang chọn ngày
+                        }
+                        else
+                        {
+                            selectedMonth++; // Tăng tháng nếu không chọn ngày
+                            if (selectedMonth > 12)
+                            {
+                                selectedMonth = 1; // Quay về tháng 1
+                                selectedYear++; // Tăng năm
+                            }
+                        }
+                        break;
+                    case ConsoleKey.Enter: // Nếu chọn ngày
+                        if (isSelectingDay)
+                        {
+                            ShowDayInfo(); // Hiển thị thông tin ngày được chọn
+                        }
+                        else 
+                        {
+                            isSelectingDay = true;
+                            
+                        }
+                        break;
+                    case ConsoleKey.Delete:// Nếu muốn chọn tháng và năm 
+                        if (isSelectingDay)
+                        {
+                            isSelectingDay = false;
+                        }
+
                         break;
                     case ConsoleKey.Escape:
-                        move = false;
-                        Console.WriteLine("Nhấm phím ESC để thoát:");
+                        move = false; // Thoát vòng lặp
+                        Console.WriteLine("Nhấn phím ESC để thoát:");
                         break;
+                }
 
-
-                        //case ConsoleKey.Tab:
+                if (isSelectingDay)
+                {
+                    MoveSelection(0, 0); // Cập nhật vị trí chọn ngày
                 }
             }
+
+           
         }
         static void DrawHeader()
         {
             Console.Clear();
-            string titleYear =
+            string titleYear =  "     𝑪𝑨𝑳𝑬𝑵𝑫𝑨𝑹 𝑶𝑭 𝑻𝑯𝑬 𝒀𝑬𝑨𝑹 " + selectedYear ;
 
-                "𝑪𝑨𝑳𝑬𝑵𝑫𝑨𝑹 𝑶𝑭 𝑻𝑯𝑬 𝒀𝑬𝑨𝑹" + selectedYear;
+               
 
-            Console.SetCursorPosition((Console.WindowWidth - titleYear.Length) / 2, 1);
+            Console.SetCursorPosition((Console.WindowWidth - titleYear.Length ) / 2, 2);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(titleYear);
             Console.ResetColor();
@@ -998,11 +1081,11 @@ namespace Quanlychitieu
         static void DrawCalendarBox()
         {
             // Drawing a box to contain the calendar
-            int boxWidth = 29;
-            int boxHeight = 8;
+            int boxWidth = 80;
+            int boxHeight = 16;
             int startX = (Console.WindowWidth - boxWidth) / 2;
             int startY = 3;
-
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.SetCursorPosition(startX, startY);
             Console.Write("╔" + new string('═', boxWidth) + "╗");
 
@@ -1014,42 +1097,52 @@ namespace Quanlychitieu
 
             Console.SetCursorPosition(startX, startY + boxHeight + 1);
             Console.Write("╚" + new string('═', boxWidth) + "╝");
+            Console.ResetColor();
 
             // Display current month inside the box
+            Console.ForegroundColor = ConsoleColor.Cyan;
             string monthName = new DateTime(selectedYear, selectedMonth, 1).ToString("MMMM");
             string monthDisplay = $" {monthName} {selectedYear} ";
             Console.SetCursorPosition(startX + (boxWidth - monthDisplay.Length) / 2, startY + 1);
             Console.WriteLine(monthDisplay);
+            Console.ResetColor();
         }
         static void DrawOptions()
         {
             // Drawing bottom options
-            string options = "[Up/Down: Change Year] [Left/Right: Change Month] [Esc: Exit]";
+            string options = "[Up/Down: Thay đổi năm] [Left/Right: Thay đổi tháng] [Esc: Exit] " +
+                "[Enter: Chọn ngày] [Delete: Chọn tháng và năm] ";
             Console.SetCursorPosition((Console.WindowWidth - options.Length) / 2, Console.WindowHeight - 2);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(options);
             Console.ResetColor();
         }
         static void DrawCalendar()
-        {
-            string[] dayNames = { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
-            int startX = (Console.WindowWidth - 29) / 2 + 2;
-            int startY = 5;
+        {   Console.ForegroundColor = ConsoleColor.Yellow;
+            string[] dayNames = { "Thứ hai ", "Thứ ba ", "Thứ tư ", "Thứ năm ", "Thứ sáu ", "Thứ bảy ", "Chủ nhật " };
+            int startX = (Console.WindowWidth - 55 - dayNames.Length) / 2 ;
+            int startY = 6;
+            
 
-            // Display day names
+            
 
             Console.SetCursorPosition(startX, startY);
             foreach (var day in dayNames)
             {
-                Console.Write(day + " ");
+                Console.Write(day.PadRight(10));
             }
             for (int i = 0; i < calendarTracker.GetLength(0); i++)
             {
-                Console.SetCursorPosition(startX, startY + i + 1);
+                Console.SetCursorPosition(startX, startY + i * 2 + 2); // khoảng cách giữa các số liền kề theo đường dọc ,
                 for (int j = 0; j < calendarTracker.GetLength(1); j++)
                 {
                     if (calendarTracker[i, j] > 0)
                     {
+                        if ( i == selectedRow && j == selectedCol )
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkBlue;
+                            
+                        }
                         if (j == 6) // Sunday in red
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
@@ -1059,15 +1152,16 @@ namespace Quanlychitieu
                             Console.ForegroundColor = ConsoleColor.White;
                         }
 
-                        Console.Write(calendarTracker[i, j].ToString("D2") + " ");
+                        Console.Write(calendarTracker[i, j].ToString("D2").PadRight(10));
                     }
                     else
                     {
-                        Console.Write("   ");
+                        Console.Write(" ".PadRight(10));
                     }
 
                     Console.ResetColor();
                 }
+                Console.Write('\n');
             }
 
         }
@@ -1091,6 +1185,7 @@ namespace Quanlychitieu
             if (selectedDay >= 0 && selectedDay < calendarTracker.GetLength(0) && selectedDay < calendarTracker.GetLength(1))
             {
                 Console.Clear();
+
                 DrawHeader();
                 DrawCalendar();
 
