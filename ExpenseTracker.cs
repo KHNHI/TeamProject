@@ -5,6 +5,8 @@ namespace Quanlychitieu
     internal class ExpenseTracker
     {
         private Dictionary<string, decimal> expenses = new Dictionary<string, decimal>();
+        private List<Expense> expenseList = new List<Expense>();
+
         private string filePath = "expenses.json";
         private Dictionary<string, Dictionary<int, double>> monthlyExpenses;
         private int currentMonth = DateTime.Now.Month;
@@ -161,6 +163,12 @@ namespace Quanlychitieu
         private void EnterTransaction(string category, decimal amount, bool isExpense)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            if (isExpense)
+            {
+                Expense expense = new Expense(category, amount, DateTime.Now);
+                expenseList.Add(expense); // Thêm chi tiêu vào danh sách
+            }
+
             int categoryIndex = Array.IndexOf(validCategories, category);
             // Check if the category exists in monthly expenses
             if (!monthlyExpenses.ContainsKey(category))
@@ -174,6 +182,7 @@ namespace Quanlychitieu
             }
             // Update the monthly expenses
             monthlyExpenses[category][month] += (double)amount;
+           
             // Update the total expenses for the category
             if (expenses.ContainsKey(category))
             {
@@ -1030,10 +1039,10 @@ namespace Quanlychitieu
                         break;
                 }
 
-                if (isSelectingDay)
-                {
-                    MoveSelection(0, 0); // Cập nhật vị trí chọn ngày
-                }
+                //if (isSelectingDay)
+                //{
+                //    MoveSelection(0, 0); // Cập nhật vị trí chọn ngày
+                //}
             }
 
            
@@ -1179,18 +1188,43 @@ namespace Quanlychitieu
             DrawCalendar();
 
         }
-        static void ShowDayInfo()
+        public void ShowDayInfo()
         {
             int selectedDay = calendarTracker[selectedRow, selectedCol];
-            if (selectedDay >= 0 && selectedDay < calendarTracker.GetLength(0) && selectedDay < calendarTracker.GetLength(1))
+            if (selectedDay >= 0) // Kiểm tra nếu ngày hợp lệ
             {
                 Console.Clear();
+                Console.WriteLine($"Nhật ký chi tiêu cho ngày {selectedDay}/{selectedMonth}/{selectedYear}:");
 
+                // Hiển thị thông tin chi tiêu cho ngày đã chọn
+                var expensesForSelectedDay = expenseList.Where(expense =>
+                    expense.Date.Day == selectedDay &&
+                    expense.Date.Month == selectedMonth &&
+                    expense.Date.Year == selectedYear).ToList();
+
+                if (expensesForSelectedDay.Any())
+                {
+                    foreach (var expense in expensesForSelectedDay)
+                    {
+                        Console.WriteLine($"Danh mục: {expense.Category}, Số tiền: {expense.Amount:#,##0₫}, Ngày: {expense.Date}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Không có chi tiêu nào ghi nhận cho ngày này.");
+                }
+
+                // Tùy chọn để người dùng quay lại
+                Console.WriteLine("\nNhấn phím bất kỳ để quay lại.");
+                Console.ReadKey();
+
+                // Hiển thị lại lịch sau khi xem thông tin chi tiêu
                 DrawHeader();
                 DrawCalendar();
-
             }
         }
+
+       
     }
 
 }

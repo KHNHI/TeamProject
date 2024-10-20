@@ -24,6 +24,7 @@ class Program
         budgetPlanner.LoadBudgetFromCSV();
         expenseTracker.SetBudgetPlanner(budgetPlanner);
         budgetPlanner.GetTotalBudget();
+        
         while (true)
         {
             Console.Clear();
