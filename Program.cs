@@ -13,6 +13,8 @@ class Program
 {
     static void Main(string[] args)
     {
+        Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
         Intro();
 
         Console.OutputEncoding = Encoding.UTF8;
