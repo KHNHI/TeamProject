@@ -101,10 +101,11 @@ namespace Quanlychitieu
                         {
                             expenses[category] = 0; // Khởi tạo giá trị cho danh mục
                         }
-                        Console.WriteLine($"Danh mục bạn đã chọn: {category}");
+                       
                         decimal budgetForCategory = budgetPlanner.GetBudgetForCategory(category);
-                        Console.WriteLine($"Ngân sách bạn đã đặt cho '{category}': {budgetForCategory:#,##0₫}");
-                        Console.WriteLine($"Số tiền bạn đã chi tiêu cho {category} là {Math.Abs(expenses[category]).ToString("#,##0₫")}");
+                        decimal amountSpent = expenses[category];
+                        ShowExpenseInfo(category,budgetForCategory,amountSpent);
+                      
 
                         if (budgetForCategory <= 0)
                         {
@@ -137,7 +138,9 @@ namespace Quanlychitieu
                         }
                         if (expenses.ContainsKey(category))
                         {
-                            Console.WriteLine($"Số tiền bạn đã chi tiêu cho {category} là {Math.Abs(expenses[category]).ToString("#,##0₫")}");
+                            amountSpent = expenses[category];
+                            ShowExpenseInfo(category, budgetForCategory, amountSpent);
+                           // Console.WriteLine($"Số tiền bạn đã chi tiêu cho {category} là {Math.Abs(expenses[category]).ToString("#,##0₫")}");
                         }
                         else
                         {
@@ -159,6 +162,29 @@ namespace Quanlychitieu
                 }
                 Console.WriteLine();
             }
+        }
+        public void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
+        {
+           
+            string header = $"Danh mục: {category}";
+            string budgetInfo = $"Ngân sách đã đặt cho '{category}': {budgetForCategory:#,##0₫}";
+            string expenseInfo = $"Số tiền đã chi tiêu cho '{category}': {Math.Abs(amountSpent):#,##0₫}";
+
+           
+            int maxLength = Math.Max(Math.Max(header.Length, budgetInfo.Length), expenseInfo.Length) + 4;
+
+            // Tạo khung trang trí
+            string topBorder = "╔" + new string('═', maxLength) + "╗";
+            string bottomBorder = "╚" + new string('═', maxLength) + "╝";
+
+            // Hiển thị thông tin trong khung
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(topBorder);
+            Console.WriteLine("║ " + header.PadRight(maxLength - 2) + " ║");
+            Console.WriteLine("║ " + budgetInfo.PadRight(maxLength - 2) + " ║");
+            Console.WriteLine("║ " + expenseInfo.PadRight(maxLength - 2) + " ║");
+            Console.WriteLine(bottomBorder);
+            Console.ResetColor();
         }
         private void EnterTransaction(string category, decimal amount, bool isExpense)
         {
@@ -230,7 +256,9 @@ namespace Quanlychitieu
                 }
 
             }
-            Console.WriteLine("Nhập số tiền thu nhập:");
+            DisplayCenteredMessageInBox("Nhập số tiền thu nhập:");
+
+           
             string? incomeInput = Console.ReadLine();
             decimal amount = 0;
             if (!string.IsNullOrEmpty(incomeInput) && decimal.TryParse(incomeInput, out amount))
@@ -251,6 +279,24 @@ namespace Quanlychitieu
             SaveIncomeEntryTime();
             SaveTotalIncome();
             SaveIncomeEnteredStatus();
+        }
+        public void DisplayCenteredMessageInBox(string message)
+        {
+            // Độ dài tối thiểu của khung
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            int boxWidth = Math.Max(message.Length + 4, 40); // Đảm bảo khung đủ rộng, ít nhất là 40 ký tự
+            string topBorder = "╔" + new string('═', boxWidth) + "╗";
+            string bottomBorder = "╚" + new string('═', boxWidth) + "╝";
+
+            // Tính toán vị trí của thông điệp ở giữa khung
+            int padding = (boxWidth - message.Length) / 2;
+            string paddedMessage = new string(' ', padding) + message + new string(' ', boxWidth - message.Length - padding);
+
+            // Hiển thị khung và thông điệp
+            Console.WriteLine(topBorder);
+            Console.WriteLine("║" + paddedMessage + "║");
+            Console.WriteLine(bottomBorder);
+            Console.ResetColor();
         }
         private void SaveTotalIncome()
         {
