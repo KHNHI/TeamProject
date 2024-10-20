@@ -32,12 +32,25 @@ namespace Quanlychitieu
         private bool incomeEnteredThisMonth = false;//Kiểm tra xem đã nhập thu nhập cho tháng này chưa 
         private DateTime lastIncomeEntryTime;// Thời gian nhập thu gần nhất 
 
+        public class Expense // Nested class
+        {
+            public string Category { get; set; }
+            public decimal Amount { get; set; }
+            public DateTime Date { get; set; }
 
+            public Expense(string category, decimal amount, DateTime date)
+            {
+                Category = category;
+                Amount = amount;
+                Date = date;
+            }
+        }
         public ExpenseTracker()//BudgetPlanner budgetPlanner)
         {
             this.budgetPlanner = budgetPlanner;
             monthlyExpenses = new Dictionary<string, Dictionary<int, double>>();
             LoadExpenses();
+            LoadMockExpenses();
             LoadIncomeEntryTime();
             LoadTotalIncome();
             LoadIncomeEnteredStatus();
@@ -55,10 +68,10 @@ namespace Quanlychitieu
             }
             return !incomeEnteredThisMonth;
         }
-        private decimal GetOverspending()
-        {
-            return TotalExpenses > TotalBudget ? TotalExpenses - TotalBudget : 0;
-        }
+        //private decimal GetOverspending()
+        //{
+        //    return TotalExpenses > TotalBudget ? TotalExpenses - TotalBudget : 0;
+        //}
         private string GetExpenseCategory()
         {
             if (categoryChoice == null)
@@ -83,8 +96,19 @@ namespace Quanlychitieu
             {
                 try
                 {
-                    Console.WriteLine("Nhấn phím tương ứng để chọn danh mục chi tiêu (hoặc nhấn ESC để quay lại menu chính): ");
+                    decimal totalIncome = TotalIncome; // Lấy tổng thu nhập
+                    decimal totalExpenses = GetTotalExpenses(); // Lấy tổng chi tiêu
+                    // Kiểm tra xem tổng chi tiêu có bằng tổng thu nhập không
+                    if (totalExpenses >= totalIncome)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red; // Đổi màu chữ thành đỏ
+                        Console.WriteLine("⚠️ Bạn không thể nhập thêm chi tiêu vì tổng chi tiêu đã bằng hoặc vượt quá tổng thu nhập.");
+                        Console.ReadLine();
+                        Console.ResetColor(); // Đặt lại màu về mặc định
+                        return; // Kết thúc phương thức nếu điều kiện đúng
+                    }
 
+                    Console.WriteLine("Nhấn phím tương ứng để chọn danh mục chi tiêu (hoặc nhấn ESC để quay lại menu chính): ");
                     // Read a key press
                     ConsoleKeyInfo keyInfo = Console.ReadKey();
                     // Check if the user wants to exit
@@ -108,9 +132,9 @@ namespace Quanlychitieu
                       
 
                         if (budgetForCategory <= 0)
-                        {
+                        {   Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"Chưa có ngân sách cho danh mục '{category}'. Vui lòng đặt ngân sách trước khi nhập chi tiêu.");
-                            Console.Write($"Bạn có muốn đặt ngân sách không? (y/n): ");
+                            Console.Write($"Bạn có muốn đặt ngân sách ngay không? (y/n): ");
                             var input = Console.ReadLine();
                             if (input?.ToLower() == "y")
                             {
@@ -151,6 +175,7 @@ namespace Quanlychitieu
                     {
                         Console.WriteLine("Danh mục không hợp lệ. Vui lòng thử lại.");
                     }
+
                 }
                 catch (NullReferenceException ex)
                 {
@@ -160,7 +185,6 @@ namespace Quanlychitieu
                 {
                     Console.WriteLine("Đã xảy ra lỗi: " + ex.Message);
                 }
-                Console.WriteLine();
             }
         }
         public void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
@@ -259,16 +283,22 @@ namespace Quanlychitieu
             DisplayCenteredMessageInBox("Nhập số tiền thu nhập:");
 
            
-            string? incomeInput = Console.ReadLine();
+            string? incomeInput;
             decimal amount = 0;
-            if (!string.IsNullOrEmpty(incomeInput) && decimal.TryParse(incomeInput, out amount))
+            while (true)
             {
-                Console.WriteLine($"Đã thêm khoản thu nhập: {amount:#,##0₫}");
+                incomeInput = Console.ReadLine();
+                if (string.IsNullOrEmpty(incomeInput) || !decimal.TryParse(incomeInput, out amount))
+                {
+                    Console.WriteLine("Số tiền không hợp lệ, vui lòng nhập lại");
+                }
+                else
+                {
+                    break; // Exit the loop if input is valid
+                }
             }
-            else
-            {
-                Console.WriteLine("Vui lòng nhập lại.");
-            }
+            Console.WriteLine($"Đã thêm khoản thu nhập: {amount:#,##0₫}");
+       
 
             TotalIncome += amount;
             savings += amount;
@@ -310,10 +340,6 @@ namespace Quanlychitieu
                 if (decimal.TryParse(incomeText, out decimal savedIncome))
                 {
                     TotalIncome = savedIncome;
-                }
-                else
-                {
-                    TotalIncome = 0; // Nếu không đọc được, mặc định là 0
                 }
             }
             else

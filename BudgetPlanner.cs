@@ -159,7 +159,7 @@
                 {
                     break; // Exit the loop
                 }
-
+                Console.ReadKey();
                 // Validate input and convert to an index
                 if (int.TryParse(keyInfo.KeyChar.ToString(), out int categoryIndex) && categoryIndex >= 1 && categoryIndex <= validCategories.Length)
                 {
@@ -180,7 +180,7 @@
                         // Set the budget for the selected category
                         categoryBudgets[selectedCategory] = budget;
                         categoryBudgetSet[selectedCategory] = true; // Mark as set
-                        Console.WriteLine($"Ngân sách cho {selectedCategory} đã được đặt: {budget:#,##0₫}");
+                        Console.WriteLine($"Ngân sách cho {selectedCategory} đã được đặt thành: {budget:#,##0₫}");
                         // Yêu cầu người dùng nhấn phím để tiếp tục
                         Console.WriteLine("Nhấn phím bất kỳ để tiếp tục...");
                         Console.ReadKey(); // Chờ người dùng nhấn phím
@@ -204,7 +204,6 @@
             // Lưu dữ liệu vào file csv sau khi đặt xong ngân sách
             SaveBudgetToCSV(categoryBudgets);
             SaveLastCategoryBudgetSetTime();
-
              }
 
 
@@ -243,7 +242,6 @@
                             string category = parts[0].Trim();
                             categoryBudgets[category] = budget; // Thêm ngân sách vào dictionary
                             categoryBudgetSet[category] = true; // Mark as set
-
                         }
                     }
                 }
@@ -341,13 +339,17 @@
                 // Hiển thị cảnh báo nếu vượt quá ngân sách hoặc chi tiêu quá 80%
                 if (remaining < 0)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("|" + new string(' ', 24) + " Cảnh báo: Vượt quá ngân sách!" + new string(' ', 24) + "|");
                     PlaywarningSound();
+                    Console.ResetColor();
                 }
                 else if (percentageUsed > 80)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("|" + new string(' ', 24) + " Cảnh báo: Đã sử dụng hơn 80% ngân sách!" + new string(' ', 24) + "|");
                     PlaywarningSound();
+                    Console.ResetColor();
                 }
 
 
@@ -386,8 +388,5 @@
         //        }
         //        Console.WriteLine();
         //    }
-        
-
-    
      }
 }
