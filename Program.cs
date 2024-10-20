@@ -24,12 +24,14 @@ class Program
         budgetPlanner.LoadBudgetFromCSV();
         expenseTracker.SetBudgetPlanner(budgetPlanner);
         budgetPlanner.GetTotalBudget();
-        
+
+        //System.Threading.Thread.Sleep(2000);
         while (true)
         {
             Console.Clear();
             int consoleWidth = Console.WindowWidth;
             string[] lines =  {
+
 "███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗    ██████╗ ██╗   ██╗██████╗ ██████╗ ██╗   ██╗",
 "████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝    ██╔══██╗██║   ██║██╔══██╗██╔══██╗╚██╗ ██╔╝",
 "██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     ██████╔╝██║   ██║██║  ██║██║  ██║ ╚████╔╝ ",
@@ -59,9 +61,15 @@ class Program
 
             DrawCenteredBorder(menuOptions);
 
-            Console.Write("Chọn một tùy chọn: ");
-            var option = Console.ReadLine();
-            var keyInfo = Console.ReadKey();
+            //Console.Write("Chọn một tùy chọn: ");
+
+
+           // var option = Console.ReadLine();
+            //var keyInfo = Console.ReadKey();
+
+            var option = " ";
+            option = InputWithBox("Chọn một tùy chọn: ", " ");
+
 
             switch (option)
             {
@@ -193,8 +201,9 @@ class Program
                             Console.WriteLine("Lựa chọn không hợp lệ.");
                             break;
                     }
-                    if (TurnBack())
+                    if (TurnBack())   
                     {
+                        Console.Clear();
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
                     break;               
@@ -217,7 +226,7 @@ class Program
     }
     static bool TurnBack()
     {
-        Console.WriteLine("Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
+        Console.WriteLine(" Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
         var keyInfo = Console.ReadKey(true);
         return keyInfo.Key == ConsoleKey.Escape;
     }
@@ -264,21 +273,23 @@ class Program
 
 
     // Hàm tao hộp Nhập input 
-    public static string InputWithBox(string title, string prompt)
+    public static string InputWithBox(string title, string prompt, int minSpaceAbove = 2)
     {
         int windowWidth = Console.WindowWidth;
         int boxWidth = Math.Max(prompt.Length + 4, 30); // Độ rộng khung ít nhất 30
         int boxHeight = 5; // Chiều cao ban đầu của khung
         int boxX = (windowWidth - boxWidth) / 2;
-        int boxY = 10;
+
+        // Đặt boxY để không đè lên các nội dung khác
+        int boxY = Math.Max(minSpaceAbove + 2, Console.CursorTop + 3); // Đảm bảo có khoảng trống cho tiêu đề
 
         string userInput = "";  // Khởi tạo biến userInput với chuỗi rỗng
         bool isValid = false;
 
         while (!isValid)
         {
-            // Xóa màn hình trước khi in lại khung
-            
+            // Đảm bảo không có ký tự nào bị chồng lên khung
+            EnsureSpaceForBox(boxY, boxHeight + 2); // +2 để thêm khoảng trống dưới khung
 
             // In tiêu đề
             Console.SetCursorPosition((windowWidth - title.Length) / 2, boxY - 2);
@@ -297,7 +308,7 @@ class Program
             }
 
             // Đặt con trỏ vào vị trí nhập dữ liệu
-            Console.SetCursorPosition(boxX + 2, boxY + 3); // Căn chỉnh để nhập vào giữa khung
+            Console.SetCursorPosition(boxX + 2, boxY + boxHeight - 2); // Căn chỉnh để nhập vào giữa khung
             userInput = Console.ReadLine();
 
             // Kiểm tra nếu nhập đúng số
@@ -312,6 +323,12 @@ class Program
 
     public static void DrawBox(int x, int y, int width, int height, string message)
     {
+        // Nếu con trỏ gần chạm cuối màn hình, tăng kích thước bộ đệm
+        if (y + height >= Console.BufferHeight - 1)
+        {
+            Console.BufferHeight = Console.BufferHeight + height + 5;
+        }
+
         Console.ForegroundColor = ConsoleColor.Yellow;
 
         // Vẽ đường viền trên
@@ -336,5 +353,30 @@ class Program
         Console.ResetColor();
     }
 
+
+    // Hàm kiểm tra và đảm bảo có đủ khoảng trống để vẽ khung
+    public static void EnsureSpaceForBox(int requiredBottomPosition, int boxHeight)
+    {
+        // Kiểm tra vị trí hiện tại của con trỏ
+        int currentCursorTop = Console.CursorTop;
+
+        // Tính toán vị trí cần in khung mới
+        int neededPosition = requiredBottomPosition + boxHeight;
+
+        // Nếu vị trí hiện tại của con trỏ gần vị trí cần in khung, thêm dòng trống
+        if (currentCursorTop > neededPosition - 2)
+        {
+            // Thêm dòng trống để khung không bị chồng lên nội dung trước đó
+            int linesToClear = currentCursorTop - (neededPosition - 2);
+            Console.WriteLine(new string('\n', linesToClear));
+        }
+
+        // Kiểm tra nếu con trỏ console gần cuối màn hình
+        if (neededPosition >= Console.BufferHeight - 1)
+        {
+            // Tăng kích thước của bộ đệm console nếu cần
+            Console.BufferHeight = Console.BufferHeight + boxHeight + 5; // Mở rộng thêm không gian
+        }
+    }
 
 }
