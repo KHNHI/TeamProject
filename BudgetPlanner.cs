@@ -188,7 +188,7 @@
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        /*Console.BackgroundColor = ConsoleColor.White;*/
+                        /*Console.BackgroundColor = ConsoleColor.Red;*/
                         Console.WriteLine("⚠ Số tiền không hợp lệ. Vui lòng nhập lại.");
                         Console.ResetColor();
 
