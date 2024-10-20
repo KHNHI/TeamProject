@@ -178,18 +178,30 @@ namespace Quanlychitieu
 
         public void ShowMonthlyReport(ExpenseTracker expenseTracker)
         {
+
             var monthlyTotals = expenseTracker.GetMonthlyTotals();
 
-            Console.WriteLine("\n BÁO CÁO TÀI CHÍNH THEO THÁNG ");
+
+            string[] title = { " BÁO CÁO TÀI CHÍNH THEO THÁNG ",
+            "─────────────────────────────"};
+            Program.DrawCenteredBorder(title);
+
             foreach (var month in monthlyTotals)
             {
-                Console.WriteLine($"Tháng {month.Key}:");
+                List<string> reportLines = new List<string>();
+                reportLines.Add($"Tháng {month.Key}:");
                 foreach (var category in month.Value)
                 {
-                    Console.WriteLine($"  {category.Key}: {category.Value:#,##0₫}");
+                    reportLines.Add($"  {category.Key}: {category.Value:#,##0₫}");
                 }
-                Console.WriteLine(); // Thêm dòng trống giữa các tháng
+                reportLines.Add(""); // Thêm dòng trống giữa các tháng
+                Program.DrawCenteredBorder(reportLines.ToArray());
             }
+
+            // Vẽ khung bao quanh báo cáo
+            string[] name = { "BIỂU ĐỒ TỔNG CHI TIÊU THEO THÁNG" };
+            Program.DrawCenteredBorder(name);
+            // Vẽ biểu đồ tổng chi tiêu
             DrawTotalExpenseChart(expenseTracker);
         }
 
@@ -258,8 +270,7 @@ namespace Quanlychitieu
                     maxExpense = totalExpense;
                 }
             }
-
-            Console.WriteLine("\nBiểu đồ chi tiêu tổng theo tháng:");
+                       
 
             foreach (var month in monthlyTotals)
             {
@@ -267,9 +278,14 @@ namespace Quanlychitieu
                 int barLength = (int)((totalExpense / maxExpense) * maxBarLength); // Chuẩn hóa chiều dài thanh
                 string bar = new string('█', barLength); // Tạo thanh biểu đồ bằng ký tự '█'
 
-                // In ra biểu đồ với số liệu rõ ràng
-                Console.WriteLine($"Tháng {month.Key,-2}: {bar,-50} {totalExpense,15:#,##0₫}");
+                // Tạo chuỗi cho mỗi dòng của biểu đồ
+                string line = $"Tháng {month.Key,-2}: {bar,-50} {totalExpense,15:#,##0₫}";
+
+                // In ra biểu đồ với số liệu rõ ràng và căn giữa
+                CenterPrintLine(line);
+                Console.WriteLine();
             }
-        }
+
     }
 }
+    }
