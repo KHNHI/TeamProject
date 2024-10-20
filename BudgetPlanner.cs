@@ -314,10 +314,14 @@
 
         public void ShowBudgetStatus()
         {
+            Console.Clear();
             var expenses = expenseTracker.GetExpenses();
 
-            Console.WriteLine("\n=== Tình trạng Ngân sách ===");
-            Console.WriteLine($"Tổng ngân sách: {GetTotalBudget():#,##0₫}");
+            Console.WriteLine("\n=== TÌNH TRẠNG NGÂN SÁCH ===");
+            Console.WriteLine($"┌{new string('-', 70)}┐");
+            Console.WriteLine($"| {"Danh mục",-20} | {"Ngân sách",-15} | {"Đã chi",-15} | {"Còn lại",-15} |");
+            Console.WriteLine($"├{new string('-', 70)}┤");
+
             foreach (var category in validCategories)
             {
                 decimal budgetAmount = categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
@@ -325,26 +329,59 @@
                 decimal remaining = budgetAmount - spent;
                 decimal percentageUsed = budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
 
-                Console.WriteLine($"Danh mục: {category}");
-                Console.WriteLine($"Ngân sách: {budgetAmount:#,##0₫}");
-                Console.WriteLine($"Đã chi: -{spent:#,##0₫}");
-                Console.WriteLine($"Còn lại: {remaining:#,##0₫}");
-                Console.WriteLine($"Đã sử dụng: {percentageUsed:F1}%");
+                // Hiển thị thông tin từng danh mục dưới dạng bảng
+                Console.WriteLine($"| {category,-20} | {budgetAmount,15:#,##0₫} | {spent,15:#,##0₫} | {remaining,15:#,##0₫} |");
 
+                // Hiển thị cảnh báo nếu vượt quá ngân sách hoặc chi tiêu quá 80%
                 if (remaining < 0)
                 {
-                    Console.WriteLine("Cảnh báo: Bạn đã vượt quá ngân sách!");
+                    Console.WriteLine("|" + new string(' ', 24) + " Cảnh báo: Vượt quá ngân sách!" + new string(' ', 24) + "|");
                     PlaywarningSound();
                 }
                 else if (percentageUsed > 80)
                 {
-                    Console.WriteLine("Cảnh báo: Bạn đã sử dụng hơn 80% ngân sách!");
+                    Console.WriteLine("|" + new string(' ', 24) + " Cảnh báo: Đã sử dụng hơn 80% ngân sách!" + new string(' ', 24) + "|");
                     PlaywarningSound();
                 }
-                Console.WriteLine();
+
+
+                Console.WriteLine($"├{new string('─', 70)}┤");
             }
+            Console.WriteLine($"└{new string('─', 70)}┘");
+            Console.WriteLine($"Tổng ngân sách: {GetTotalBudget():#,##0₫}");
         }
+        //Console.Clear();
+        //    var expenses = expenseTracker.GetExpenses();
+            
+        //    Console.WriteLine("\n=== TÌNH TRẠNG NGÂN SÁCH  ===");
+        //    Console.WriteLine($"Tổng ngân sách: {GetTotalBudget():#,##0₫}");
+        //    foreach (var category in validCategories)
+        //    {
+        //        decimal budgetAmount = categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
+        //        decimal spent = expenses.ContainsKey(category) ? Math.Abs(expenses[category]) : 0;
+        //        decimal remaining = budgetAmount - spent;
+        //        decimal percentageUsed = budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
+
+        //        Console.WriteLine($"Danh mục: {category}");
+        //        Console.WriteLine($"Ngân sách: {budgetAmount:#,##0₫}");
+        //        Console.WriteLine($"Đã chi: -{spent:#,##0₫}");
+        //        Console.WriteLine($"Còn lại: {remaining:#,##0₫}");
+        //        Console.WriteLine($"Đã sử dụng: {percentageUsed:F1}%");
+
+        //        if (remaining < 0)
+        //        {
+        //            Console.WriteLine("Cảnh báo: Bạn đã vượt quá ngân sách!");
+        //            PlaywarningSound();
+        //        }
+        //        else if (percentageUsed > 80)
+        //        {
+        //            Console.WriteLine("Cảnh báo: Bạn đã sử dụng hơn 80% ngân sách!");
+        //            PlaywarningSound();
+        //        }
+        //        Console.WriteLine();
+        //    }
+        
 
     
-    }
+     }
 }
