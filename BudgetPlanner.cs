@@ -49,20 +49,21 @@
             int originalTop = Console.CursorTop;
 
 
-            string[] title =
-     {
-"  ███╗   ███╗ ██████╗ ███╗   ███╗███████╗██╗   ██╗████████╗██╗██████╗ ██╗   ██╗",
-"  ████╗ ████║██╔═══██╗████╗ ████║██╔════╝╚██╗ ██╔╝╚══██╔══╝██║██╔══██╗╚██╗ ██╔╝",
-"  ██╔████╔██║██║   ██║██╔████╔██║█████╗   ╚████╔╝    ██║   ██║██║  ██║ ╚████╔╝ ",
-"  ██║╚██╔╝██║██║   ██║██║╚██╔╝██║██╔══╝    ╚██╔╝     ██║   ██║██║  ██║  ╚██╔╝  ",
-"  ██║ ╚═╝ ██║╚██████╔╝██║ ╚═╝ ██║███████╗   ██║      ██║   ██║██████╔╝   ██║   ",
-"  ╚═╝     ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚═╝╚═════╝    ╚═╝   ",
+//            string[] titleMoneyTidy =
+//     {
+
+//"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗              ████████╗██╗██████╗ ██╗   ██╗",
+//"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝              ╚══██╔══╝██║██╔══██╗╚██╗ ██╔╝",
+//"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     █████╗       ██║   ██║██║  ██║ ╚████╔╝ ",
+//"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ╚════╝       ██║   ██║██║  ██║  ╚██╔╝  ",
+//"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║                    ██║   ██║██████╔╝   ██║   ",
+//"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝                    ╚═╝   ╚═╝╚═════╝    ╚═╝   ",
 
 
 
-      };
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Program.DrawCenteredBorder(title);
+//      };
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            //Program.DrawCenteredBorder(titleMoneyTidy);
 
             //Console.ForegroundColor = ConsoleColor.Yellow;
             //foreach (string line in title)
@@ -103,15 +104,45 @@
                 Console.SetCursorPosition(0, originalTop);
 
                 // Redraw the title
-                Console.ForegroundColor = ConsoleColor.Yellow;
 
-                foreach (string line in title)
-                {
-                    Console.WriteLine(line);
-                }
+
+
+                //Console.ForegroundColor = ConsoleColor.Yellow;
+
+                //foreach (string line in titleMoneyTidy)
+                //{
+                //   Console.WriteLine(line);
+                //}
+                //Console.ResetColor();
+
+
+
+
+                string[] titleMoneyTidy =
+    {
+
+"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗              ████████╗██╗██████╗ ██╗   ██╗",
+"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝              ╚══██╔══╝██║██╔══██╗╚██╗ ██╔╝",
+"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     █████╗       ██║   ██║██║  ██║ ╚████╔╝ ",
+"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ╚════╝       ██║   ██║██║  ██║  ╚██╔╝  ",
+"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║                    ██║   ██║██████╔╝   ██║   ",
+"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝                    ╚═╝   ╚═╝╚═════╝    ╚═╝   ",
+
+
+
+      };
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Program.DrawCenteredBorder(titleMoneyTidy);
                 Console.ResetColor();
 
-                Console.WriteLine("CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH");
+
+
+
+
+
+
+
+                Console.WriteLine("                                         CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH");
 
                 // Display categories with numbers
                 for (int i = 0; i < validCategories.Length; i++)

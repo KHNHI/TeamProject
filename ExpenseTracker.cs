@@ -960,7 +960,7 @@ namespace Quanlychitieu
             Console.Clear();
             string titleYear =
 
-                "𝑪𝑨𝑳𝑬𝑵𝑫𝑨𝑹 𝑶𝑭 𝑻𝑯𝑬 𝒀𝑬𝑨𝑹" + selectedYear;
+                "𝑪𝑨𝑳𝑬𝑵𝑫𝑨𝑹 𝑶𝑭 𝑻𝑯𝑬 𝒀𝑬𝑨𝑹 " + selectedYear;
 
             Console.SetCursorPosition((Console.WindowWidth - titleYear.Length) / 2, 1);
             Console.ForegroundColor = ConsoleColor.Cyan;

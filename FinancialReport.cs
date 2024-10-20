@@ -27,11 +27,50 @@ namespace Quanlychitieu
         public void ShowReport(ExpenseTracker expenseTracker)
         {
             // Hiển thị tiêu đề "FINANCIAL REPORT" không có dấu "=" ở hai bên
-            CenterPrintLine("═══════════════════════════════════════════════════════════════════════════════");
-            CenterPrintLine("╔═╗╦╔╗╔╔═╗╔╗╔╔═╗╦╔═╗╦    ╦═╗╔═╗╔═╗╔═╗╦═╗╔╦╗");
-            CenterPrintLine("╠╣ ║║║║╠═╣║║║║  ║╠═╣║    ╠╦╝║╣ ╠═╝║ ║╠╦╝ ║ ");
-            CenterPrintLine("╚  ╩╝╚╝╩ ╩╝╚╝╚═╝╩╩ ╩╩═╝  ╩╚═╚═╝╩  ╚═╝╩╚═ ╩ ");
-            CenterPrintLine("═══════════════════════════════════════════════════════════════════════════════");
+
+
+
+            //CenterPrintLine("═══════════════════════════════════════════════════════════════════════════════");
+            //CenterPrintLine("╔═╗╦╔╗╔╔═╗╔╗╔╔═╗╦╔═╗╦    ╦═╗╔═╗╔═╗╔═╗╦═╗╔╦╗");
+            //CenterPrintLine("╠╣ ║║║║╠═╣║║║║  ║╠═╣║    ╠╦╝║╣ ╠═╝║ ║╠╦╝ ║ ");
+            //CenterPrintLine("╚  ╩╝╚╝╩ ╩╝╚╝╚═╝╩╩ ╩╩═╝  ╩╚═╚═╝╩  ╚═╝╩╚═ ╩ ");
+            //CenterPrintLine("═══════════════════════════════════════════════════════════════════════════════");
+
+
+
+            string[] titleFinancialReport =
+   {
+
+"███████╗██╗███╗   ██╗            ██████╗ ███████╗██████╗  ██████╗ ██████╗ ████████╗",
+"██╔════╝██║████╗  ██║            ██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝",
+"█████╗  ██║██╔██╗ ██║   █████╗   ██████╔╝█████╗  ██████╔╝██║   ██║██████╔╝   ██║   ",
+"██╔══╝  ██║██║╚██╗██║   ╚════╝   ██╔══██╗██╔══╝  ██╔═══╝ ██║   ██║██╔══██╗   ██║   ",
+"██║     ██║██║ ╚████║            ██║  ██║███████╗██║     ╚██████╔╝██║  ██║   ██║   ",
+"╚═╝     ╚═╝╚═╝  ╚═══╝            ╚═╝  ╚═╝╚══════╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ",
+
+
+
+      };
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Program.DrawCenteredBorder(titleFinancialReport);
+            Console.ResetColor();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             ShowTextReport(expenseTracker);
             ShowExpenseChart(expenseTracker.GetExpenses());
@@ -60,12 +99,18 @@ namespace Quanlychitieu
             var totalIncome = income.Sum(e => e.Value);
             var accountBalance = totalIncome - totalExpense;
 
-            CenterPrintLine(" BÁO CÁO DẠNG VĂN BẢN \n");
+
+            string[] textReport = { " BÁO CÁO TỔNG QUÁT " };
+            Program.DrawCenteredBorder( textReport );
+
             CenterPrint($"Tổng chi tiêu: {totalExpense:#,##0₫}");
             CenterPrint($"Tổng thu nhập: {totalIncome:#,##0₫}");
+            CenterPrint("────────────────────────");
             CenterPrint($"Số dư tài khoản: {accountBalance:#,##0₫}");
 
-            CenterPrintLine(" BÁO CÁO THEO DANH MỤC \n");
+            string[] CategotiesReport = { " BÁO CÁO CHI TIẾT " };
+            Program.DrawCenteredBorder(CategotiesReport);
+
             CenterPrint("Chi tiết chi tiêu:");
             ShowCategoryDetails(expenses, totalExpense);
 
@@ -90,7 +135,10 @@ namespace Quanlychitieu
                 category => transactions.TryGetValue(category, out decimal value) ? Math.Abs(value) : 0);
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            CenterPrintLine(" Biểu đồ ASCII chi tiêu ");
+
+            string[] bieuDoASCII = {" BIỂU ĐỒ ASCII CHI TIÊU "};
+            Program.DrawCenteredBorder(bieuDoASCII);
+
             if (expenses.Any(e => e.Value > 0))
             {
                 var maxExpense = expenses.Max(e => e.Value);

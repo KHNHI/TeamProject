@@ -73,8 +73,13 @@ class Program
                     };
                     DrawCenteredBorder(balanceOptions);
 
-                    Console.Write("Chọn một tùy chọn: ");
-                    var balanceOption = Console.ReadLine();
+                    //Console.Write("Chọn một tùy chọn: ");
+
+
+
+                     var balanceOption = "      ";  
+                     balanceOption = InputWithBox("Chọn một tùy chọn: "," ");
+                              
 
                     switch (balanceOption)
                     {
@@ -255,4 +260,80 @@ class Program
         // Draw bottom border
         Console.WriteLine(new string(' ', (consoleWidth - borderWidth) / 2) + new string(Enumerable.Range(0, borderWidth).Select(i => border[2, i]).ToArray()));
     }
+
+
+    // Hàm tao hộp Nhập input 
+    public static string InputWithBox(string title, string prompt)
+    {
+        int windowWidth = Console.WindowWidth;
+        int boxWidth = Math.Max(prompt.Length + 4, 30); // Độ rộng khung ít nhất 30
+        int boxHeight = 5; // Chiều cao ban đầu của khung
+        int boxX = (windowWidth - boxWidth) / 2;
+        int boxY = 10;
+
+        string userInput = "";  // Khởi tạo biến userInput với chuỗi rỗng
+        bool isValid = false;
+
+        while (!isValid)
+        {
+            // Xóa màn hình trước khi in lại khung
+            
+
+            // In tiêu đề
+            Console.SetCursorPosition((windowWidth - title.Length) / 2, boxY - 2);
+            Console.WriteLine(title);
+
+            // Nếu dữ liệu không hợp lệ, hiển thị thông báo lỗi
+            if (!string.IsNullOrEmpty(userInput) && !int.TryParse(userInput, out _))
+            {
+                boxHeight = 6; // Tăng chiều cao khung thêm 1 dòng cho thông báo lỗi
+                DrawBox(boxX, boxY, boxWidth, boxHeight, "  Nhập liệu không hợp lệ.");
+            }
+            else
+            {
+                // Vẽ khung thông thường khi chưa có lỗi
+                DrawBox(boxX, boxY, boxWidth, boxHeight, prompt);
+            }
+
+            // Đặt con trỏ vào vị trí nhập dữ liệu
+            Console.SetCursorPosition(boxX + 2, boxY + 3); // Căn chỉnh để nhập vào giữa khung
+            userInput = Console.ReadLine();
+
+            // Kiểm tra nếu nhập đúng số
+            if (int.TryParse(userInput, out _))
+            {
+                isValid = true; // Nếu nhập hợp lệ, thoát vòng lặp
+            }
+        }
+
+        return userInput; // Trả về dữ liệu hợp lệ
+    }
+
+    public static void DrawBox(int x, int y, int width, int height, string message)
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+
+        // Vẽ đường viền trên
+        Console.SetCursorPosition(x, y);
+        Console.Write("╔" + new string('═', width - 2) + "╗");
+
+        // Vẽ dòng chứa thông báo
+        Console.SetCursorPosition(x, y + 1);
+        Console.Write("║" + message.PadRight(width - 2) + "║");
+
+        // Vẽ dòng trống trong khung để nhập liệu
+        for (int i = 2; i < height - 1; i++)
+        {
+            Console.SetCursorPosition(x, y + i);
+            Console.Write("║" + new string(' ', width - 2) + "║");
+        }
+
+        // Vẽ đường viền dưới
+        Console.SetCursorPosition(x, y + height - 1);
+        Console.Write("╚" + new string('═', width - 2) + "╝");
+
+        Console.ResetColor();
+    }
+
+
 }
