@@ -169,6 +169,7 @@
                     if (categoryBudgetSet[selectedCategory])
                     {
                         Console.WriteLine("\nNgân sách cho danh mục này đã được đặt. Vui lòng chọn danh mục khác.");
+                        Console.ReadLine();
                         continue; // Skip to the next iteration
                     }
                     // Prompt for budget amount

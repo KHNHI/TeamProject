@@ -13,6 +13,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        Intro();
 
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;
@@ -389,6 +390,79 @@ class Program
             // Tăng kích thước của bộ đệm console nếu cần
             Console.BufferHeight = Console.BufferHeight + boxHeight + 5; // Mở rộng thêm không gian
         }
+    }
+
+    static void Intro()
+    {
+        int consoleWidth = Console.WindowWidth;
+        string[] content = {
+    "                    ,,,,,,,        ,▄▄╬▓▓▓▓▄,                                ",
+    "        ,▄╦▄▄@▄▄▓▓▓▓▓▓▒▒╣▒▒▒▓▓▄,  ▄▓▒╢╢╢╢▓▓╣▒▓▄                               ",
+    "        ▓╢╢╢▒╢╢▓▓▓╢╢╢╢╢╢╢╢╢╢╢╢╢▒▓█▒╢╢╢╢╢╢╢╣╢╢╢▒▓,,▄▄▓▒▓▄▄▄,                   ",
+    "        ▄▓▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▓▒╢╢╢╢╢╢╢▒▓▓▀▒▒╣╢╢╢╢▒▒█▓▒▒▓▓▄               ",
+    "      ▄▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓╣╢╢╢╢▒▓▒▒▓▓▓╣╢╢╢╢╢▒▒▒╢╢╢╢╢╢▒▓             ",
+    "     ▓▒▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╫▌╢╢▒▓▒╢▓▓▓▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▄           ",
+    "    ▐▒╫╣▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█▓▓▓▒╢╢╢╢╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▌         ",
+    "    ▓╣╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█▓▌╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓          ",
+    "    ╙▌╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▒▒╣▓▓╣╢╢╢╢██╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓         ",
+    "      ▀▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▒▒▒▓▓╢╢╢╢╢█▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▌         ",
+    "        ▀▀▓▒▒▒╢╢╢╢╢╢╢▒▒▒▓▓█╣╢╢╢╢╢╢╢╫▌╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▌         ",
+    "           '▀` `▀█▒▒▒▒▒▒▓█╣╢╢╢╢╢╢╢╢▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█          ",
+    "                 ▌╣╢╢╢╢╢╢▓▓▓▒▓▒╢╢╢╢▒╢╢╢╢╢▓▓▓▓▓▓▓▓▒▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▀           ",
+    "                  ▀▓▒▄▓╣╢╢╢╣▓╢╢╢╢╢╢╢╢╢╢╢╢▒▒╣╢▓▓▓▒▒▒▀█▓▒▒▒╢╢╢╣▒▒▓▀'            ",
+    "                    ▀▓▓▓▒╢▒▓▒╢╢╢╢╢▒▒╢╢╢╢▒╣╢╢╢╢╫▓╢╢▒▓`   ```                   ",
+    "                     ╙▌▀▀▀▐▌╢╢▒▓▒▓╜\"╩╣▒╩`╙▒╢╢╢╢▒▌`                           ",
+    };
+
+        string[] content2 =
+        {
+         "                      ▐  ╒▀╩▓╨  ,▄▄       ,▄╙╨▓╩▓▄                            ",
+    "                       [ ▌       ▄▄      ,▄▄     ╙▄                           ",
+    "                       ╙▀▄       ▌█      ▐▓█      ▐                           ",
+    "                      ▄▐▀    ,,  ▀`       ▀  ,,    ▓                          ",
+    "                     ╓▀█▄    ```    ▓▓▓▓     ```   ▄▌                         ",
+    "                    ▄╖▓▓███▄▄                 ,▄▄████▄▄                       ",
+    };
+        string[] content3 =
+        {
+    "                   ▀▄▓▓▓▓▓██████▄▄▄▄▄, ▄▄▄▄▄██████▓▓▓▌╢╢▀\"²N&M--╕            ",
+    "                   █▓▓▓▓▓▓▓▓▓▓███████▓████████▓▓▓▓▓▓▓█╢╢▌  Ñ▓W▐╙▀▌            ",
+    "                 ╓█▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▌ UEH ▓▓█╣▓   ▒▐▓▄▄▄Γ            ",
+    "                ╓▌▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█╬█M²═══╩▌æ╜             ",
+    };
+
+        string[] lines = {
+"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗    ██████╗ ██╗   ██╗██████╗ ██████╗ ██╗   ██╗",
+"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝    ██╔══██╗██║   ██║██╔══██╗██╔══██╗╚██╗ ██╔╝",
+"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     ██████╔╝██║   ██║██║  ██║██║  ██║ ╚████╔╝ ",
+"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ██╔══██╗██║   ██║██║  ██║██║  ██║  ╚██╔╝  ",
+"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║       ██████╔╝╚██████╔╝██████╔╝██████╔╝   ██║   ",
+"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝       ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝   ",
+
+                };
+        Console.ForegroundColor = ConsoleColor.Green;
+        foreach (string line in content)
+        {
+            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
+        }
+        Console.ForegroundColor = ConsoleColor.White;
+        foreach (string line in content2)
+        {
+            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
+        }
+        Console.ForegroundColor = ConsoleColor.White;
+        foreach (string line in content3)
+        {
+            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
+        }
+
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        DrawCenteredBorder(lines);
+
+        Console.ResetColor();
+
+        // Hiển thị màn hình trong 4 giây
+        System.Threading.Thread.Sleep(4000);
     }
 
 }
