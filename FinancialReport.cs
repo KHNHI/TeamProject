@@ -26,18 +26,7 @@ namespace Quanlychitieu
 
         public void ShowReport(ExpenseTracker expenseTracker)
         {
-            // Hiển thị tiêu đề "FINANCIAL REPORT" không có dấu "=" ở hai bên
-
-
-
-            //CenterPrintLine("═══════════════════════════════════════════════════════════════════════════════");
-            //CenterPrintLine("╔═╗╦╔╗╔╔═╗╔╗╔╔═╗╦╔═╗╦    ╦═╗╔═╗╔═╗╔═╗╦═╗╔╦╗");
-            //CenterPrintLine("╠╣ ║║║║╠═╣║║║║  ║╠═╣║    ╠╦╝║╣ ╠═╝║ ║╠╦╝ ║ ");
-            //CenterPrintLine("╚  ╩╝╚╝╩ ╩╝╚╝╚═╝╩╩ ╩╩═╝  ╩╚═╚═╝╩  ╚═╝╩╚═ ╩ ");
-            //CenterPrintLine("═══════════════════════════════════════════════════════════════════════════════");
-
-
-
+            
             string[] titleFinancialReport =
    {
 
@@ -54,23 +43,6 @@ namespace Quanlychitieu
             Console.ForegroundColor = ConsoleColor.Yellow;
             Program.DrawCenteredBorder(titleFinancialReport);
             Console.ResetColor();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             ShowTextReport(expenseTracker);
             ShowExpenseChart(expenseTracker.GetExpenses());
@@ -172,13 +144,29 @@ namespace Quanlychitieu
 
         public void ShowFinancialReport(ExpenseTracker expenseTracker)
         {
-            Console.WriteLine("Chọn loại báo cáo tài chính:");
-            Console.WriteLine("1:Báo cáo tài chính tháng hiện tại");
-            Console.WriteLine("2:Thống kê theo tháng");
-            Console.WriteLine("3:Tổng chi tiêu trong năm");
-            Console.Write("Chọn một tùy chọn: ");
+            string[] chosseTypeReport = new string[] {
+            "     CHỌN LOẠI BÁO CÁO TÀI CHÍNH        ",
+            "    ─────────────────────────────       ",
+            "1. Báo cáo tài chính tháng hiện tại  ",
+            "2. Thống kê theo tháng               ",
+            "3. Tổng chi tiêu trong năm           ",
+            };
+            Program.DrawCenteredBorder(chosseTypeReport);
 
-            var choice = Console.ReadLine();
+
+
+
+
+            //Console.WriteLine("Chọn loại báo cáo tài chính:");
+            //Console.WriteLine("1:Báo cáo tài chính tháng hiện tại");
+            //Console.WriteLine("2:Thống kê theo tháng");
+            //Console.WriteLine("3:Tổng chi tiêu trong năm");
+
+
+           // Console.Write("Chọn một tùy chọn: ");
+
+            var choice = Program.InputWithBox("Chọn một tùy chọn: "," ");
+
 
             switch (choice)
             {

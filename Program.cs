@@ -25,7 +25,7 @@ class Program
         expenseTracker.SetBudgetPlanner(budgetPlanner);
         budgetPlanner.GetTotalBudget();
 
-        System.Threading.Thread.Sleep(2000);
+        //System.Threading.Thread.Sleep(2000);
         while (true)
         {
             Console.Clear();
@@ -61,10 +61,14 @@ class Program
 
             DrawCenteredBorder(menuOptions);
 
-            Console.Write("Chọn một tùy chọn: ");
-            var option = Console.ReadLine();
+            //Console.Write("Chọn một tùy chọn: ");
+
+
+           // var option = Console.ReadLine();
             //var keyInfo = Console.ReadKey();
-            
+
+            var option = " ";
+            option = InputWithBox("Chọn một tùy chọn: ", " ");
 
 
             switch (option)
