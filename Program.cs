@@ -19,11 +19,12 @@ class Program
         ExpenseTracker expenseTracker = new ExpenseTracker();
         BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker);
         FinancialReport financialReport = new FinancialReport();
-        expenseTracker.LoadExpenses();
-        expenseTracker.LoadMockExpenses();
-        budgetPlanner.LoadBudgetFromCSV();
         expenseTracker.SetBudgetPlanner(budgetPlanner);
-        budgetPlanner.GetTotalBudget();
+        //expenseTracker.LoadExpenses();
+        //expenseTracker.LoadMockExpenses();
+        //budgetPlanner.LoadBudgetFromCSV();
+
+        //budgetPlanner.GetTotalBudget();
 
         //System.Threading.Thread.Sleep(2000);
         while (true)
@@ -76,8 +77,8 @@ class Program
                 case "1":
                     Console.Clear();
                     string[] balanceOptions = {
-                        "1: Nhập khoản chi      .",
-                        "2: Nhập khoản thu      .",
+                        "1: Nhập thu nhập       .",
+                        "2: Nhập khoản chi      .",
                         "3: Quay lại menu chính ."
                     };
                     DrawCenteredBorder(balanceOptions);
@@ -94,6 +95,17 @@ class Program
                     {
                         case "1":
                             Console.Clear();
+                            expenseTracker.EnterIncome();
+
+                            if (TurnBack())
+                            {
+                                continue; // Quay lại đầu vòng lặp, hiển thị menu chính
+                            }
+
+                            break;
+                          
+                        case "2":
+                            Console.Clear();
 
                             string[] expenseCategories = {
                                 "1. Ăn uống                                 .",
@@ -105,17 +117,16 @@ class Program
                                 "7. Khác                                    ."
                             };
                             DrawCenteredBorder(expenseCategories);
-                            expenseTracker.EnterExpense();
-                            break;
-                        case "2":
-                            Console.Clear();
-                            expenseTracker.EnterIncome();
-
-                            if (TurnBack())
+                            if (expenseTracker.CanEnterIncome())
                             {
-                                continue; // Quay lại đầu vòng lặp, hiển thị menu chính
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("⚠ Bạn chưa nhập thu nhập cho tháng này. Vui lòng quay về menu chính và nhập thu nhập trước khi đặt ngân sách.");
+                                Console.ResetColor();
+                                Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
+                                Console.ReadKey(); // Đợi người dùng nhấn phím để quay lại menu chính
+                                break;
                             }
-
+                            expenseTracker.EnterExpense();
                             break;
                         case "3":
                             continue;
@@ -169,6 +180,7 @@ class Program
                     break;
                 case "5":
                     Console.Clear();
+                    Console.ForegroundColor= ConsoleColor.Green;
                     Console.WriteLine(expenseTracker.GetSavingsStatus());
                     if (TurnBack())
                     {
@@ -208,7 +220,7 @@ class Program
                     }
                     break;               
                 case "7":
-                    
+                    Console.Clear();
                     expenseTracker.CalendarTracker();
                     break;
                 case "8":
