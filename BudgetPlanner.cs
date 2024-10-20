@@ -190,7 +190,8 @@
                         Console.ForegroundColor = ConsoleColor.Red;
                         /*Console.BackgroundColor = ConsoleColor.White;*/
                         Console.WriteLine("⚠ Số tiền không hợp lệ. Vui lòng nhập lại.");
-                        Console.ResetColor;
+                        Console.ResetColor();
+
                         Console.ReadLine();
                     }
                 }
