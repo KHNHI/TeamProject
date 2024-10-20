@@ -54,7 +54,7 @@ namespace Quanlychitieu
             var transactions = expenseTracker.GetExpenses();
             var expenses = new Dictionary<string, decimal>();
             var income = new Dictionary<string, decimal>();
-
+            decimal totalBudget = expenseTracker.TotalBudget; // Lấy tổng ngân sách
             // Phân loại giao dịch dựa trên danh mục
             foreach (var transaction in transactions)
             {
@@ -80,15 +80,12 @@ namespace Quanlychitieu
             CenterPrint($"Tổng thu nhập: {totalIncome:#,##0₫}");
             CenterPrint("────────────────────────");
             CenterPrint($"Số dư tài khoản: {accountBalance:#,##0₫}");
-
-            string[] CategotiesReport = { " BÁO CÁO CHI TIẾT " };
+            CenterPrint($"Tổng ngân sách: {totalBudget:#,##0₫}"); // Hiển thị tổng ngân sách
+            string[] CategotiesReport = { " BÁO CÁO CHI TIẾT CHI TIÊU " };
             Program.DrawCenteredBorder(CategotiesReport);
 
             CenterPrint("Chi tiết chi tiêu:");
             ShowCategoryDetails(expenses, totalExpense);
-
-            CenterPrint("Chi tiết thu nhập:");
-            ShowCategoryDetails(income, totalIncome);
         }
 
         private void ShowCategoryDetails(Dictionary<string, decimal> data, decimal total)

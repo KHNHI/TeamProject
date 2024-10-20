@@ -13,17 +13,21 @@ class Program
 {
     static void Main(string[] args)
     {
+        Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        Intro();
 
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;
         ExpenseTracker expenseTracker = new ExpenseTracker();
         BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker);
         FinancialReport financialReport = new FinancialReport();
-        expenseTracker.LoadExpenses();
-        expenseTracker.LoadMockExpenses();
-        budgetPlanner.LoadBudgetFromCSV();
         expenseTracker.SetBudgetPlanner(budgetPlanner);
-        budgetPlanner.GetTotalBudget();
+        //expenseTracker.LoadExpenses();
+        //expenseTracker.LoadMockExpenses();
+        //budgetPlanner.LoadBudgetFromCSV();
+
+        //budgetPlanner.GetTotalBudget();
 
         //System.Threading.Thread.Sleep(2000);
         while (true)
@@ -76,8 +80,8 @@ class Program
                 case "1":
                     Console.Clear();
                     string[] balanceOptions = {
-                        "1: Nhập khoản chi      .",
-                        "2: Nhập khoản thu      .",
+                        "1: Nhập thu nhập       .",
+                        "2: Nhập khoản chi      .",
                         "3: Quay lại menu chính ."
                     };
                     DrawCenteredBorder(balanceOptions);
@@ -94,6 +98,17 @@ class Program
                     {
                         case "1":
                             Console.Clear();
+                            expenseTracker.EnterIncome();
+
+                            if (TurnBack())
+                            {
+                                continue; // Quay lại đầu vòng lặp, hiển thị menu chính
+                            }
+
+                            break;
+                          
+                        case "2":
+                            Console.Clear();
 
                             string[] expenseCategories = {
                                 "1. Ăn uống                                 .",
@@ -105,17 +120,16 @@ class Program
                                 "7. Khác                                    ."
                             };
                             DrawCenteredBorder(expenseCategories);
-                            expenseTracker.EnterExpense();
-                            break;
-                        case "2":
-                            Console.Clear();
-                            expenseTracker.EnterIncome();
-
-                            if (TurnBack())
+                            if (expenseTracker.CanEnterIncome())
                             {
-                                continue; // Quay lại đầu vòng lặp, hiển thị menu chính
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("⚠ Bạn chưa nhập thu nhập cho tháng này. Vui lòng quay về menu chính và nhập thu nhập trước khi đặt ngân sách.");
+                                Console.ResetColor();
+                                Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
+                                Console.ReadKey(); // Đợi người dùng nhấn phím để quay lại menu chính
+                                break;
                             }
-
+                            expenseTracker.EnterExpense();
                             break;
                         case "3":
                             continue;
@@ -169,6 +183,7 @@ class Program
                     break;
                 case "5":
                     Console.Clear();
+                    Console.ForegroundColor= ConsoleColor.Green;
                     Console.WriteLine(expenseTracker.GetSavingsStatus());
                     if (TurnBack())
                     {
@@ -208,7 +223,7 @@ class Program
                     }
                     break;               
                 case "7":
-                    
+                    Console.Clear();
                     expenseTracker.CalendarTracker();
                     break;
                 case "8":
@@ -377,6 +392,79 @@ class Program
             // Tăng kích thước của bộ đệm console nếu cần
             Console.BufferHeight = Console.BufferHeight + boxHeight + 5; // Mở rộng thêm không gian
         }
+    }
+
+    static void Intro()
+    {
+        int consoleWidth = Console.WindowWidth;
+        string[] content = {
+    "                    ,,,,,,,        ,▄▄╬▓▓▓▓▄,                                ",
+    "        ,▄╦▄▄@▄▄▓▓▓▓▓▓▒▒╣▒▒▒▓▓▄,  ▄▓▒╢╢╢╢▓▓╣▒▓▄                               ",
+    "        ▓╢╢╢▒╢╢▓▓▓╢╢╢╢╢╢╢╢╢╢╢╢╢▒▓█▒╢╢╢╢╢╢╢╣╢╢╢▒▓,,▄▄▓▒▓▄▄▄,                   ",
+    "        ▄▓▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▓▒╢╢╢╢╢╢╢▒▓▓▀▒▒╣╢╢╢╢▒▒█▓▒▒▓▓▄               ",
+    "      ▄▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓╣╢╢╢╢▒▓▒▒▓▓▓╣╢╢╢╢╢▒▒▒╢╢╢╢╢╢▒▓             ",
+    "     ▓▒▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╫▌╢╢▒▓▒╢▓▓▓▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▄           ",
+    "    ▐▒╫╣▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█▓▓▓▒╢╢╢╢╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▌         ",
+    "    ▓╣╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█▓▌╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓          ",
+    "    ╙▌╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▒▒╣▓▓╣╢╢╢╢██╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓         ",
+    "      ▀▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▒▒▒▓▓╢╢╢╢╢█▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▌         ",
+    "        ▀▀▓▒▒▒╢╢╢╢╢╢╢▒▒▒▓▓█╣╢╢╢╢╢╢╢╫▌╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▌         ",
+    "           '▀` `▀█▒▒▒▒▒▒▓█╣╢╢╢╢╢╢╢╢▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█          ",
+    "                 ▌╣╢╢╢╢╢╢▓▓▓▒▓▒╢╢╢╢▒╢╢╢╢╢▓▓▓▓▓▓▓▓▒▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▀           ",
+    "                  ▀▓▒▄▓╣╢╢╢╣▓╢╢╢╢╢╢╢╢╢╢╢╢▒▒╣╢▓▓▓▒▒▒▀█▓▒▒▒╢╢╢╣▒▒▓▀'            ",
+    "                    ▀▓▓▓▒╢▒▓▒╢╢╢╢╢▒▒╢╢╢╢▒╣╢╢╢╢╫▓╢╢▒▓`   ```                   ",
+    "                     ╙▌▀▀▀▐▌╢╢▒▓▒▓╜\"╩╣▒╩`╙▒╢╢╢╢▒▌`                           ",
+    };
+
+        string[] content2 =
+        {
+         "                      ▐  ╒▀╩▓╨  ,▄▄       ,▄╙╨▓╩▓▄                            ",
+    "                       [ ▌       ▄▄      ,▄▄     ╙▄                           ",
+    "                       ╙▀▄       ▌█      ▐▓█      ▐                           ",
+    "                      ▄▐▀    ,,  ▀`       ▀  ,,    ▓                          ",
+    "                     ╓▀█▄    ```    ▓▓▓▓     ```   ▄▌                         ",
+    "                    ▄╖▓▓███▄▄                 ,▄▄████▄▄                       ",
+    };
+        string[] content3 =
+        {
+    "                   ▀▄▓▓▓▓▓██████▄▄▄▄▄, ▄▄▄▄▄██████▓▓▓▌╢╢▀\"²N&M--╕            ",
+    "                   █▓▓▓▓▓▓▓▓▓▓███████▓████████▓▓▓▓▓▓▓█╢╢▌  Ñ▓W▐╙▀▌            ",
+    "                 ╓█▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▌ UEH ▓▓█╣▓   ▒▐▓▄▄▄Γ            ",
+    "                ╓▌▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█╬█M²═══╩▌æ╜             ",
+    };
+
+        string[] lines = {
+"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗    ██████╗ ██╗   ██╗██████╗ ██████╗ ██╗   ██╗",
+"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝    ██╔══██╗██║   ██║██╔══██╗██╔══██╗╚██╗ ██╔╝",
+"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     ██████╔╝██║   ██║██║  ██║██║  ██║ ╚████╔╝ ",
+"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ██╔══██╗██║   ██║██║  ██║██║  ██║  ╚██╔╝  ",
+"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║       ██████╔╝╚██████╔╝██████╔╝██████╔╝   ██║   ",
+"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝       ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝   ",
+
+                };
+        Console.ForegroundColor = ConsoleColor.Green;
+        foreach (string line in content)
+        {
+            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
+        }
+        Console.ForegroundColor = ConsoleColor.White;
+        foreach (string line in content2)
+        {
+            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
+        }
+        Console.ForegroundColor = ConsoleColor.White;
+        foreach (string line in content3)
+        {
+            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
+        }
+
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        DrawCenteredBorder(lines);
+
+        Console.ResetColor();
+
+        // Hiển thị màn hình trong 4 giây
+        System.Threading.Thread.Sleep(4000);
     }
 
 }
