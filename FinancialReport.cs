@@ -224,11 +224,14 @@ namespace Quanlychitieu
 
 
 
-            Console.WriteLine("\n BÁO CÁO TÀI CHÍNH THEO NĂM ");
+            List<string> reportLines = new List<string>();
+            reportLines.Add(" BÁO CÁO TÀI CHÍNH THEO NĂM ");
+            reportLines.Add("─────────────────────────────");
             foreach (var category in yearlyTotals)
             {
-                Console.WriteLine($"  {category.Key}: {category.Value:#,##0₫}");
+                reportLines.Add($"  {category.Key}: {category.Value:#,##0₫}");
             }
+            Program.DrawCenteredBorder(reportLines.ToArray());
 
 
 
