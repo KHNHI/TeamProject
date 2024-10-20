@@ -1096,7 +1096,7 @@ namespace Quanlychitieu
         static void DrawHeader()
         {
             Console.Clear();
-            string titleYear =  "     𝑪𝑨𝑳𝑬𝑵𝑫𝑨𝑹 𝑶𝑭 𝑻𝑯𝑬 𝒀𝑬𝑨𝑹 " + selectedYear ;
+            string titleYear =  "                    𝑪𝑨𝑳𝑬𝑵𝑫𝑨𝑹 𝑶𝑭 𝑻𝑯𝑬 𝒀𝑬𝑨𝑹 " + selectedYear ;
 
 
                 

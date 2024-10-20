@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Globalization;
+using System.Reflection.Metadata;
 
 namespace Quanlychitieu
 {
@@ -154,17 +155,6 @@ namespace Quanlychitieu
             Program.DrawCenteredBorder(chosseTypeReport);
 
 
-
-
-
-            //Console.WriteLine("Chọn loại báo cáo tài chính:");
-            //Console.WriteLine("1:Báo cáo tài chính tháng hiện tại");
-            //Console.WriteLine("2:Thống kê theo tháng");
-            //Console.WriteLine("3:Tổng chi tiêu trong năm");
-
-
-           // Console.Write("Chọn một tùy chọn: ");
-
             var choice = Program.InputWithBox("Chọn một tùy chọn: "," ");
 
 
@@ -193,7 +183,7 @@ namespace Quanlychitieu
         {
             var monthlyTotals = expenseTracker.GetMonthlyTotals();
 
-            Console.WriteLine("\nBáo cáo tài chính theo tháng:");
+            Console.WriteLine("\n BÁO CÁO TÀI CHÍNH THEO THÁNG ");
             foreach (var month in monthlyTotals)
             {
                 Console.WriteLine($"Tháng {month.Key}:");
@@ -223,11 +213,37 @@ namespace Quanlychitieu
                 }
             }
 
-            Console.WriteLine("\nBáo cáo tài chính theo năm:");
+
+
+            Console.WriteLine("\n BÁO CÁO TÀI CHÍNH THEO NĂM ");
             foreach (var category in yearlyTotals)
             {
                 Console.WriteLine($"  {category.Key}: {category.Value:#,##0₫}");
             }
+
+
+
+
+
+
+
+            //List<string> content = new List<string>();
+
+            //Console.WriteLine("\n BÁO CÁO TÀI CHÍNH THEO NĂM ");
+            //foreach (var category in yearlyTotals)
+            //{
+            //    string line = $"  {category.Key}: {category.Value:#,##0₫}";
+            //    content.Add(line);
+            //}
+
+            //// Vẽ khung bao quanh danh sách content
+            //Program.DrawCenteredBorder(content.ToArray());
+
+
+
+
+
+
         }
 
         public void DrawTotalExpenseChart(ExpenseTracker expenseTracker)
