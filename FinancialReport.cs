@@ -167,7 +167,7 @@ namespace Quanlychitieu
                     break;
                 case "3":
                     Console.Clear();
-                    ShowYearlyReport(expenseTracker);
+                    DrawYearlyExpenseChart(expenseTracker);
                     break;
 
                 default:
@@ -175,6 +175,8 @@ namespace Quanlychitieu
                     break;
             }
         }
+
+
 
         public void ShowMonthlyReport(ExpenseTracker expenseTracker)
         {
@@ -205,11 +207,16 @@ namespace Quanlychitieu
             DrawTotalExpenseChart(expenseTracker);
         }
 
-        public void ShowYearlyReport(ExpenseTracker expenseTracker)
+
+        // VẼ BIỂU ĐỒ CHI TIÊU THEO NĂM 
+
+        public void DrawYearlyExpenseChart(ExpenseTracker expenseTracker)
         {
+            // Lấy dữ liệu tổng chi tiêu hàng tháng và chuyển sang tổng theo năm
             var monthlyTotals = expenseTracker.GetMonthlyTotals();
             var yearlyTotals = new Dictionary<string, double>();
 
+            // Tổng hợp dữ liệu chi tiêu theo năm dựa trên các danh mục
             foreach (var month in monthlyTotals)
             {
                 foreach (var category in month.Value)
@@ -222,41 +229,49 @@ namespace Quanlychitieu
                 }
             }
 
+            // Độ dài tối đa của thanh biểu đồ
+            int maxBarLength = 50;  // Độ dài thanh biểu đồ
+            double maxExpense = yearlyTotals.Values.Max(); // Tìm giá trị chi tiêu lớn nhất
 
+            // In tiêu đề cho biểu đồ
+            string[] title = { " BÁO CÁO CHI TIÊU HÀNG NĂM " };
+            Program.DrawCenteredBorder(title);
 
-            List<string> reportLines = new List<string>();
-            reportLines.Add(" BÁO CÁO TÀI CHÍNH THEO NĂM ");
-            reportLines.Add("─────────────────────────────");
+            // Tổng chiều rộng của biểu đồ và thanh phân cách
+            var totalWidth = 90; // Tăng tổng chiều rộng của biểu đồ
+
+            // Vẽ khung trên của biểu đồ
+            CenterPrintLine("┌" + new string('─', totalWidth - 2) + "┐");
+
+            // Vẽ biểu đồ cho từng danh mục chi tiêu
             foreach (var category in yearlyTotals)
             {
-                reportLines.Add($"  {category.Key}: {category.Value:#,##0₫}");
+                // Tính toán tổng chi tiêu cho từng danh mục
+                double totalExpense = category.Value;
+
+                // Tính chiều dài của thanh biểu đồ dựa trên tỷ lệ so với giá trị chi tiêu lớn nhất
+                int barLength = (int)((totalExpense / maxExpense) * maxBarLength);
+                string bar = new string('█', barLength); // Tạo thanh biểu đồ với ký tự '█'
+
+                // Định dạng chuỗi in ra: tên danh mục, thanh biểu đồ và giá trị chi tiêu
+                string line = $"│ {category.Key,-15} {bar,-50} {totalExpense,15:#,##0₫} │";
+
+                // Sử dụng hàm CenterPrintLine để căn giữa và in ra biểu đồ
+                CenterPrint(line);
+
+                // Thêm dấu phân cách giữa các danh mục nếu không phải danh mục cuối cùng
+                if (category.Key != yearlyTotals.Keys.Last())
+                {
+                    CenterPrint("│" + new string(' ', totalWidth - 2) + "│");
+                }
             }
-            Program.DrawCenteredBorder(reportLines.ToArray());
 
-
-
-
-
-
-
-            //List<string> content = new List<string>();
-
-            //Console.WriteLine("\n BÁO CÁO TÀI CHÍNH THEO NĂM ");
-            //foreach (var category in yearlyTotals)
-            //{
-            //    string line = $"  {category.Key}: {category.Value:#,##0₫}";
-            //    content.Add(line);
-            //}
-
-            //// Vẽ khung bao quanh danh sách content
-            //Program.DrawCenteredBorder(content.ToArray());
-
-
-
-
-
-
+            // Vẽ khung dưới của biểu đồ
+            CenterPrintLine("└" + new string('─', totalWidth - 2) + "┘");
         }
+
+
+
 
         public void DrawTotalExpenseChart(ExpenseTracker expenseTracker)
         {
@@ -289,6 +304,6 @@ namespace Quanlychitieu
                 Console.WriteLine();
             }
 
-    }
+        }
 }
     }

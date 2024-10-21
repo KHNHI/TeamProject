@@ -13,8 +13,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        //Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-        //Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
         Intro();
 
         Console.OutputEncoding = Encoding.UTF8;
@@ -23,13 +23,7 @@ class Program
         BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker);
         FinancialReport financialReport = new FinancialReport();
         expenseTracker.SetBudgetPlanner(budgetPlanner);
-        //expenseTracker.LoadExpenses();
-        //expenseTracker.LoadMockExpenses();
-        //budgetPlanner.LoadBudgetFromCSV();
-
-        //budgetPlanner.GetTotalBudget();
-
-        //System.Threading.Thread.Sleep(2000);
+        
         while (true)
         {
             Console.Clear();
@@ -58,18 +52,13 @@ class Program
                 "3. Xem tình trạng ngân sách         .",
                 "4. Xem báo cáo tài chính            .",
                 "5. Xem tình trạng tiết kiệm         .",
-                "6. Game Tài chính                   .",
+                "6. Game                             .",
                 "7. Lịch theo dõi thông tin chi tiêu .",
                 "8. Thoát chương trình               ."
             };
 
             DrawCenteredBorder(menuOptions);
 
-            //Console.Write("Chọn một tùy chọn: ");
-
-
-           // var option = Console.ReadLine();
-            //var keyInfo = Console.ReadKey();
 
             var option = " ";
             option = InputWithBox("Chọn một tùy chọn: ", " ");
@@ -85,6 +74,10 @@ class Program
                         "3: Quay lại menu chính ."
                     };
                     DrawCenteredBorder(balanceOptions);
+
+                    //Console.Write("Chọn một tùy chọn: ");
+
+
 
                      var balanceOption = "      ";  
                      balanceOption = InputWithBox("Chọn một tùy chọn: "," ");
@@ -194,8 +187,7 @@ class Program
                     };
                     DrawCenteredBorder(gameOptions);
 
-                    Console.Write("Chọn một tùy chọn: ");
-                    var gameOption = Console.ReadLine();
+                    var gameOption = InputWithBox("Chọn một tùy chọn:" , "");
 
                     switch (gameOption)
                     {
@@ -241,6 +233,9 @@ class Program
         var keyInfo = Console.ReadKey(true);
         return keyInfo.Key == ConsoleKey.Escape;
     }
+
+
+    // HÀM VẼ KHUNG VUÔNG VÀ CHỮ CĂN GIỮA 
     public static void DrawCenteredBorder(string[] content)
     {
         int consoleWidth = Console.WindowWidth;
@@ -283,7 +278,9 @@ class Program
     }
 
 
-    // Hàm tao hộp Nhập input 
+
+
+    // HÀM TẠO HỘP NHẬP LIỆU CHO NGƯỜI DÙNG: GỒM 3 HÀM 
     public static string InputWithBox(string title, string prompt, int minSpaceAbove = 2)
     {
         int windowWidth = Console.WindowWidth;
@@ -390,6 +387,8 @@ class Program
         }
     }
 
+
+    // INTRO MỞ ĐẦU BÀI
     static void Intro()
     {
         int consoleWidth = Console.WindowWidth;

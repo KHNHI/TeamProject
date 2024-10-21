@@ -279,14 +279,15 @@ namespace Quanlychitieu
 
 
 
-        // Hàm phát nhạc chiến thắng
+        // Hàm phát nhạc và in hình chiến thắng
         static void CongratulateUser()
         {
             Console.Clear();
             SoundPlayer chienThang = new SoundPlayer("Thankyou.wav");
             chienThang.Load();
             chienThang.Play();
-            Console.WriteLine("Chúc mừng! Bạn đã trả giá khéo léo và mua được giá hời! 🎉🎉🎉");
+            Console.WriteLine("                                                    " +
+                "Chúc mừng! Bạn đã trả giá khéo léo và mua được giá hời! 🎉🎉🎉");
            
 
             string[] winnn =
