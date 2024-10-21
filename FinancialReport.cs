@@ -208,41 +208,7 @@ namespace Quanlychitieu
         }
 
 
-
-
-
-
-
-        //public void ShowYearlyReport(ExpenseTracker expenseTracker)
-        //{
-        //    var monthlyTotals = expenseTracker.GetMonthlyTotals();
-        //    var yearlyTotals = new Dictionary<string, double>();
-
-        //    foreach (var month in monthlyTotals)
-        //    {
-        //        foreach (var category in month.Value)
-        //        {
-        //            if (!yearlyTotals.ContainsKey(category.Key))
-        //            {
-        //                yearlyTotals[category.Key] = 0;
-        //            }
-        //            yearlyTotals[category.Key] += category.Value;
-        //        }
-        //    }
-
-        //    List<string> reportLines = new List<string>();
-        //    reportLines.Add(" BÁO CÁO TÀI CHÍNH THEO NĂM ");
-        //    reportLines.Add("─────────────────────────────");
-        //    foreach (var category in yearlyTotals)
-        //    {
-        //        reportLines.Add($"  {category.Key}: {category.Value:#,##0₫}");
-        //    }
-        //    Program.DrawCenteredBorder(reportLines.ToArray());
-
-        //}
-
-
-
+        // VẼ BIỂU ĐỒ CHI TIÊU THEO NĂM 
 
         public void DrawYearlyExpenseChart(ExpenseTracker expenseTracker)
         {
@@ -303,9 +269,6 @@ namespace Quanlychitieu
             // Vẽ khung dưới của biểu đồ
             CenterPrintLine("└" + new string('─', totalWidth - 2) + "┘");
         }
-
-
-
 
 
 

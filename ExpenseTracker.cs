@@ -323,24 +323,8 @@ namespace Quanlychitieu
             SaveIncomeEnteredStatus();
         }
 
-        public void DisplayCenteredMessageInBox(string message)
-        {
-            // Độ dài tối thiểu của khung
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            int boxWidth = Math.Max(message.Length + 4, 40); // Đảm bảo khung đủ rộng, ít nhất là 40 ký tự
-            string topBorder = "╔" + new string('═', boxWidth) + "╗";
-            string bottomBorder = "╚" + new string('═', boxWidth) + "╝";
 
-            // Tính toán vị trí của thông điệp ở giữa khung
-            int padding = (boxWidth - message.Length) / 2;
-            string paddedMessage = new string(' ', padding) + message + new string(' ', boxWidth - message.Length - padding);
 
-            // Hiển thị khung và thông điệp
-            Console.WriteLine(topBorder);
-            Console.WriteLine("║" + paddedMessage + "║");
-            Console.WriteLine(bottomBorder);
-            Console.ResetColor();
-        }
 
         private void SaveTotalIncome()
         {
@@ -515,6 +499,9 @@ namespace Quanlychitieu
             }
         }
 
+
+
+        // FUNCTION IN RA SỐ TIỀN BẰNG CHỮ 
         private string ConvertNumberToWords(long number)
         {
             if (number == 0) return "không đồng";
@@ -596,6 +583,10 @@ namespace Quanlychitieu
 
             return result.Trim();
         }
+
+
+
+
 
 
         //=====Đây là phần dữ liệu giả lập để thống kê các chi tiêu của những tháng trước được load từ file "mock_expenses.json"=====
@@ -734,6 +725,7 @@ namespace Quanlychitieu
        
 
 
+        // LỰA CHỌN XEM CALENDAR 
 
         static int selectedYear = new int();
         static int selectedMonth = new int();
@@ -744,8 +736,6 @@ namespace Quanlychitieu
         
         public void CalendarTracker()
         {
-            
-           
             
             Console.Clear();
             TitleIntroMemory();
@@ -999,10 +989,7 @@ namespace Quanlychitieu
                 
                 Console.SetCursorPosition(startX, startY);
 
-                //int currentLineCursor = Console.CursorTop;
-                //Console.SetCursorPosition(0, currentLineCursor);
-                //Console.Write(new string(' ', Console.WindowWidth));
-                //Console.SetCursorPosition(Console.CursorLeft, currentLineCursor);
+               
             }
 
             bool isSelectingDay = false; // Thêm biến để theo dõi trạng thái chọn ngày
@@ -1093,10 +1080,6 @@ namespace Quanlychitieu
                         break;
                 }
 
-                //if (isSelectingDay)
-                //{
-                //    MoveSelection(0, 0); // Cập nhật vị trí chọn ngày
-                //}
             }
 
            

@@ -279,7 +279,7 @@ namespace Quanlychitieu
 
 
 
-        // Hàm phát nhạc chiến thắng
+        // Hàm phát nhạc và in hình chiến thắng
         static void CongratulateUser()
         {
             Console.Clear();
