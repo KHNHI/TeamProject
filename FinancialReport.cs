@@ -148,13 +148,15 @@ namespace Quanlychitieu
             "1. Báo cáo tài chính tháng hiện tại  ",
             "2. Thống kê theo tháng               ",
             "3. Tổng chi tiêu trong năm           ",
+            "4. Quay về menu chính                ",
+
             };
             Program.DrawCenteredBorder(chosseTypeReport);
 
 
             var choice = Program.InputWithBox("Chọn một tùy chọn: "," ");
 
-
+           
             switch (choice)
             {
                 case "1":
@@ -169,12 +171,22 @@ namespace Quanlychitieu
                     Console.Clear();
                     DrawYearlyExpenseChart(expenseTracker);
                     break;
-
+                case "4":
+                    return;
                 default:
                     Console.WriteLine("Lựa chọn không hợp lệ.");
                     break;
             }
+            Console.WriteLine("Nhấn ESC để quay về");
+            ConsoleKeyInfo key = Console.ReadKey();
+            if (key.Key == ConsoleKey.Escape)
+            {
+                return;
+            }
+
+
         }
+        
 
 
 

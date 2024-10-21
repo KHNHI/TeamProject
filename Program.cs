@@ -164,11 +164,6 @@ class Program
                     Console.Clear();
                     financialReport.ShowFinancialReport(expenseTracker);
                     Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
-                    if (TurnBack())
-                    {
-                        continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                    }
-
                     break;
                 case "5":
                     Console.Clear();
