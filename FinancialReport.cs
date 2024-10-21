@@ -71,7 +71,7 @@ namespace Quanlychitieu
             var totalExpense = expenses.Sum(e => e.Value);
             var totalIncome = income.Sum(e => e.Value);
             var accountBalance = totalIncome - totalExpense;
-
+            var temptSaving = expenseTracker.GetSavingsStatus();
 
             string[] textReport = { " BÁO CÁO TỔNG QUÁT " };
             Program.DrawCenteredBorder( textReport );
@@ -80,7 +80,8 @@ namespace Quanlychitieu
             CenterPrint($"Tổng thu nhập: {totalIncome:#,##0₫}");
             CenterPrint("────────────────────────");
             CenterPrint($"Số dư tài khoản: {accountBalance:#,##0₫}");
-            CenterPrint($"Tổng ngân sách: {totalBudget:#,##0₫}"); // Hiển thị tổng ngân sách
+            CenterPrint($"Tổng ngân sách: {totalBudget:#,##0₫}");
+            CenterPrint($" {temptSaving:#,##0₫}");
             string[] CategotiesReport = { " BÁO CÁO CHI TIẾT CHI TIÊU " };
             Program.DrawCenteredBorder(CategotiesReport);
 

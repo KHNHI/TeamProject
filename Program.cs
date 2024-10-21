@@ -51,7 +51,6 @@ class Program
                 "2. Đặt ngân sách                    .",
                 "3. Xem tình trạng ngân sách         .",
                 "4. Xem báo cáo tài chính            .",
-                "5. Xem tình trạng tiết kiệm         .",
                 "6. Game                             .",
                 "7. Lịch theo dõi thông tin chi tiêu .",
                 "8. Thoát chương trình               ."
@@ -166,15 +165,6 @@ class Program
                     Console.WriteLine("Báo cáo tài chính đã hoàn thành.");
                     break;
                 case "5":
-                    Console.Clear();
-                    Console.ForegroundColor= ConsoleColor.Green;
-                    Console.WriteLine(expenseTracker.GetSavingsStatus());
-                    if (TurnBack())
-                    {
-                        continue; // Quay lại đầu vòng lặp, hiển thị menu chính
-                    }
-                    break;
-                case "6":
                     Console.Clear(); 
                     string[] gameOptions = {
                         "1: MONEY - STOCKY  .",
@@ -205,19 +195,16 @@ class Program
                         continue; // Quay lại đầu vòng lặp, hiển thị menu chính
                     }
                     break;               
-                case "7":
+                case "6":
                     Console.Clear();
                     expenseTracker.CalendarTracker();
                     break;
-                case "8":
+                case "7":
                     Environment.Exit(0);
                     break;
                 default:
                     Console.WriteLine("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
                     break;
-                    
-
-
             }
 
         }

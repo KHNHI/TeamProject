@@ -45,9 +45,8 @@ namespace Quanlychitieu
                 Date = date;
             }
         }
-        public ExpenseTracker()//BudgetPlanner budgetPlanner)
+        public ExpenseTracker()
         {
-            this.budgetPlanner = budgetPlanner;
             monthlyExpenses = new Dictionary<string, Dictionary<int, double>>();
             LoadExpenses();
             LoadMockExpenses();
@@ -68,17 +67,10 @@ namespace Quanlychitieu
             }
             return !incomeEnteredThisMonth;
         }
-        //private decimal GetOverspending()
-        //{
-        //    return TotalExpenses > TotalBudget ? TotalExpenses - TotalBudget : 0;
-        //}
-        private string GetExpenseCategory()
+
+        private string GetExpenseCategory(string choice)
         {
-            if (categoryChoice == null)
-            {
-                return "Khác"; // Giá trị mặc định khi categoryChoice là null
-            }
-            switch (categoryChoice)
+            switch (choice)
             {
                 case "1": return "Ăn uống";
                 case "2": return "Đi lại";
@@ -185,9 +177,6 @@ namespace Quanlychitieu
             }
         }
 
-
-
-
         public void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
         {
            
@@ -212,9 +201,6 @@ namespace Quanlychitieu
             Console.ResetColor();
         }
 
-
-
-
         private void EnterTransaction(string category, decimal amount, bool isExpense)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -232,12 +218,12 @@ namespace Quanlychitieu
                 monthlyExpenses[category] = new Dictionary<int, double>();
             }
             // Khởi tạo chi tiêu cho tháng hiện tại nếu chưa có
-            if (!monthlyExpenses[category].ContainsKey(month))
+            if (!monthlyExpenses[category].ContainsKey(currentMonth))
             {
-                monthlyExpenses[category][month] = 0;
+                monthlyExpenses[category][currentMonth] = 0;
             }
             // Cập nhật chi tiêu hàng tháng
-            monthlyExpenses[category][month] += (double)amount;
+            monthlyExpenses[category][currentMonth] += (double)amount;
             // Cập nhật tổng chi tiêu của từng danh mục
             if (expenses.ContainsKey(category))
             {
@@ -329,8 +315,6 @@ namespace Quanlychitieu
             Console.ResetColor();
         }
 
-
-
         private void SaveTotalIncome()
         {
             File.WriteAllText("total_income.txt", TotalIncome.ToString("F2")); // Lưu tổng thu nhập với 2 chữ số thập phân
@@ -402,41 +386,11 @@ namespace Quanlychitieu
                 lastIncomeEntryTime = DateTime.MinValue; // Nếu chưa có file, chưa nhập thu nhập lần nào
             }
         }
-
-       
-        int month = DateTime.Now.Month;
-
-
-
         public Dictionary<string, Dictionary<int, double>> GetMonthlyExpenses()
         {
             return monthlyExpenses;
         }
 
-        private void CheckOverspending()
-        {
-            if (TotalExpenses > TotalBudget)
-            {
-                decimal overspending = TotalExpenses - TotalBudget;
-                Console.WriteLine($"Bạn đang chi tiêu vượt mức dự tính: {overspending:#,##0₫}.");
-            }
-        }
-
-
-        private string GetExpenseCategory(string choice)
-        {
-            switch (choice)
-            {
-                case "1": return "Ăn uống";
-                case "2": return "Đi lại";
-                case "3": return "Chi phí cố định";
-                case "4": return "Giải trí";
-                case "5": return "Giáo dục";
-                case "6": return "Mua sắm";
-                case "7": return "Khác";
-                default: return "Khác";
-            }
-        }
 
         private void SaveExpenses()
         {
@@ -473,12 +427,10 @@ namespace Quanlychitieu
         }
         public string GetSavingsStatus()
         {
-            decimal totalExpenses = GetTotalExpenses(); // Assuming this method returns the total expenses
-            decimal totalBudget = TotalBudget; // Assuming TotalBudget is a property that returns the total budget
-            decimal totalIncome = TotalIncome; // Assuming TotalIncome is a property that returns the total income
-
+            decimal totalExpenses = GetTotalExpenses(); 
+            decimal totalBudget = TotalBudget; 
+            decimal totalIncome = TotalIncome; 
             decimal savings;
-
             // Calculate savings based on the conditions
             if (totalExpenses <= totalBudget)
             {
@@ -492,19 +444,17 @@ namespace Quanlychitieu
             // Return the savings status message
             if (savings > 0)
             {
-                return $"Bạn có tiết kiệm tạm thời: {savings:#,##0₫}";
+                return $" Tiết kiệm tạm thời: {savings:#,##0₫}";
             }
             else if (savings < 0)
             {
-                return $"Bạn đã vượt ngân sách: {-savings:#,##0₫}";
+                return $" Đã vượt ngân sách: {-savings:#,##0₫}";
             }
             else
             {
-                return "Bạn không có tiết kiệm tạm thời.";
+                return "Không có tiết kiệm tạm thời.";
             }
         }
-
-
 
         // FUNCTION IN RA SỐ TIỀN BẰNG CHỮ 
         private string ConvertNumberToWords(long number)
@@ -588,10 +538,6 @@ namespace Quanlychitieu
 
             return result.Trim();
         }
-
-
-
-
 
 
         //=====Đây là phần dữ liệu giả lập để thống kê các chi tiêu của những tháng trước được load từ file "mock_expenses.json"=====
