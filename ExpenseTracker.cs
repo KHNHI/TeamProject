@@ -242,7 +242,10 @@ namespace Quanlychitieu
                     return;
                 }
             }
-           DisplayCenteredMessageInBox("Nhập số tiền thu nhập");
+
+            string[] enterIncomee = { " NHẬP THU NHẬP " };
+            Program.DrawCenteredBorder(enterIncomee);
+           
      
             string? incomeInput;//có thể nhận giá trị null
             decimal amount = 0;
@@ -269,24 +272,7 @@ namespace Quanlychitieu
             SaveTotalIncome();
             SaveIncomeEnteredStatus();
         }
-        public void DisplayCenteredMessageInBox(string message)
-        {
-            // Độ dài tối thiểu của khung
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            int boxWidth = Math.Max(message.Length + 4, 40); // Đảm bảo khung đủ rộng, ít nhất là 40 ký tự
-            string topBorder = "╔" + new string('═', boxWidth) + "╗";
-            string bottomBorder = "╚" + new string('═', boxWidth) + "╝";
-
-            // Tính toán vị trí của thông điệp ở giữa khung
-            int padding = (boxWidth - message.Length) / 2;
-            string paddedMessage = new string(' ', padding) + message + new string(' ', boxWidth - message.Length - padding);
-
-            // Hiển thị khung và thông điệp
-            Console.WriteLine(topBorder);
-            Console.WriteLine("║" + paddedMessage + "║");
-            Console.WriteLine(bottomBorder);
-            Console.ResetColor();
-        }
+      
 
         private void SaveTotalIncome()
         {

@@ -13,8 +13,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-        Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        //Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        //Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
         Intro();
 
         Console.OutputEncoding = Encoding.UTF8;
@@ -51,9 +51,9 @@ class Program
                 "2. Đặt ngân sách                    .",
                 "3. Xem tình trạng ngân sách         .",
                 "4. Xem báo cáo tài chính            .",
-                "6. Game                             .",
-                "7. Lịch theo dõi thông tin chi tiêu .",
-                "8. Thoát chương trình               ."
+                "5. Game                             .",
+                "6. Lịch theo dõi thông tin chi tiêu .",
+                "7. Thoát chương trình               ."
             };
 
             DrawCenteredBorder(menuOptions);
@@ -217,6 +217,9 @@ class Program
     }
 
 
+
+
+
     // HÀM VẼ KHUNG VUÔNG VÀ CHỮ CĂN GIỮA 
     public static void DrawCenteredBorder(string[] content)
     {
@@ -224,40 +227,51 @@ class Program
         int contentWidth = content.Max(line => line.Length);
         int borderWidth = Math.Min(consoleWidth - 4, contentWidth + 4);
 
-        char[,] border = new char[3, borderWidth];
-
-        // Top border
-        border[0, 0] = '╔';
-        border[0, borderWidth - 1] = '╗';
-        for (int i = 1; i < borderWidth - 1; i++)
-            border[0, i] = '═';
-
-        // Middle border
-        border[1, 0] = '║';
-        border[1, borderWidth - 1] = '║';
-        for (int i = 1; i < borderWidth - 1; i++)
-            border[1, i] = ' ';
-
-        // Bottom border
-        border[2, 0] = '╚';
-        border[2, borderWidth - 1] = '╝';
-        for (int i = 1; i < borderWidth - 1; i++)
-            border[2, i] = '═';
-
-        // Draw top border
-        Console.WriteLine(new string(' ', (consoleWidth - borderWidth) / 2) + new string(Enumerable.Range(0, borderWidth).Select(i => border[0, i]).ToArray()));
-
-        // Draw content
+        // Hàm chia dòng khi nội dung quá dài so với chiều rộng console
+        List<string> wrappedContent = new List<string>();
         foreach (string line in content)
+        {
+            if (line.Length > borderWidth - 4)
+            {
+                // Chia dòng nếu nội dung vượt quá chiều rộng viền
+                for (int i = 0; i < line.Length; i += borderWidth - 4)
+                {
+                    wrappedContent.Add(line.Substring(i, Math.Min(borderWidth - 4, line.Length - i)));
+                }
+            }
+            else
+            {
+                wrappedContent.Add(line);
+            }
+        }
+
+        // Vẽ phần viền
+        DrawLine('╔', '═', '╗', borderWidth, consoleWidth);
+
+        // Vẽ nội dung (đã được bọc xuống dòng nếu cần)
+        foreach (string line in wrappedContent)
         {
             int padding = (borderWidth - line.Length - 2) / 2;
             string paddedLine = new string(' ', padding) + line + new string(' ', borderWidth - line.Length - padding - 2);
             Console.WriteLine(new string(' ', (consoleWidth - borderWidth) / 2) + "║" + paddedLine + "║");
         }
 
-        // Draw bottom border
-        Console.WriteLine(new string(' ', (consoleWidth - borderWidth) / 2) + new string(Enumerable.Range(0, borderWidth).Select(i => border[2, i]).ToArray()));
+        // Vẽ phần viền dưới
+        DrawLine('╚', '═', '╝', borderWidth, consoleWidth);
     }
+
+    private static void DrawLine(char start, char middle, char end, int width, int consoleWidth)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(start);
+        sb.Append(new string(middle, width - 2));
+        sb.Append(end);
+        Console.WriteLine(new string(' ', (consoleWidth - width) / 2) + sb.ToString());
+    }
+
+
+
+
 
 
 

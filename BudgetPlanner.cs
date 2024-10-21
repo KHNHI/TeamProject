@@ -281,10 +281,30 @@
             Console.Clear();
             var expenses = expenseTracker.GetExpenses();
 
-            Console.WriteLine("\n=== TÌNH TRẠNG NGÂN SÁCH ===");
-            Console.WriteLine($"┌{new string('-', 70)}┐");
-            Console.WriteLine($"| {"Danh mục",-20} | {"Ngân sách",-15} | {"Đã chi",-15} | {"Còn lại",-9} |");
-            Console.WriteLine($"├{new string('-', 70)}┤");
+            const int c0 = 20, c1 = 15, c2 = 15, c3 = 15;  // Định nghĩa độ dài của từng cột
+            int tableWidth = c0 + c1 + c2 + c3 + 9;  // Chiều rộng của bảng (bao gồm ký tự phân cách)
+
+            // Lấy chiều rộng của cửa sổ console và tính toán khoảng cách để căn giữa
+            int windowWidth = Console.WindowWidth;
+            int padding = Math.Max((windowWidth - tableWidth) / 2, 0);  // Số khoảng trắng cần chèn vào
+
+            // Hàm hỗ trợ in dòng căn giữa
+            void CenteredPrint(string text)
+            {
+                Console.WriteLine(new string(' ', padding) + text);
+            }
+
+            // Tiêu đề tình trạng ngân sách
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            string[] budgetStatuss = {" TÌNH TRẠNG NGÂN SÁCH "};
+            Program.DrawCenteredBorder(budgetStatuss);
+            Console.ResetColor();
+
+
+            // In bảng theo kiểu tương tự với kí tự ASCII, có căn giữa
+            CenteredPrint($"╔═{new string('═', c0)}═╤═{new string('═', c1)}═╤═{new string('═', c2)}═╤═{new string('═', c3)}═╗");
+            CenteredPrint($"║ {"Danh mục",-c0} │ {"Ngân sách",c1} │ {"Đã chi",c2} │ {"Còn lại",c3} ║");
+            CenteredPrint($"╟─{new string('─', c0)}─┼─{new string('─', c1)}─┼─{new string('─', c2)}─┼─{new string('─', c3)}─╢");
 
             foreach (var category in validCategories)
             {
@@ -292,31 +312,37 @@
                 decimal spent = expenses.ContainsKey(category) ? Math.Abs(expenses[category]) : 0;
                 decimal remaining = budgetAmount - spent;
                 decimal percentageUsed = budgetAmount > 0 ? (spent / budgetAmount) * 100 : 0;
+
                 // Hiển thị thông tin từng danh mục dưới dạng bảng
-                Console.WriteLine($"| {category,-20} | {budgetAmount,15:#,##0₫} | {spent,15:#,##0₫} | {remaining,9:#,##0₫} |");
+                CenteredPrint($"║ {category,-c0} │ {budgetAmount,c1:#,##0₫} │ {spent,c2:#,##0₫} │ {remaining,c3:#,##0₫} ║");
 
                 // Hiển thị cảnh báo nếu vượt quá ngân sách hoặc chi tiêu quá 80%
                 if (remaining < 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("|" + new string(' ', 24) + " Cảnh báo: Vượt quá ngân sách!" + new string(' ', 16) + "|");
+                    CenteredPrint($"║ {"",-c0} │ {"",-c1} │ {"",-c2} │ {" Cảnh báo: Vượt quá ngân sách!",c3} ║");
                     PlaywarningSound();
                     Console.ResetColor();
                 }
                 else if (percentageUsed > 80)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("|" + new string(' ', 24) + " Cảnh báo: Đã sử dụng hơn 80% ngân sách!" + new string(' ', 12) + "|");
+                    CenteredPrint($"║ {"",-c0} │ {"",-c1} │ {"",-c2} │ {" Cảnh báo: Đã sử dụng hơn 80% ngân sách!",c3} ║");
                     PlaywarningSound();
                     Console.ResetColor();
                 }
 
-
-                Console.WriteLine($"├{new string('─', 70)}┤");
+                CenteredPrint($"╟─{new string('─', c0)}─┼─{new string('─', c1)}─┼─{new string('─', c2)}─┼─{new string('─', c3)}─╢");
             }
-            Console.WriteLine($"└{new string('─', 70)}┘");
-            Console.WriteLine($"Tổng ngân sách: {GetTotalBudget():#,##0₫}");
+
+            // Đóng khung dưới của bảng
+            CenteredPrint($"╚═{new string('═', c0)}═╧═{new string('═', c1)}═╧═{new string('═', c2)}═╧═{new string('═', c3)}═╝");
+
+            // Hiển thị tổng ngân sách, cũng căn giữa
+            CenteredPrint($"\n                                                                            " +
+                $" Tổng ngân sách: {GetTotalBudget():#,##0₫}");
         }
 
-     }
+
+    }
 }

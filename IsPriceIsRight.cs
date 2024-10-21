@@ -227,6 +227,8 @@ namespace Quanlychitieu
 
                 //decimal userGuess = GetUserInput();
                 //Console.WriteLine();
+
+
                 decimal userGuess = Convert.ToDecimal(userGuessStr);
                 Console.WriteLine();
 
