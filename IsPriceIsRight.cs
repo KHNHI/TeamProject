@@ -16,39 +16,43 @@ using System.Drawing;
 namespace Quanlychitieu
 {
     internal class IsPriceIsRight
-    {
+    { 
+        // Khởi tạo một đối tượng HttpClient để thực hiện các yêu cầu HTTP
         static HttpClient client = new HttpClient();
 
+        // Hàm bắt đầu trò chơi, được gọi khi game bắt đầu
         public static async Task BeginGameAsync()
         {
-            // Thiết lập mã hóa console thành UTF-8
+            // Gọi hàm thiết lập mã hóa console thành UTF-8
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            // Phát nhạc và di chuyển linh vật
+            // Gọi hàm hiển thị linh vật và phát nhạc nền
             DisplayMascotWithMusic();
 
             // Chờ 13 giây trước khi hiển thị thông báo
-            await Task.Delay(13000); // Chuyển từ Thread.Sleep sang await Task.Delay
+            await Task.Delay(13000); // // Sử dụng await Task.Delay thay vì Thread.Sleep để tránh chặn luồng
 
-
+            // Tiêu đề chính của trò chơi được hiển thị
             string[] title =
       {
-"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗              ███╗   ███╗ █████╗ ████████╗ ██████╗██╗  ██╗    ",
-"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝              ████╗ ████║██╔══██╗╚══██╔══╝██╔════╝██║  ██║    ",
-"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     █████╗    ██╔████╔██║███████║   ██║   ██║     ███████║    ",
-"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ╚════╝    ██║╚██╔╝██║██╔══██║   ██║   ██║     ██╔══██║    ",
-"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║                 ██║ ╚═╝ ██║██║  ██║   ██║   ╚██████╗██║  ██║    ",
-"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝                 ╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝    ",
+"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗              ███╗   ███╗ █████╗ ████████╗ ██████╗██╗  ██╗  ",
+"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝              ████╗ ████║██╔══██╗╚══██╔══╝██╔════╝██║  ██║  ",
+"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     █████╗    ██╔████╔██║███████║   ██║   ██║     ███████║  ",
+"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ╚════╝    ██║╚██╔╝██║██╔══██║   ██║   ██║     ██╔══██║  ",
+"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║                 ██║ ╚═╝ ██║██║  ██║   ██║   ╚██████╗██║  ██║  ",
+"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝                 ╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝  ",
       };
+            // Đặt màu chữ thành màu vàng cho tiêu đề
             Console.ForegroundColor = ConsoleColor.Yellow;
+            // Gọi hàm DrawCenteredBorder() đã định nghĩa ở class Program
             Program.DrawCenteredBorder(title);
 
 
             Console.WriteLine("                                                                Nhấn 'Enter' để bắt đầu nhiệm vụ");
             Console.ReadKey(); // Chờ user nhấn 'Enter'
 
-            // Sau khi nhấn Enter, hiển thị luật chơi
-            Console.Clear(); // Xóa màn hình 
+            // Sau khi nhấn Enter, xóa màn hình và hiển thị luật chơi
+            Console.Clear();  
              
 
             string[] messsage =
@@ -56,29 +60,33 @@ namespace Quanlychitieu
 "  Bạn sẽ là Anh Củ Cải đi chợ mua đồ dùng cho các bạn Tân sinh viên.",
 "  Hãy trả giá sao cho mua được giá hời từ gợi ý của các cô bán hàng.",
       };
+            // Đặt màu chữ thành màu xanh lơ cho thông điệp hướng dẫn
             Console.ForegroundColor = ConsoleColor.Cyan;
             Program.DrawCenteredBorder(messsage);
 
 
+            // Hiển thị thông báo cảnh báo cho người chơi
             string[] warningg =
     {
 "  Lưu ý: Nếu bạn trả giá quá thấp, các cô sẽ không bán nữa.         ",
 "  Bạn mua thiếu đồ dùng cho các em sinh viên.                       ",
       };
+            // Đặt màu chữ thành màu đỏ để nhấn mạnh cảnh báo
             Console.ForegroundColor = ConsoleColor.Red;
             Program.DrawCenteredBorder(warningg);
 
+            // Đặt lại màu chữ về mặc định
             Console.ResetColor();
 
 
             // Phát nhạc background
             SoundPlayer Background = new SoundPlayer("loto.wav");
-            Background.Load();
-            Background.Play();
-            Background.PlayLooping(); 
+            Background.Load(); // Tải file nhạc
+            Background.Play();  // Phát nhạc một lần
+            Background.PlayLooping();  // Lặp lại nhạc
 
 
-            // Thiết lập headers cho HTTP request
+            // Thiết lập headers cho các yêu cầu HTTP để giả lập một người dùng
             var headers = new Dictionary<string, string>
         {
             { "User-Agent", "Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0" },
@@ -124,27 +132,29 @@ namespace Quanlychitieu
         {
             var productsInfo = new List<Dictionary<string, object>>();
 
+            // Tạo các tham số query để gửi kèm yêu cầu HTTP
             var queryParams = new Dictionary<string, string>
         {
-            { "limit", "48" },
-            { "include", "sale-attrs,badges,product_links,brand,category,stock_item,advertisement" },
+            { "limit", "48" }, // Giới hạn số sản phẩm trên mỗi trang
+            { "include", "sale-attrs,badges,product_links,brand,category,stock_item,advertisement" }, // Bao gồm các thuộc tính cần thiết
             { "aggregations", "1" },
-            { "trackity_id", "70e316b0-96f2-dbe1-a2ed-43ff60419991" },
-            { "category", "1883" },
-            { "page", page.ToString() },
+            { "trackity_id", "70e316b0-96f2-dbe1-a2ed-43ff60419991" }, // ID theo dõi session
+            { "category", "1883" },  // ID danh mục sản phẩm
+            { "page", page.ToString() }, // Số trang
             { "src", "c1883" },
             { "urlKey", "nha-cua-doi-song" }
         };
 
-            // Gửi yêu cầu GET
+            // Gửi yêu cầu GET để lấy dữ liệu sản phẩm
             var response = await SendGetRequestAsync("https://tiki.vn/api/v2/products", headers, queryParams);
 
+            // Nếu yêu cầu thành công, phân tích dữ liệu JSON trả về
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<dynamic>(jsonResponse).data;
 
-                // Lưu trữ thông tin sản phẩm
+                // Lưu trữ thông tin các sản phẩm vào danh sách
                 foreach (var record in products)
                 {
                     // Lấy ID, tên và giá sản phẩm
@@ -168,13 +178,16 @@ namespace Quanlychitieu
         // Hàm gửi yêu cầu GET với headers và query parameters
         static async Task<HttpResponseMessage> SendGetRequestAsync(string url, Dictionary<string, string> headers, Dictionary<string, string> queryParams)
         {
+            // Tạo yêu cầu HTTP với URL và các tham số query
             var request = new HttpRequestMessage(HttpMethod.Get, $"{url}?{string.Join("&", queryParams.Select(kvp => $"{kvp.Key}={kvp.Value}"))}");
 
+            // Thêm các headers vào yêu cầu
             foreach (var header in headers)
             {
                 request.Headers.Add(header.Key, header.Value);
             }
 
+            // Gửi yêu cầu và trả về phản hồi
             return await client.SendAsync(request);
         }
 
@@ -196,6 +209,7 @@ namespace Quanlychitieu
             decimal totalUserGuess = 0;
             int count = 1;
 
+            // Vòng lặp để xử lý từng sản phẩm
             foreach (var product in randomProducts)
             {
                 string productName = product["name"].ToString();
@@ -203,13 +217,9 @@ namespace Quanlychitieu
                 totalRealPrice += productPrice;
 
 
-                // Giá gợi ý từ "cô bán hàng"
+                // Giá cô bán hàng đưa ra là gấp đôi giá thực tế
                 decimal suggestedPrice = productPrice * 2;
                 string[] suggestedPriceArray = new string[] { suggestedPrice.ToString() };
-
-
-                //Console.WriteLine($"Sản phẩm {count}: {productName}");
-                //Console.WriteLine($"Giá cô bán hàng đưa ra:{suggestedPrice} VND");
 
                 string[] hintt =
                 {
@@ -219,16 +229,11 @@ namespace Quanlychitieu
                 Program.DrawCenteredBorder(hintt);
 
 
-
+                // Yêu cầu người chơi nhập giá đoán
                 var userGuessStr = Program.InputWithBox("\n                                                                " +
                     "     Hãy trả giá đúng! ", " ");
 
-                //Console.Write("Hãy trả giá đúng! ");
-
-                //decimal userGuess = GetUserInput();
-                //Console.WriteLine();
-
-
+              
                 decimal userGuess = Convert.ToDecimal(userGuessStr);
                 Console.WriteLine();
 
@@ -237,7 +242,7 @@ namespace Quanlychitieu
                 count++;
             }
 
-            // Kiểm tra tổng giá người dùng đoán
+            // Kiểm tra tổng giá người chơi đoán so với giá thực
             decimal minAcceptablePrice = totalRealPrice * 0.7M;  // 70% tổng giá
             decimal maxAcceptablePrice = totalRealPrice * 1.0M;  // 100% tổng giá
 
@@ -257,31 +262,9 @@ namespace Quanlychitieu
 
 
 
-        // Hàm xử lý ngoại lệ 
-        static decimal GetUserInput()
-        {
-            decimal number;
-            while (true)
-            {             
-
-               string input = Console.ReadLine();
-
-                // Kiểm tra xem có thể chuyển đổi sang decimal hay không
-                if (decimal.TryParse(input, out number))
-                {
-                    break; // Nếu thành công, thoát khỏi vòng lặp
-                }
-                else
-                {
-                    Console.WriteLine("Nhập liệu không hợp lệ, hãy nhập lại."); // Thông báo lỗi
-                }
-            }
-            return number; // Trả về giá trị số hợp lệ
-        }
 
 
-
-        // Hàm phát nhạc và in hình chiến thắng
+        // HÀM PHÁT ÂM THANH VÀ MASCOT CHIẾN THẮNG 
         static void CongratulateUser()
         {
             Console.Clear();
@@ -328,8 +311,6 @@ namespace Quanlychitieu
 
 
             };
-
-
 
             Program.DrawCenteredBorder(winnn);
 
@@ -393,8 +374,6 @@ namespace Quanlychitieu
 
             };
 
-
-
             Program.DrawCenteredBorder(losee);
 
 
@@ -457,8 +436,6 @@ namespace Quanlychitieu
 
             };
 
-
-
             Program.DrawCenteredBorder(losee);
 
             Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -474,23 +451,18 @@ namespace Quanlychitieu
             Program.DrawCenteredBorder(youlose);
             Console.ResetColor();
         }
-            // Hàm phát nhạc và di chuyển linh vật
 
+            
+
+        // HÀM PHÁT NHẠC UEH MỞ ĐẦU TRÒ CHƠI VÀ IN MASCOT
             static void DisplayMascotWithMusic()
-        {
+            {
             SoundPlayer proudUEH = new SoundPlayer("proudUEHcombine.wav");
             proudUEH.Load();
             proudUEH.Play();
-            DisplayMascot();
 
-        }
-
-        // Hàm hiển thị linh vật
-
-
-        static void DisplayMascot()
-        {
             Console.Clear();
+
             Console.WriteLine(@"
                                                              ,,,,,,,        ,▄▄╬▓▓▓▓▄,
                                                   ,▄╦▄▄▄▄▓▓▓▓▓▓▒▒╣▒▒▒▓▓▄,  ▄▓▒╢╢╢╣▓▓╣▒▓▄
@@ -524,12 +496,10 @@ namespace Quanlychitieu
                                                                  ███████████▀▀▀▀▀▀███████████
                                                                    ▓░,▀▀▀▀▀█      ▀█▀▀▀▀▀▀▓░
                                                                    ▓░▓░▓░▓░▓      ▓░▓░▓░▓░▓░                 
-");
+             ");
 
+            }
 
-            
-
-        }
 
     }
 }

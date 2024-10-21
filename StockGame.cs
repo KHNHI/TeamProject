@@ -17,67 +17,67 @@ namespace Quanlychitieu
 {
     internal class StockGame
     {
-#nullable disable
+#nullable disable   // Tắt tính năng kiểm tra null để đơn giản hóa xử lý giá trị null
 
+
+
+        // Lớp Company đại diện cho thông tin về công ty trong trò chơi
         public class Company
         {
-            public string Name { get; set; }
-            public string Industry { get; set; }
-            public decimal SharePrice { get; set; }
-            public int NumberOfShares { get; set; }
-            public string Description { get; set; }
+            public string Name { get; set; }  // Tên công ty
+            public string Industry { get; set; }  // Ngành công nghiệp của công ty
+            public decimal SharePrice { get; set; }  // Giá cổ phiếu hiện tại
+            public int NumberOfShares { get; set; }  // Số lượng cổ phiếu công ty
+            public string Description { get; set; }  // Mô tả công ty
         }
 
+        // Lớp Event đại diện cho một sự kiện có thể ảnh hưởng đến công ty
         public class Event
         {
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public string CompanyName { get; set; }
-            public int Effect { get; set; }
+            public string Title { get; set; }  // Tiêu đề sự kiện
+            public string Description { get; set; }  // Mô tả sự kiện
+            public string CompanyName { get; set; }  // Tên công ty mà sự kiện ảnh hưởng
+            public int Effect { get; set; }  // Tác động (phần trăm) của sự kiện đến giá cổ phiếu
         }
 
+        // Kiểm tra xem người dùng có yêu cầu thoát game không
         private bool CloseRequested { get; set; } = false;
+
+        // Danh sách các công ty có trong trò chơi
         private List<Company> Companies { get; set; } = null!;
+
+        // Danh sách các sự kiện có thể xảy ra trong trò chơi
         private List<Event> Events { get; set; } = null!;
+
+        // Sự kiện hiện tại đang xảy ra trong trò chơi
         private Event CurrentEvent { get; set; } = null!;
+
+        // Số tiền hiện tại người chơi có
         private decimal Money { get; set; }
+
+        // Giá trị tài sản tối thiểu khi thua game
         private const decimal LosingNetWorth = 2000.00m;
+
+        // Giá trị tài sản tối đa để thắng game
         private const decimal WinningNetWorth = 4000.00m;
 
+        // Hàm khởi động trò chơi
         public void Run()
         {
             try
             {
-                InitializeDefaultData(); // Ensure companies are initialized
-                MainMenuScreen();
+                InitializeDefaultData(); // Khởi tạo dữ liệu mặc định (công ty)
+                MainMenuScreen(); // Hiển thị menu chính
             }
             finally
             {
+                // Khôi phục màu sắc và hiển thị con trỏ khi thoát trò chơi
                 Console.ResetColor();
                 Console.CursorVisible = true;
             }
         }
 
-        private void LoadEmbeddedResources()
-        {
-            try
-            {
-                // Lấy assembly hiện tại và in ra các tài nguyên nhúng
-                foreach (var name in Assembly.GetExecutingAssembly().GetManifestResourceNames())
-                {
-                    Console.WriteLine($"Found resource: {name}");
-                }
-
-                // Khởi tạo sự kiện sau khi hoàn tất tải tài nguyên
-                InitializeEvents();
-            }
-            catch (Exception ex)
-            {
-                // Xử lý khi xảy ra lỗi và khởi tạo dữ liệu mặc định
-                Console.WriteLine($"Lỗi khi tải tài nguyên: {ex.Message}");
-                InitializeDefaultData();
-            }
-        }
+       
 
         private void InitializeDefaultData()
         {
@@ -100,7 +100,6 @@ namespace Quanlychitieu
             {
                 Console.Clear();
 
-
                 StringBuilder prompt = new StringBuilder();
                 prompt.AppendLine("\n███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗              ███████╗████████╗ ██████╗  ██████╗██╗  ██╗██╗   ██╗    ");
                 prompt.AppendLine("████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝              ██╔════╝╚══██╔══╝██╔═══██╗██╔════╝██║ ██╔╝╚██╗ ██╔╝    ");
@@ -109,15 +108,8 @@ namespace Quanlychitieu
                 prompt.AppendLine("██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║                 ███████║   ██║   ╚██████╔╝╚██████╗██║  ██╗   ██║       ");
                 prompt.AppendLine("╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝                 ╚══════╝   ╚═╝    ╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝       ");
 
-
-                //string[] content = prompt.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-                //Program.DrawCenteredBorder(content);
-
                 prompt.AppendLine("\nBạn có thể thoát khỏi trò chơi bất cứ lúc nào bằng cách nhấn ESC.");
                 prompt.AppendLine("Sử dụng phím mũi tên lên xuống và Enter để chọn một tùy chọn:");
-
-
 
                 int selectedIndex = HandleMenuWithOptions(prompt.ToString(),
                     new string[] { "Chơi", "Thông tin", "Thoát" });
@@ -134,7 +126,8 @@ namespace Quanlychitieu
         private void InitializeGame()
         {
             Money = 3000.00m;
-            LoadEmbeddedResources();
+            InitializeDefaultData();
+            //LoadEmbeddedResources();
             InitializeEvents(); // Ensure events are initialized
         }
 
@@ -196,7 +189,6 @@ namespace Quanlychitieu
                 CloseRequested = CloseRequested || Console.ReadKey(true).Key == ConsoleKey.Escape;
             }
         }
-
 
         private void BuyOrSellStockScreen(bool isBuying)
         {
@@ -311,6 +303,72 @@ namespace Quanlychitieu
             CloseRequested = CloseRequested || Console.ReadKey(true).Key == ConsoleKey.Escape;
         }
 
+
+        private int HandleMenuWithOptions(string prompt, string[] options)
+        {
+            int index = 0;
+            ConsoleKey key = default;
+            while (!CloseRequested && key != ConsoleKey.Enter)
+            {
+                Console.Clear();
+                Console.WriteLine(prompt);
+                for (int i = 0; i < options.Length; i++)
+                {
+                    string currentOption = options[i];
+                    if (i == index)
+                    {
+                        Console.BackgroundColor = Console.ForegroundColor;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine($"[*] {currentOption}");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[ ] {currentOption}");
+                    }
+                }
+                Console.CursorVisible = false;
+                key = Console.ReadKey(true).Key;
+                switch (key)
+                {
+                    case ConsoleKey.UpArrow: index = (index == 0) ? options.Length - 1 : index - 1; break;
+                    case ConsoleKey.DownArrow: index = (index == options.Length - 1) ? 0 : index + 1; break;
+                    case ConsoleKey.Escape: CloseRequested = true; break;
+                }
+            }
+            return index;
+        }
+
+        private decimal CalculateNetWorth()
+        {
+            decimal netWorth = Money;
+            foreach (Company company in Companies)
+            {
+                netWorth += company.SharePrice * company.NumberOfShares;
+            }
+            return netWorth;
+        }
+
+
+
+        private void InitializeEvents()
+        {
+            string jsonFilePath = "events.json"; // Đường dẫn đến file JSON của bạn
+            if (File.Exists(jsonFilePath))
+            {
+                // Đọc nội dung của file JSON
+                string jsonContent = File.ReadAllText(jsonFilePath);
+
+                // Deserialize JSON thành danh sách các sự kiện
+                Events = JsonSerializer.Deserialize<List<Event>>(jsonContent);
+            }
+            else
+            {
+                Console.WriteLine("File JSON không tồn tại!");
+                Events = new List<Event>();  // Khởi tạo danh sách rỗng nếu file không tồn tại
+            }
+        }
+
         private void IntroductionScreen()
         {
             Console.Clear();
@@ -340,7 +398,6 @@ namespace Quanlychitieu
         private void PlayerWinsScreen()
         {
             Console.Clear();
-
 
             string[] winnn =
            {
@@ -379,10 +436,7 @@ namespace Quanlychitieu
 
             };
 
-
-
             Program.DrawCenteredBorder(winnn);
-
             Console.ForegroundColor = ConsoleColor.Cyan;
             string[] youwin =
             {
@@ -399,9 +453,6 @@ namespace Quanlychitieu
             };
             Program.DrawCenteredBorder(youwin);
             Console.ResetColor();
-
-
-
 
             Console.WriteLine($"Giá trị tài sản ròng của bạn đã vượt quá {WinningNetWorth:C}.");
             Console.WriteLine("\nBạn đã chiến thắng! Xin chúc mừng!");
@@ -479,69 +530,5 @@ namespace Quanlychitieu
             return gameView;
         }
 
-        private int HandleMenuWithOptions(string prompt, string[] options)
-        {
-            int index = 0;
-            ConsoleKey key = default;
-            while (!CloseRequested && key != ConsoleKey.Enter)
-            {
-                Console.Clear();
-                Console.WriteLine(prompt);
-                for (int i = 0; i < options.Length; i++)
-                {
-                    string currentOption = options[i];
-                    if (i == index)
-                    {
-                        Console.BackgroundColor = Console.ForegroundColor;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine($"[*] {currentOption}");
-                        Console.ResetColor();
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[ ] {currentOption}");
-                    }
-                }
-                Console.CursorVisible = false;
-                key = Console.ReadKey(true).Key;
-                switch (key)
-                {
-                    case ConsoleKey.UpArrow: index = (index == 0) ? options.Length - 1 : index - 1; break;
-                    case ConsoleKey.DownArrow: index = (index == options.Length - 1) ? 0 : index + 1; break;
-                    case ConsoleKey.Escape: CloseRequested = true; break;
-                }
-            }
-            return index;
-        }
-
-        private decimal CalculateNetWorth()
-        {
-            decimal netWorth = Money;
-            foreach (Company company in Companies)
-            {
-                netWorth += company.SharePrice * company.NumberOfShares;
-            }
-            return netWorth;
-        }
-
-
-
-        private void InitializeEvents()
-        {
-            string jsonFilePath = "events.json"; // Đường dẫn đến file JSON của bạn
-            if (File.Exists(jsonFilePath))
-            {
-                // Đọc nội dung của file JSON
-                string jsonContent = File.ReadAllText(jsonFilePath);
-
-                // Deserialize JSON thành danh sách các sự kiện
-                Events = JsonSerializer.Deserialize<List<Event>>(jsonContent);
-            }
-            else
-            {
-                Console.WriteLine("File JSON không tồn tại!");
-                Events = new List<Event>();  // Khởi tạo danh sách rỗng nếu file không tồn tại
-            }
-        }
     }
 }
