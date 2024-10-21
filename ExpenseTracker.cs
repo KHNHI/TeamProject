@@ -59,14 +59,6 @@ namespace Quanlychitieu
             budgetPlanner = planner; // Thiết lập mối quan hệ sau khi khởi tạo
         }
         //Kiểm tra người dùng đã nhập khoản thu nhập trong tháng này chưa 
-        public bool CanEnterIncome()
-        {
-            if (DateTime.Now >= lastIncomeEntryTime.AddMonths(1))
-            {
-                incomeEnteredThisMonth = false;
-            }
-            return !incomeEnteredThisMonth;
-        }
 
         private string GetExpenseCategory(string choice)
         {
@@ -84,48 +76,43 @@ namespace Quanlychitieu
         }
         public void EnterExpense()
         {
-            while (true) 
+            while (true)
             {
                 try
                 {
-                    decimal totalIncome = TotalIncome; // Lấy tổng thu nhập
-                    decimal totalExpenses = GetTotalExpenses(); // Lấy tổng chi tiêu
-                    // Kiểm tra xem tổng chi tiêu có bằng tổng thu nhập không
-                    if (totalExpenses >= totalIncome)
+                    // Kiểm tra tổng chi tiêu so với tổng thu nhập
+                    if (GetTotalExpenses() >= TotalIncome)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red; // Đổi màu chữ thành đỏ
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("⚠️ Bạn không thể nhập thêm chi tiêu vì tổng chi tiêu đã bằng hoặc vượt quá tổng thu nhập.");
                         Console.ReadLine();
-                        Console.ResetColor(); // Đặt lại màu về mặc định
+                        Console.ResetColor();
                         return; // Kết thúc phương thức nếu điều kiện đúng
                     }
+
                     Console.WriteLine("Nhấn phím tương ứng để chọn danh mục chi tiêu (hoặc nhấn ESC để quay lại menu chính): ");
-                    //Đọc phím
                     ConsoleKeyInfo keyInfo = Console.ReadKey();
+
                     // Kiểm tra người dùng có nhấn ESC để thoát
-                    if (keyInfo.Key == ConsoleKey.Escape)
-                    {
-                        break; //Thoát vòng lặp về menu chính
-                    }
+                    if (keyInfo.Key == ConsoleKey.Escape) break;
+
                     Console.WriteLine();
-                    // Chuyển phím nhấn thành index
                     if (int.TryParse(keyInfo.KeyChar.ToString(), out int categoryIndex) && categoryIndex >= 1 && categoryIndex <= validCategories.Length)
                     {
-                        string category = validCategories[categoryIndex - 1]; // Lấy danh mục dựa trên dữ liệu đàu vào của người dùng
-                        if (!expenses.ContainsKey(category))
-                        {
-                            expenses[category] = 0; // Khởi tạo giá trị cho danh mục
-                        }
-                       
+                        string category = validCategories[categoryIndex - 1];
+                        if (!expenses.ContainsKey(category)) expenses[category] = 0;
+
                         decimal budgetForCategory = budgetPlanner.GetBudgetForCategory(category);
                         decimal amountSpent = expenses[category];
-                        ShowExpenseInfo(category,budgetForCategory,amountSpent);
+                        ShowExpenseInfo(category, budgetForCategory, amountSpent);
+
+                        // Kiểm tra ngân sách cho danh mục
                         if (budgetForCategory <= 0)
-                        {   Console.ForegroundColor = ConsoleColor.Red;
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine($"Chưa có ngân sách cho danh mục '{category}'. Vui lòng đặt ngân sách trước khi nhập chi tiêu.");
                             Console.Write($"Bạn có muốn đặt ngân sách ngay không? (y/n): ");
-                            var input = Console.ReadLine();
-                            if (input?.ToLower() == "y")
+                            if (Console.ReadLine()?.ToLower() == "y")
                             {
                                 Console.Clear();
                                 try
@@ -137,38 +124,26 @@ namespace Quanlychitieu
                                     Console.WriteLine("Đã xảy ra lỗi khi gọi SetCategoryBudget: " + ex.Message);
                                 }
                             }
-                            continue; 
+                            continue;
                         }
 
+                        // Nhập số tiền chi tiêu
                         Console.Write("Nhập số tiền chi tiêu: ");
                         if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                         {
                             EnterTransaction(category, amount, true);
+                            amountSpent = expenses[category];
+                            ShowExpenseInfo(category, budgetForCategory, amountSpent);
                         }
                         else
                         {
                             Console.WriteLine("Số tiền không hợp lệ.");
-                        }
-                        if (expenses.ContainsKey(category))
-                        {
-                            amountSpent = expenses[category];
-                            ShowExpenseInfo(category, budgetForCategory, amountSpent);
-                           // Console.WriteLine($"Số tiền bạn đã chi tiêu cho {category} là {Math.Abs(expenses[category]).ToString("#,##0₫")}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Chưa có chi tiêu nào cho danh mục '{category}'.");
                         }
                     }
                     else
                     {
                         Console.WriteLine("Danh mục không hợp lệ. Vui lòng thử lại.");
                     }
-
-                }
-                catch (NullReferenceException ex)
-                {
-                    Console.WriteLine("Lỗi: Một giá trị null đã được tìm thấy. " + ex.Message);
                 }
                 catch (Exception ex)
                 {
@@ -176,7 +151,6 @@ namespace Quanlychitieu
                 }
             }
         }
-
         public void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
         {
            
@@ -268,10 +242,9 @@ namespace Quanlychitieu
                     return;
                 }
             }
-           DisplayCenteredMessageInBox("Nhập số tiền thu nhập:");
-
-           
-            string? incomeInput;
+           DisplayCenteredMessageInBox("Nhập số tiền thu nhập");
+     
+            string? incomeInput;//có thể nhận giá trị null
             decimal amount = 0;
             while (true)
             {
@@ -334,6 +307,15 @@ namespace Quanlychitieu
                 TotalIncome = 0; // Nếu chưa có file, thì tổng thu nhập là 0
             }
         }
+        public bool CanEnterIncome()
+        {
+            if (DateTime.Now >= lastIncomeEntryTime.AddMonths(1))
+            {
+                incomeEnteredThisMonth = false;
+            }
+            return !incomeEnteredThisMonth;
+        }
+
         private void SaveIncomeEnteredStatus()//Tệp lưu trạng thái của thu nhập
         {
             File.WriteAllText("income_status.txt", incomeEnteredThisMonth.ToString());
