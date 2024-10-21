@@ -13,8 +13,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-        Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        //Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        //Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
         Intro();
 
         Console.OutputEncoding = Encoding.UTF8;
@@ -85,10 +85,6 @@ class Program
                         "3: Quay lại menu chính ."
                     };
                     DrawCenteredBorder(balanceOptions);
-
-                    //Console.Write("Chọn một tùy chọn: ");
-
-
 
                      var balanceOption = "      ";  
                      balanceOption = InputWithBox("Chọn một tùy chọn: "," ");
