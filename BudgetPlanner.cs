@@ -49,28 +49,6 @@
             int originalTop = Console.CursorTop;
 
 
-//            string[] titleMoneyTidy =
-//     {
-
-//"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗              ████████╗██╗██████╗ ██╗   ██╗",
-//"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝              ╚══██╔══╝██║██╔══██╗╚██╗ ██╔╝",
-//"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     █████╗       ██║   ██║██║  ██║ ╚████╔╝ ",
-//"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ╚════╝       ██║   ██║██║  ██║  ╚██╔╝  ",
-//"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║                    ██║   ██║██████╔╝   ██║   ",
-//"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝                    ╚═╝   ╚═╝╚═════╝    ╚═╝   ",
-
-
-
-//      };
-            //Console.ForegroundColor = ConsoleColor.Yellow;
-            //Program.DrawCenteredBorder(titleMoneyTidy);
-
-            //Console.ForegroundColor = ConsoleColor.Yellow;
-            //foreach (string line in title)
-            //{
-            //    int padding = (windowWidth - line.Length) / 2; // Tính toán căn giữa
-            //    Console.WriteLine(line.PadLeft(padding + line.Length));
-            //}
             Console.ResetColor();
 
             // Initialize categoryBudgetSet for valid categories
@@ -103,19 +81,6 @@
                 Console.Clear();
                 Console.SetCursorPosition(0, originalTop);
 
-                // Redraw the title
-
-
-
-                //Console.ForegroundColor = ConsoleColor.Yellow;
-
-                //foreach (string line in titleMoneyTidy)
-                //{
-                //   Console.WriteLine(line);
-                //}
-                //Console.ResetColor();
-
-
 
 
                 string[] titleMoneyTidy =
@@ -136,9 +101,10 @@
                 Console.ResetColor();
 
 
+                string[] SetBudgetCateories = { "CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH"};
+                Program.DrawCenteredBorder(SetBudgetCateories);
+              
 
-
-                Console.WriteLine("                                         CHỌN DANH MỤC ĐỂ ĐẶT NGÂN SÁCH");
 
                 // Display categories with numbers
                 for (int i = 0; i < validCategories.Length; i++)
