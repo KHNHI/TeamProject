@@ -74,6 +74,7 @@ namespace Quanlychitieu
                 default: return "Khác";
             }
         }
+
         public void EnterExpense()
         {
             while (true)
@@ -131,9 +132,59 @@ namespace Quanlychitieu
                         Console.Write("Nhập số tiền chi tiêu: ");
                         if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                         {
-                            EnterTransaction(category, amount, true);
-                            amountSpent = expenses[category];
-                            ShowExpenseInfo(category, budgetForCategory, amountSpent);
+                            // Ghi lại thời gian giao dịch
+                            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                            // Thêm chi tiêu vào danh sách
+                            Expense expense = new Expense(category, amount, DateTime.Now);
+                            expenseList.Add(expense); // Thêm chi tiêu vào danh sách
+
+                            // Kiểm tra và khởi tạo danh mục chi tiêu trong monthlyExpenses
+                            if (!monthlyExpenses.ContainsKey(category))
+                            {
+                                monthlyExpenses[category] = new Dictionary<int, double>();
+                            }
+
+                            // Khởi tạo chi tiêu cho tháng hiện tại nếu chưa có
+                            if (!monthlyExpenses[category].ContainsKey(currentMonth))
+                            {
+                                monthlyExpenses[category][currentMonth] = 0;
+                            }
+
+                            // Cập nhật chi tiêu hàng tháng
+                            monthlyExpenses[category][currentMonth] += (double)amount;
+
+                            // Cập nhật tổng chi tiêu của từng danh mục
+                            if (expenses.ContainsKey(category))
+                            {
+                                expenses[category] += amount;
+                            }
+                            else
+                            {
+                                expenses[category] = amount;
+                            }
+
+                            // Tính toán tổng chi tiêu và ngân sách
+                            decimal totalExpenses = GetTotalExpenses(); // lấy tổng chi tiêu
+                            decimal totalBudget = TotalBudget; // tổng ngân sách từ budgetPlanner
+                            decimal totalIncome = TotalIncome; // tổng thu nhập
+
+                            // trạng thái của savings dựa trên tổng chi tiêu và ngân sách
+                            if (totalExpenses <= totalBudget)
+                            {
+                                savings = totalIncome - totalBudget; // Tiết kiệm khi trong ngân sách
+                            }
+                            else
+                            {
+                                savings = totalIncome - totalExpenses; // Tiết kiệm khi vượt ngân sách
+                                decimal overspending = totalExpenses - totalBudget; // Tính toán số tiền vượt ngân sách
+                                Console.WriteLine($"Bạn đã chi tiêu vượt tổng ngân sách. Số tiền vượt ngân sách ({overspending:#,##0₫}) đã được trừ vào tiết kiệm tạm thời.");
+                            }
+
+                            // Lưu chi tiêu, hiện thông báo
+                            SaveExpenses();
+                            Console.WriteLine($"Đã lưu chi tiêu: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
+                            Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
                         }
                         else
                         {
@@ -151,6 +202,7 @@ namespace Quanlychitieu
                 }
             }
         }
+
         public void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
         {
            
@@ -175,59 +227,7 @@ namespace Quanlychitieu
             Console.ResetColor();
         }
 
-        private void EnterTransaction(string category, decimal amount, bool isExpense)
-        {
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            // Thêm chi tiêu vào danh sách nếu là chi tiêu
-            if (isExpense)
-            {
-                Expense expense = new Expense(category, amount, DateTime.Now);
-                expenseList.Add(expense); // Thêm chi tiêu vào danh sách
-            }
 
-            int categoryIndex = Array.IndexOf(validCategories, category);
-            // Kiểm tra và khởi tạo danh mục chi tiêu trong monthlyExpenses
-            if (!monthlyExpenses.ContainsKey(category))
-            {
-                monthlyExpenses[category] = new Dictionary<int, double>();
-            }
-            // Khởi tạo chi tiêu cho tháng hiện tại nếu chưa có
-            if (!monthlyExpenses[category].ContainsKey(currentMonth))
-            {
-                monthlyExpenses[category][currentMonth] = 0;
-            }
-            // Cập nhật chi tiêu hàng tháng
-            monthlyExpenses[category][currentMonth] += (double)amount;
-            // Cập nhật tổng chi tiêu của từng danh mục
-            if (expenses.ContainsKey(category))
-            {
-                expenses[category] += amount;
-            }
-            else
-            {
-                expenses[category] = amount;
-            }
-            // Tính toán tổng chi tiêu và ngân sách
-            decimal totalExpenses = GetTotalExpenses();// lấy tổng chi tiêu
-            decimal totalBudget = TotalBudget;// tổng ngân sách từ budgetPlanner
-            decimal totalIncome = TotalIncome; // tổng thu nhập
-            // trạng thái của savings dựa trên tổng chi tiêu và ngân sách
-            if (totalExpenses <= totalBudget)
-            {
-                savings = totalIncome - totalBudget; // Savings when within budget
-            }
-            else
-            {
-                savings = totalIncome - totalExpenses; // Savings when exceeding budget
-                decimal overspending = totalExpenses - totalBudget; // Calculate overspending
-                Console.WriteLine($"Bạn đã chi tiêu vượt tổng ngân sách. Số tiền vượt ngân sách ({overspending:#,##0₫}) đã được trừ vào tiết kiệm tạm thời.");
-            }
-            //lưu chi tiêu, hiện thông báo
-            SaveExpenses();
-            string transactionType = isExpense ? "chi tiêu" : "thu nhập";
-            Console.WriteLine($"Đã lưu {transactionType}: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
-            Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
-        }
         public void EnterIncome()
         {
             if (incomeEnteredThisMonth)
