@@ -187,6 +187,10 @@ namespace Quanlychitieu
                 }
             }
         }
+
+
+
+
         public void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
         {
            
@@ -210,6 +214,10 @@ namespace Quanlychitieu
             Console.WriteLine(bottomBorder);
             Console.ResetColor();
         }
+
+
+
+
         private void EnterTransaction(string category, decimal amount, bool isExpense)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -280,11 +288,15 @@ namespace Quanlychitieu
                 }
 
             }
-            DisplayCenteredMessageInBox("Nhập số tiền thu nhập:");
 
+            string[] enterIncomee = { " NHẬP THU NHẬP " };
+            Program.DrawCenteredBorder(enterIncomee);
            
+
             string? incomeInput;
             decimal amount = 0;
+
+
             while (true)
             {
                 incomeInput = Console.ReadLine();
@@ -310,6 +322,7 @@ namespace Quanlychitieu
             SaveTotalIncome();
             SaveIncomeEnteredStatus();
         }
+
         public void DisplayCenteredMessageInBox(string message)
         {
             // Độ dài tối thiểu của khung
@@ -328,6 +341,7 @@ namespace Quanlychitieu
             Console.WriteLine(bottomBorder);
             Console.ResetColor();
         }
+
         private void SaveTotalIncome()
         {
             File.WriteAllText("total_income.txt", TotalIncome.ToString("F2")); // Lưu tổng thu nhập với 2 chữ số thập phân
@@ -741,36 +755,7 @@ namespace Quanlychitieu
             
             static void TitleIntroMemory()
             {
-                string[] titleMoneymory =
-                {
-
-                    "                       ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬                   ",
-                    "                                                                                  ",
-                    "         ██    ██ ██████ ██    █ ██████ █    █ ██    ██ ██████ ██████ █    █      ",
-                    "         █ █  █ █ █    █ ███   █ █      ██  ██ █ █  ███ █    █ █    █ █    █      ",
-                    "         █  ██  █ █    █ █ ██  █ █       █  █  █  ██  █ █    █ █    █  █  █       ",
-                    "         █  ██  █ █    █ █  █  █ █       ████  █  ██  █ █    █ █    █  █  █       ",
-                    "         █      █ █    █ █   █ █ ██████   ██   █      █ █    █ ██████  ████       ",
-                    "         █      █ █    █ █   █ █ █        ██   █      █ █    █ ██       ██        ",
-                    "         █      █ █    █ █    ██ █        ██   █      █ █    █ █ █      ██        ",
-                    "         █      █ █    █ █    ██ █        ██   █      █ █    █ █  █     ██        ",
-                    "         █      █ ██████ █     █ ██████   ██   █      █ ██████ █   █    ██        ",
-                    "                                                                                  ",
-                    "                       ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬                   "
-
-
-
-                };
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                foreach (var word in titleMoneymory)
-                {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    int padding = (windowWidth - word.Length) / 2;
-                    Console.WriteLine(word.PadLeft(padding + word.Length));
-
-
-                }
-                Console.ResetColor();
+                
                 Console.WriteLine();
                 string[] titleIconCalendar =
                 {
@@ -912,11 +897,8 @@ namespace Quanlychitieu
 
             };
             Console.ForegroundColor = ConsoleColor.Yellow;
-            foreach (var line in titleCalendar)
-            {
-                int padding = (windowWidth - line.Length) / 2;
-                Console.WriteLine(line.PadLeft(padding + line.Length));
-            }
+            Program.DrawCenteredBorder(titleCalendar);
+
             Console.ResetColor();
 
             DrawInputBox();
