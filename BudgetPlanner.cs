@@ -38,7 +38,7 @@
             return categoryBudgets.ContainsKey(category) ? categoryBudgets[category] : 0;
         }
 
-        public void SetCategoryBudget()
+         public void SetCategoryBudget()
         {
 
             List<string> remainingCategories = new List<string>(validCategories);
@@ -76,10 +76,10 @@
                 // Hiện tổng ngân sách, tiết kiệm tạm thời
                 decimal totalBudget = GetTotalBudget();
                 Console.WriteLine($"Tổng ngân sách của bạn là: {totalBudget:#,##0₫}");
-                Console.WriteLine(expenseTracker.GetSavingsStatus()); // Display savings status
+                Console.WriteLine(expenseTracker.GetSavingsStatus()); // hiện trạng thái tiết kiệm
                 Console.ResetColor();
                 Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
-                Console.ReadKey(); // Wait for user to press a key to return to the main menu
+                Console.ReadKey(); //đợi người dùng nhấn phím
                 return;
             }
 
@@ -115,13 +115,13 @@
                 }
                 // Yêu cầu người dùng chọn danh mục nhập ngân sách hoặc nhấn esc để thoát
                 Console.WriteLine("Chọn danh mục (1-7) để đặt ngân sách hoặc nhấn ESC để thoát: ");
-                ConsoleKeyInfo keyInfo = Console.ReadKey(); // true to not display the pressed key
-                if (keyInfo.Key == ConsoleKey.Escape) // Check if the Esc key is pressed
+                ConsoleKeyInfo keyInfo = Console.ReadKey(); // 
+                if (keyInfo.Key == ConsoleKey.Escape) //kiểm tra nếu phím esc nhấn
                 {
-                    break; // Exit the loop
+                    break; // thoát vòng lặp
                 }
                 Console.ReadKey();
-                // Kiểm tra đầu vào hợp lệ và chuyển sang categoryIndex
+                // Kiểm tra đầu vào hợp lệ và chuyển sang categoryIndex dạng số nguyên
                 if (int.TryParse(keyInfo.KeyChar.ToString(), out int categoryIndex) && categoryIndex >= 1 && categoryIndex <= validCategories.Length)
                 {
                     string selectedCategory = validCategories[categoryIndex - 1]; 
@@ -138,9 +138,9 @@
                     Console.WriteLine($"\nNhập ngân sách cho {selectedCategory}: ");
                     if (decimal.TryParse(Console.ReadLine(), out budget) && budget >= 0)
                     {
-                        // Set the budget for the selected category
+                        // đặt ngân sách
                         categoryBudgets[selectedCategory] = budget;
-                        categoryBudgetSet[selectedCategory] = true; // Mark as set
+                        categoryBudgetSet[selectedCategory] = true; // đánh dấu là đã đặt ngân sách
                         Console.WriteLine($"Ngân sách cho {selectedCategory} đã được đặt thành: {budget:#,##0₫}");
                         // Yêu cầu người dùng nhấn phím để tiếp tục
                         Console.WriteLine("Nhấn phím bất kỳ để tiếp tục...");
@@ -149,7 +149,6 @@
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        /*Console.BackgroundColor = ConsoleColor.Red;*/
                         Console.WriteLine("⚠ Số tiền không hợp lệ. Vui lòng nhập lại.");
                         Console.ResetColor();
 
@@ -167,7 +166,7 @@
              }
 
 
-        public void SaveBudgetToCSV(Dictionary<string, decimal> budgets)
+        private void SaveBudgetToCSV(Dictionary<string, decimal> budgets)
         {
             using (StreamWriter writer = new StreamWriter(BUDGET_FILE))
             {
@@ -181,7 +180,7 @@
                 }
             }
         }
-        public void LoadBudgetFromCSV()
+        private void LoadBudgetFromCSV()
         {
             if (File.Exists(BUDGET_FILE))
             {
@@ -212,7 +211,7 @@
             }
         }
         // Kiểm tra xem có tất cả các danh mục đã có ngân sách hay chưa
-        public bool CheckAllBudgetsSet()
+        private bool CheckAllBudgetsSet()
         {
             foreach (var category in validCategories)
             {

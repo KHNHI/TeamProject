@@ -203,7 +203,7 @@ namespace Quanlychitieu
             }
         }
 
-        public void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
+        private void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
         {
            
             string header = $"Danh mục: {category}";
@@ -238,21 +238,23 @@ namespace Quanlychitieu
                 }
                 else
                 {
+                    Console.ForegroundColor= ConsoleColor.Red;
                     Console.WriteLine("Khoản thu nhập đã được nhập cho tháng này. Không thể nhập lại.");
+                    Console.ResetColor();
                     return;
                 }
             }
-
             string[] enterIncomee = { " NHẬP THU NHẬP " };
+            Console.ForegroundColor= ConsoleColor.Yellow;
             Program.DrawCenteredBorder(enterIncomee);
-           
-     
+            Console.ResetColor();
+
             string? incomeInput;//có thể nhận giá trị null
             decimal amount = 0;
             while (true)
             {
                 incomeInput = Console.ReadLine();
-                if (string.IsNullOrEmpty(incomeInput) || !decimal.TryParse(incomeInput, out amount))//Kiểm tra đầu vào
+                if (string.IsNullOrEmpty(incomeInput) || !decimal.TryParse(incomeInput, out amount))//Kiểm tra đầu vào, cập nhật vào biến amount nếu hợp lệ
                 {
                     Console.WriteLine("Số tiền không hợp lệ, vui lòng nhập lại");
                 }
@@ -261,7 +263,9 @@ namespace Quanlychitieu
                     break; //Thoát vòng lặp nếu đầu vào hợp lệ
                 }
             }
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Đã thêm khoản thu nhập: {amount:#,##0₫}");
+            Console.ResetColor();
             TotalIncome += amount;
             savings += amount;
             incomeEnteredThisMonth = true;
@@ -318,7 +322,7 @@ namespace Quanlychitieu
                 incomeEnteredThisMonth = false; // Nếu không có tệp, đặt giá trị mặc định là false
             }
         }
-        public void NotifyIncomeEntry()
+        private void NotifyIncomeEntry()
         {
             if (DateTime.Now >= lastIncomeEntryTime.AddMonths(1))
             {
