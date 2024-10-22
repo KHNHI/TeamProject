@@ -12,7 +12,6 @@ namespace Quanlychitieu
         private int currentMonth = DateTime.Now.Month;
         //private DataSync dataSync;
         private BudgetPlanner budgetPlanner;
-        private string categoryChoice;
         private decimal savings; // Private field to track savings
         private string[] validCategories =
        {
@@ -58,6 +57,7 @@ namespace Quanlychitieu
         {
             budgetPlanner = planner; // Thiết lập mối quan hệ sau khi khởi tạo
         }
+
         //Kiểm tra người dùng đã nhập khoản thu nhập trong tháng này chưa 
 
         private string GetExpenseCategory(string choice)

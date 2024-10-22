@@ -319,14 +319,14 @@
                 if (remaining < 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    CenteredPrint($"║ {"",-c0} │ {"",-c1} │ {"",-c2} │ {" Cảnh báo: Vượt quá ngân sách!",c3} ║");
+                    CenteredPrint($"║  {"",c3} {" Cảnh báo: Vượt quá ngân sách!"} {"",c0}       ║");
                     PlaywarningSound();
                     Console.ResetColor();
                 }
                 else if (percentageUsed > 80)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    CenteredPrint($"║ {"",-c0} │ {"",-c1} │ {"",-c2} │ {" Cảnh báo: Đã sử dụng hơn 80% ngân sách!",c3} ║");
+                    CenteredPrint($"║ {"",c3} {" Cảnh báo: Đã sử dụng hơn 80% ngân sách!"} {"",c3}   ║");
                     PlaywarningSound();
                     Console.ResetColor();
                 }
@@ -336,10 +336,9 @@
 
             // Đóng khung dưới của bảng
             CenteredPrint($"╚═{new string('═', c0)}═╧═{new string('═', c1)}═╧═{new string('═', c2)}═╧═{new string('═', c3)}═╝");
-
             // Hiển thị tổng ngân sách, cũng căn giữa
             CenteredPrint($"\n                                                                            " +
-                $" Tổng ngân sách: {GetTotalBudget():#,##0₫}");
+        $" Tổng ngân sách: {GetTotalBudget():#,##0₫}");
         }
 
 
