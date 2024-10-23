@@ -663,77 +663,77 @@ namespace Quanlychitieu
         }   
         
                                         
-        public void HandleInput()                                                                 // Gọi hàm để xử lí đầu vào từ người dùng 
+        public void HandleInput()                                                                // Định nghĩa phương thức HandleInput để xử lý đầu vào từ người dùng.                                                           
         {
             bool isSelectingDay = false;                                                         // Thêm biến để theo dõi trạng thái chọn ngày
-            bool move = true;
-            
-            while (move)
-            {
-                Console.Clear();
-                DrawHeader();
-                DrawCalendarBox();
-                FillCalendar();
-                DrawCalendarHeader();
-                DrawOptions();
+            bool move = true;                                                                    // Biến điều khiển vòng lặp chính, cho phép tiếp tục nhận đầu vào từ người dùng.
 
-                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-                switch (keyInfo.Key)
+            while (move)                                                                         // Bắt đầu vòng lặp, sẽ tiếp tục cho đến khi biến move được đặt thành false.
+            {
+                Console.Clear();                                                                 // Xóa toàn bộ nội dung hiện tại trên console để chuẩn bị cho giao diện mới.
+                DrawHeader();                                                                    // Gọi phương thức để vẽ tiêu đề lịch.
+                DrawCalendarBox();                                                               // Gọi phương thức để vẽ hộp lịch.
+                FillCalendar();                                                                  // Gọi phương thức để điền thông tin vào lịch.
+                DrawCalendarHeader();                                                            // Gọi phương thức để vẽ tiêu đề của lịch.
+                DrawOptions();                                                                   // Gọi phương thức để vẽ các tùy chọn điều hướng cho người dùng.
+
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);                                  // Đọc phím người dùng nhấn mà không hiển thị nó trên console.
+                switch (keyInfo.Key)                                                             // Bắt đầu một câu lệnh switch để xử lý các phím khác nhau.
                 {
                     case ConsoleKey.UpArrow:
-                        if (isSelectingDay)
+                        if (isSelectingDay)                                                      // Nếu người dùng đang chọn ngày.
                         {
-                            MoveSelection(-1, 0);
+                            MoveSelection(-1, 0);                                                // Di chuyển lựa chọn lên một hàng.
                         }
-                        else
+                        else                                                                     // Nếu không đang chọn ngày.
                         {
-                            selectedYear++; // Tăng năm nếu không chọn ngày
+                            selectedYear++;                                                      // Tăng năm lên 1.                                           
                         }
                         break;
-                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.DownArrow:                                                   // Nếu phím xuống được nhấn.
                         if (isSelectingDay)
-                        {
-                            MoveSelection(1, 0); // Di chuyển xuống nếu đang chọn ngày
+                        { 
+                            MoveSelection(1, 0);                                                 // Di chuyển xuống nếu đang chọn ngày
                         }
                         else
                         {
-                            selectedYear--; // Giảm năm nếu không chọn ngày
+                            selectedYear--;                                                      // Giảm năm nếu không chọn ngày
                         }
                         break;
                     case ConsoleKey.LeftArrow:
                         if (isSelectingDay)
                         {
-                            MoveSelection(0, -1); // Di chuyển sang trái nếu đang chọn ngày
+                            MoveSelection(0, -1);                                                // Di chuyển sang trái nếu đang chọn ngày
                         }
                         else
                         {
-                            selectedMonth--; // Giảm tháng nếu không chọn ngày
+                            selectedMonth--;                                                    // Giảm tháng nếu không chọn ngày
                             if (selectedMonth < 1)
                             {
-                                selectedMonth = 12; // Quay về tháng 12
-                                selectedYear--; // Giảm năm
+                                selectedMonth = 12;                                             // Quay về tháng 12
+                                selectedYear--;                                                 // Giảm năm
                             }
                         }
                         break;
                     case ConsoleKey.RightArrow:
                         if (isSelectingDay)
                         {
-                            MoveSelection(0, 1); // Di chuyển sang phải nếu đang chọn ngày
+                            MoveSelection(0, 1);                                              // Di chuyển sang phải nếu đang chọn ngày
                         }
                         else
                         {
-                            selectedMonth++; // Tăng tháng nếu không chọn ngày
+                            selectedMonth++;                                                 // Tăng tháng nếu không chọn ngày
                             if (selectedMonth > 12)
                             {
-                                selectedMonth = 1; // Quay về tháng 1
-                                selectedYear++; // Tăng năm
+                                selectedMonth = 1;                                           // Quay về tháng 1
+                                selectedYear++;                                              // Tăng năm
                             }
                         }
                         break;
-                    case ConsoleKey.Enter: // Nếu chọn ngày
-                        if (isSelectingDay)
+                    case ConsoleKey.Enter:                                                  // Nếu chọn ngày
+                        if (isSelectingDay) 
                         {
-                            ShowDayInfo(); // Hiển thị thông tin ngày được chọn
+                            ShowDayInfo();                                                  // Hiển thị thông tin ngày được chọn
                         }
                         else
                         {
@@ -741,7 +741,7 @@ namespace Quanlychitieu
 
                         }
                         break;
-                    case ConsoleKey.Delete:// Nếu muốn chọn tháng và năm 
+                    case ConsoleKey.Delete:                                                 // Nếu muốn chọn tháng và năm 
                         if (isSelectingDay)
                         {
                             isSelectingDay = false;
@@ -749,7 +749,7 @@ namespace Quanlychitieu
 
                         break;
                     case ConsoleKey.Escape:
-                        move = false; // Thoát vòng lặp
+                        move = false;                                                       // Thoát vòng lặp
                         Console.WriteLine("Nhấn phím ESC để thoát:");
                         break;
                 }
@@ -939,7 +939,7 @@ namespace Quanlychitieu
                 ClearCurrentLine(monthBoxX + 12, inputY,24);
               
             }
-            Console.ResetColor();
+            Console.ResetColor()
         }
         private void DrawBox(int x, int y, int width, int height, string title)                        
         {
@@ -1023,7 +1023,7 @@ namespace Quanlychitieu
                 }
             }
         }
-        private void DrawCalendarBox()                                                                     //Hàm này có nhiệm vụ vẽ một khung cho lịch trong cửa sổ console, bao gồm các đường viền và tên tháng hiện tại.
+        private void DrawCalendarBox()                                                                    //Hàm này có nhiệm vụ vẽ một khung cho lịch trong cửa sổ console, bao gồm các đường viền và tên tháng hiện tại.
         {          
             int boxWidth = 80;                                                                            // Đặt chiều rộng của khung lịch là 80
             int boxHeight = 16;                                                                           // Đặt chiều cao của khung lịch là 15
