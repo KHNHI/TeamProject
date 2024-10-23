@@ -62,6 +62,15 @@
                     categoryBudgetSet[category] = false; // Not set yet
                 }
             }
+            //check xem ngân sách có lớn hơn thu nhập không
+            if (!IsBudgetValid())
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("⚠️ Tổng ngân sách không thể lớn hơn hoặc bằng tổng thu nhập. Không thể tiếp tục đặt ngân sách.");
+                Console.ResetColor();
+                return; // Kết thúc phương thức nếu điều kiện không thỏa mãn
+            }
+
             if (CheckAllBudgetsSet())
             {
                 // Nếu phương thức trả về true nghĩa là tất cả danh mục đều đẫ được đặt ngân sách
@@ -159,7 +168,13 @@
             SaveLastCategoryBudgetSetTime();
              }
 
+        private bool IsBudgetValid()
+        {
+            decimal totalBudget = GetTotalBudget(); // Lấy tổng ngân sách
+            decimal totalIncome = expenseTracker.TotalIncome; // Lấy tổng thu nhập từ ExpenseTracker
 
+            return totalBudget < totalIncome; // Trả về true nếu tổng ngân sách nhỏ hơn tổng thu nhập
+        }
         private void SaveBudgetToCSV(Dictionary<string, decimal> budgets)
         {
             using (StreamWriter writer = new StreamWriter(BUDGET_FILE))
