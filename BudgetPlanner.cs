@@ -8,9 +8,7 @@
         private const string BUDGET_FILE = "budget1.csv"; // Tên file bạn muốn lưu
         public Dictionary<string, decimal> categoryBudgets { get;  set; }
         Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
-        private Dictionary<string, bool> categoryBudgetSet; // Tracks if a budget is set for each category
-        private HashSet<string> enteredCategories; // Khai báo biến thành viên
-        private List<string> remainingCategories; // Khai báo biến thành viên
+        private Dictionary<string, bool> categoryBudgetSet; // track việc nhập ngân sách cho danh mục
         private readonly string[] validCategories = new string[]
         {
                "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
@@ -18,10 +16,8 @@
         private DateTime lastBudgetSetTime;
         public BudgetPlanner(ExpenseTracker expenseTracker)
         {
-            enteredCategories = new HashSet<string>(); // Khởi tạo HashSet
-            remainingCategories = new List<string>(); // Khởi tạo List
-            categoryBudgets = new Dictionary<string, decimal>(); // Khởi tạo ở đây
-            categoryBudgetSet = new Dictionary<string, bool>(); // Initialize the budget set tracking dictionary
+            categoryBudgets = new Dictionary<string, decimal>(); 
+            categoryBudgetSet = new Dictionary<string, bool>(); 
             LoadBudgetFromCSV(); // Tải ngân sách khi khởi tạo
             this.expenseTracker = expenseTracker;
             LoadLastCategoryBudgetSetTime();
@@ -40,9 +36,6 @@
 
          public void SetCategoryBudget()
         {
-
-            List<string> remainingCategories = new List<string>(validCategories);
-            HashSet<string> enteredCategories = new HashSet<string>();
             int windowWidth = Console.WindowWidth;
             int originalTop = Console.CursorTop;
             string[] titleMoneyTidy =

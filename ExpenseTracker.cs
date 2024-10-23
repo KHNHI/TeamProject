@@ -270,8 +270,6 @@ namespace Quanlychitieu
             savings += amount;
             incomeEnteredThisMonth = true;
             lastIncomeEntryTime = DateTime.Now;
-            expenses["Thu nhập"] = TotalIncome;
-            SaveExpenses();
             SaveIncomeEntryTime();
             SaveTotalIncome();
             SaveIncomeEnteredStatus();
@@ -322,19 +320,6 @@ namespace Quanlychitieu
                 incomeEnteredThisMonth = false; // Nếu không có tệp, đặt giá trị mặc định là false
             }
         }
-        private void NotifyIncomeEntry()
-        {
-            if (DateTime.Now >= lastIncomeEntryTime.AddMonths(1))
-            {
-                Console.WriteLine("Đã qua 1 tháng, bạn cần nhập khoản thu nhập mới.");
-            }
-            else
-            {
-                TimeSpan timeRemaining = lastIncomeEntryTime.AddMonths(1) - DateTime.Now;
-                Console.WriteLine($"Bạn có thể nhập thu nhập mới sau {timeRemaining.Days} ngày nữa.");
-            }
-            lastIncomeEntryTime = DateTime.Now;
-        }
         private void SaveIncomeEntryTime()
         {
             File.WriteAllText("income_entry_time.txt", lastIncomeEntryTime.ToString("o")); // Lưu thời gian theo định dạng ISO
@@ -370,7 +355,7 @@ namespace Quanlychitieu
             File.WriteAllText(filePath, json);
         }
 
-        public Dictionary<string, decimal> LoadExpenses()
+        private Dictionary<string, decimal> LoadExpenses()
         {
             if (File.Exists(filePath))
             {
@@ -397,6 +382,7 @@ namespace Quanlychitieu
             }
             return total;
         }
+        //Tình trạng tiết kiệm
         public string GetSavingsStatus()
         {
             decimal totalExpenses = GetTotalExpenses(); 
@@ -513,7 +499,7 @@ namespace Quanlychitieu
 
 
         //=====Đây là phần dữ liệu giả lập để thống kê các chi tiêu của những tháng trước được load từ file "mock_expenses.json"=====
-        public void LoadMockExpenses()
+        private void LoadMockExpenses()
         {
             string filePath = "mock_expenses.json"; // Đường dẫn đến tệp JSON
 
@@ -578,26 +564,7 @@ namespace Quanlychitieu
             }
         }
 
-        public void ShowExpenses()
-        {
-            if (monthlyExpenses.Count == 0)
-            {
-                Console.WriteLine("Không có dữ liệu chi tiêu nào để hiển thị.");
-                return;
-            }
-
-            Console.WriteLine("\nDữ liệu chi tiêu các tháng:");
-            foreach (var category in monthlyExpenses)
-            {
-                Console.WriteLine($"Danh mục: {category.Key}");
-                foreach (var monthExpense in category.Value)
-                {
-                    Console.WriteLine($"Tháng {monthExpense.Key}: {monthExpense.Value:#,##0₫}");
-                }
-                Console.WriteLine(); // Thêm dòng trống giữa các danh mục
-            }
-        }
-
+   
         public Dictionary<int, Dictionary<string, double>> GetMonthlyTotals()
         {
             var monthlyTotals = new Dictionary<int, Dictionary<string, double>>();
@@ -625,28 +592,6 @@ namespace Quanlychitieu
 
             return monthlyTotals;
         }
-
-        /// <summary>
-        /// //////////////////////////
-        /// </summary>
-        public void ShowExpenseChart()
-        {
-            Console.WriteLine("\nBiểu đồ chi tiêu:");
-            decimal maxExpense = expenses.Where(e => e.Key != "Thu nhập").Max(e => e.Value);
-            int chartWidth = 50; // Độ rộng tối đa của biểu đồ
-
-            foreach (var category in expenses)
-            {
-                if (category.Key != "Thu nhập")
-                {
-                    int barLength = (int)((category.Value / maxExpense) * chartWidth);
-                    Console.WriteLine($"{category.Key.PadRight(20)} | {new string('#', barLength)} {category.Value:#,##0₫}");
-                }
-            }
-        }
-
-       
-
 
         // LỰA CHỌN XEM CALENDAR 
 

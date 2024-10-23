@@ -27,7 +27,7 @@ namespace Quanlychitieu
 
         public void ShowReport(ExpenseTracker expenseTracker)
         {
-            
+
             string[] titleFinancialReport =
    {
 
@@ -74,7 +74,7 @@ namespace Quanlychitieu
             var temptSaving = expenseTracker.GetSavingsStatus();
 
             string[] textReport = { " BÁO CÁO TỔNG QUÁT " };
-            Program.DrawCenteredBorder( textReport );
+            Program.DrawCenteredBorder(textReport);
 
             CenterPrint($"Tổng chi tiêu: {totalExpense:#,##0₫}");
             CenterPrint($"Tổng thu nhập: {totalIncome:#,##0₫}");
@@ -107,7 +107,7 @@ namespace Quanlychitieu
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            string[] bieuDoASCII = {" BIỂU ĐỒ ASCII CHI TIÊU "};
+            string[] bieuDoASCII = { " BIỂU ĐỒ ASCII CHI TIÊU " };
             Program.DrawCenteredBorder(bieuDoASCII);
 
             if (expenses.Any(e => e.Value > 0))
@@ -153,11 +153,7 @@ namespace Quanlychitieu
 
             };
             Program.DrawCenteredBorder(chosseTypeReport);
-
-
-            var choice = Program.InputWithBox("Chọn một tùy chọn: "," ");
-
-           
+            var choice = Program.InputWithBox("Chọn một tùy chọn: ", " ");
             switch (choice)
             {
                 case "1":
@@ -184,20 +180,18 @@ namespace Quanlychitieu
             {
                 return;
             }
-
-
         }
-        
 
 
 
-        public void ShowMonthlyReport(ExpenseTracker expenseTracker)
+
+        private void ShowMonthlyReport(ExpenseTracker expenseTracker)
         {
 
             var monthlyTotals = expenseTracker.GetMonthlyTotals();
 
 
-            string[] title = { " BÁO CÁO TÀI CHÍNH THEO THÁNG ",
+            string[] title = { " BÁO CÁO CHI TIÊU THEO THÁNG ",
             "─────────────────────────────"};
             Program.DrawCenteredBorder(title);
 
@@ -220,73 +214,7 @@ namespace Quanlychitieu
             DrawTotalExpenseChart(expenseTracker);
         }
 
-
-        // VẼ BIỂU ĐỒ CHI TIÊU THEO NĂM 
-
-        public void DrawYearlyExpenseChart(ExpenseTracker expenseTracker)
-        {
-            // Lấy dữ liệu tổng chi tiêu hàng tháng và chuyển sang tổng theo năm
-            var monthlyTotals = expenseTracker.GetMonthlyTotals();
-            var yearlyTotals = new Dictionary<string, double>();
-
-            // Tổng hợp dữ liệu chi tiêu theo năm dựa trên các danh mục
-            foreach (var month in monthlyTotals)
-            {
-                foreach (var category in month.Value)
-                {
-                    if (!yearlyTotals.ContainsKey(category.Key))
-                    {
-                        yearlyTotals[category.Key] = 0;
-                    }
-                    yearlyTotals[category.Key] += category.Value;
-                }
-            }
-
-            // Độ dài tối đa của thanh biểu đồ
-            int maxBarLength = 50;  // Độ dài thanh biểu đồ
-            double maxExpense = yearlyTotals.Values.Max(); // Tìm giá trị chi tiêu lớn nhất
-
-            // In tiêu đề cho biểu đồ
-            string[] title = { " BÁO CÁO CHI TIÊU HÀNG NĂM " };
-            Program.DrawCenteredBorder(title);
-
-            // Tổng chiều rộng của biểu đồ và thanh phân cách
-            var totalWidth = 90; // Tăng tổng chiều rộng của biểu đồ
-
-            // Vẽ khung trên của biểu đồ
-            CenterPrintLine("┌" + new string('─', totalWidth - 2) + "┐");
-
-            // Vẽ biểu đồ cho từng danh mục chi tiêu
-            foreach (var category in yearlyTotals)
-            {
-                // Tính toán tổng chi tiêu cho từng danh mục
-                double totalExpense = category.Value;
-
-                // Tính chiều dài của thanh biểu đồ dựa trên tỷ lệ so với giá trị chi tiêu lớn nhất
-                int barLength = (int)((totalExpense / maxExpense) * maxBarLength);
-                string bar = new string('█', barLength); // Tạo thanh biểu đồ với ký tự '█'
-
-                // Định dạng chuỗi in ra: tên danh mục, thanh biểu đồ và giá trị chi tiêu
-                string line = $"│ {category.Key,-15} {bar,-50} {totalExpense,15:#,##0₫} │";
-
-                // Sử dụng hàm CenterPrintLine để căn giữa và in ra biểu đồ
-                CenterPrint(line);
-
-                // Thêm dấu phân cách giữa các danh mục nếu không phải danh mục cuối cùng
-                if (category.Key != yearlyTotals.Keys.Last())
-                {
-                    CenterPrint("│" + new string(' ', totalWidth - 2) + "│");
-                }
-            }
-
-            // Vẽ khung dưới của biểu đồ
-            CenterPrintLine("└" + new string('─', totalWidth - 2) + "┘");
-        }
-
-
-
-
-        public void DrawTotalExpenseChart(ExpenseTracker expenseTracker)
+        private void DrawTotalExpenseChart(ExpenseTracker expenseTracker)
         {
             var monthlyTotals = expenseTracker.GetMonthlyTotals(); // Lấy tổng chi tiêu mỗi tháng
             int maxBarLength = 50; // Độ dài tối đa của thanh biểu đồ
@@ -301,7 +229,7 @@ namespace Quanlychitieu
                     maxExpense = totalExpense;
                 }
             }
-                       
+
 
             foreach (var month in monthlyTotals)
             {
@@ -316,7 +244,68 @@ namespace Quanlychitieu
                 CenterPrintLine(line);
                 Console.WriteLine();
             }
-
         }
-}
+
+
+        // VẼ BIỂU ĐỒ CHI TIÊU THEO NĂM 
+        private void DrawYearlyExpenseChart(ExpenseTracker expenseTracker)
+        {
+        // Lấy dữ liệu tổng chi tiêu hàng tháng và chuyển sang tổng theo năm
+         var monthlyTotals = expenseTracker.GetMonthlyTotals();
+         var yearlyTotals = new Dictionary<string, double>();
+
+         // Tổng hợp dữ liệu chi tiêu theo năm dựa trên các danh mục
+         foreach (var month in monthlyTotals)
+         {
+            foreach (var category in month.Value)
+            {
+                if (!yearlyTotals.ContainsKey(category.Key))
+                {
+                    yearlyTotals[category.Key] = 0;
+                }
+                yearlyTotals[category.Key] += category.Value;
+            }
+         }
+
+         // Độ dài tối đa của thanh biểu đồ
+         int maxBarLength = 50;  // Độ dài thanh biểu đồ
+         double maxExpense = yearlyTotals.Values.Max(); // Tìm giá trị chi tiêu lớn nhất
+
+         // In tiêu đề cho biểu đồ
+         string[] title = { " BÁO CÁO CHI TIÊU TRONG NĂM " };
+         Program.DrawCenteredBorder(title);
+
+         // Tổng chiều rộng của biểu đồ và thanh phân cách
+         var totalWidth = 90; // Tăng tổng chiều rộng của biểu đồ
+
+         // Vẽ khung trên của biểu đồ
+         CenterPrintLine("┌" + new string('─', totalWidth - 2) + "┐");
+
+         // Vẽ biểu đồ cho từng danh mục chi tiêu
+         foreach (var category in yearlyTotals)
+         {
+            // Tính toán tổng chi tiêu cho từng danh mục
+            double totalExpense = category.Value;
+
+            // Tính chiều dài của thanh biểu đồ dựa trên tỷ lệ so với giá trị chi tiêu lớn nhất
+            int barLength = (int)((totalExpense / maxExpense) * maxBarLength);
+            string bar = new string('█', barLength); // Tạo thanh biểu đồ với ký tự '█'
+
+            // Định dạng chuỗi in ra: tên danh mục, thanh biểu đồ và giá trị chi tiêu
+            string line = $"│ {category.Key,-15} {bar,-50} {totalExpense,15:#,##0₫} │";
+
+            // Sử dụng hàm CenterPrintLine để căn giữa và in ra biểu đồ
+            CenterPrint(line);
+
+            // Thêm dấu phân cách giữa các danh mục nếu không phải danh mục cuối cùng
+            if (category.Key != yearlyTotals.Keys.Last())
+            {
+                CenterPrint("│" + new string(' ', totalWidth - 2) + "│");
+            }
+         }
+
+        // Vẽ khung dưới của biểu đồ
+        CenterPrintLine("└" + new string('─', totalWidth - 2) + "┘");
+        }
     }
+}
