@@ -209,14 +209,12 @@ class Program
 
         }
     }
-    static bool TurnBack()
+    public static bool TurnBack()
     {
         Console.WriteLine(" Nhấn ESC để quay lại menu chính hoặc nhấn phím bất kỳ để tiếp tục.");
         var keyInfo = Console.ReadKey(true);
         return keyInfo.Key == ConsoleKey.Escape;
     }
-
-
 
 
 
