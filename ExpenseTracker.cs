@@ -132,38 +132,14 @@ namespace Quanlychitieu
                         Console.Write("Nhập số tiền chi tiêu: ");
                         if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                         {
-                            
+
                             // Ghi lại thời gian giao dịch
                             DateTime transactionTime = DateTime.Now;
 
                             // Thêm chi tiêu vào danh sách
                             Expense expense = new Expense(category, amount, transactionTime);
                             expenseList.Add(expense); // Thêm chi tiêu vào danh sách
-                            SaveExpenses();
-                            // Kiểm tra và khởi tạo danh mục chi tiêu trong monthlyExpenses
-                            if (!monthlyExpenses.ContainsKey(category))
-                            {
-                                monthlyExpenses[category] = new Dictionary<int, double>();
-                            }
-
-                            // Khởi tạo chi tiêu cho tháng hiện tại nếu chưa có
-                            if (!monthlyExpenses[category].ContainsKey(currentMonth))
-                            {
-                                monthlyExpenses[category][currentMonth] = 0;
-                            }
-
-                            // Cập nhật chi tiêu hàng tháng
-                            monthlyExpenses[category][currentMonth] += (double)amount;
-
-                            // Cập nhật tổng chi tiêu của từng danh mục
-                            if (expenses.ContainsKey(category))
-                            {
-                                expenses[category] += amount;
-                            }
-                            else
-                            {
-                                expenses[category] = amount;
-                            }
+                            UpdateExpensesAndMonthlyExpenses(expense);
 
                             // Tính toán tổng chi tiêu và ngân sách
                             decimal totalExpenses = GetTotalExpenses(); // lấy tổng chi tiêu
@@ -203,6 +179,30 @@ namespace Quanlychitieu
                 }
             }
         }
+        private void UpdateExpensesAndMonthlyExpenses(Expense expense)
+        {
+            // Cập nhật expenses
+            if (expenses.ContainsKey(expense.Category))
+            {
+                expenses[expense.Category] += expense.Amount;
+            }
+            else
+            {
+                expenses[expense.Category] = expense.Amount;
+            }
+
+            // Cập nhật monthlyExpenses
+            int month = expense.Date.Month;
+            if (!monthlyExpenses.ContainsKey(expense.Category))
+            {
+                monthlyExpenses[expense.Category] = new Dictionary<int, double>();
+            }
+            if (!monthlyExpenses[expense.Category].ContainsKey(month))
+            {
+                monthlyExpenses[expense.Category][month] = 0;
+            }
+            monthlyExpenses[expense.Category][month] += (double)expense.Amount;
+        }
         private void SaveExpenses()
         {
             var json = JsonConvert.SerializeObject(expenseList, Formatting.Indented);
@@ -222,27 +222,7 @@ namespace Quanlychitieu
 
                 foreach (var expense in expenseList)
                 {
-                    // Cập nhật expenses
-                    if (expenses.ContainsKey(expense.Category))
-                    {
-                        expenses[expense.Category] += expense.Amount;
-                    }
-                    else
-                    {
-                        expenses[expense.Category] = expense.Amount;
-                    }
-
-                    // Cập nhật monthlyExpenses
-                    int month = expense.Date.Month;
-                    if (!monthlyExpenses.ContainsKey(expense.Category))
-                    {
-                        monthlyExpenses[expense.Category] = new Dictionary<int, double>();
-                    }
-                    if (!monthlyExpenses[expense.Category].ContainsKey(month))
-                    {
-                        monthlyExpenses[expense.Category][month] = 0;
-                    }
-                    monthlyExpenses[expense.Category][month] += (double)expense.Amount;
+                    UpdateExpensesAndMonthlyExpenses(expense);
                 }
             }
             else
@@ -250,7 +230,7 @@ namespace Quanlychitieu
                 expenseList = new List<Expense>(); // Khởi tạo danh sách rỗng nếu tệp không tồn tại
             }
         }
-
+    
 
         private void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
         {
