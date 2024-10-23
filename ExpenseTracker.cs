@@ -619,13 +619,30 @@ namespace Quanlychitieu
             return monthlyTotals;
         }
 
+
+       
+        public void ShowExpenseChart()
+        {
+            Console.WriteLine("\nBiểu đồ chi tiêu:");
+            decimal maxExpense = expenses.Where(e => e.Key != "Thu nhập").Max(e => e.Value);
+            int chartWidth = 50; // Độ rộng tối đa của biểu đồ
+
+            foreach (var category in expenses)
+            {
+                if (category.Key != "Thu nhập")
+                {
+                    int barLength = (int)((category.Value / maxExpense) * chartWidth);
+                    Console.WriteLine($"{category.Key.PadRight(20)} | {new string('#', barLength)} {category.Value:#,##0₫}");
+                }
+            }
+        }
+
+
+
+
+
         // LỰA CHỌN XEM CALENDAR 
     
-        
-
-
-        // LỰA CHỌN XEM CALENDAR 
-
         private int selectedYear = 0;                                            // Khai báo biến kiểu int và khởi tạo nó với giá trị mặc định là 0. Mục tiêu: Lưu trữ năm hiện tại mà người dùng chọn.
         private int selectedMonth = 0;                                           // Khai báo biến kiểu int và khởi tạo giá trị mặc định là 0. Mục tiêu: Lưu trữ tháng hiện tại người dùng chọn.
         private int selectedRow = 0;                                             //Lưu trữ hàng của ngày được chọn.
@@ -636,17 +653,19 @@ namespace Quanlychitieu
         public void CalendarTracker()
         {
 
-            Console.Clear();                                                  // Xóa màn hình console để chuẩn bị nội dung mới 
-            TitleIntroMoneymory();                                               // Gọi hàm để hiện thị một số kí tự và biểu tượng dưới dạng hình ảnh giới thiệu.
-            Console.WriteLine("Bạn nhấn phím bất kì để tiếp tục.");           // Hiển thị thông báo yêu cầu người dùng nhấn phím để tiếp tục.
-            Console.ReadKey();                                                // Đợi người dùng nhấn 1 phím bất kỳ trước khi tiếp tục.
-            Console.Clear();                                                  // Xóa màn hình một lần nữa khi người dùng nhấn phím.
-            TitleCalendar();                                                  // Gọi hàm để hiển thị tiêu đề của lịch
-            HandleInput();                                                    // Gọi hàm để xử lí đầu vào từ người dùng
-        }
-        public void HandleInput() 
+            Console.Clear();
+            TitleIntroMoneymory();
+            Console.WriteLine("Bạn nhấn phím bất kì để tiếp tục.");
+            Console.ReadKey();
+            Console.Clear();
+            TitleCalendar();
+            HandleInput();
+        }   
+        
+                                        
+        public void HandleInput()                                                                 // Gọi hàm để xử lí đầu vào từ người dùng 
         {
-            bool isSelectingDay = false; // Thêm biến để theo dõi trạng thái chọn ngày
+            bool isSelectingDay = false;                                                         // Thêm biến để theo dõi trạng thái chọn ngày
             bool move = true;
             
             while (move)
@@ -736,8 +755,8 @@ namespace Quanlychitieu
                 }
 
             }
-        }
-        private void TitleIntroMoneymory()                                         // Khai báo hàm tĩnh để tạo và hiển thị intro. Hàm này tạo và hiển thị các biểu tượng, hình ảnh ASCII với màu sắc thay đổi để làm phần tiêu đề.
+        } 
+        private void TitleIntroMoneymory()                                                            // Khai báo  để tạo và hiển thị intro. Hàm này tạo và hiển thị các biểu tượng, hình ảnh ASCII với màu sắc thay đổi để làm phần tiêu đề.
         {
             string[] titleIntroCalendar =
             {
@@ -808,7 +827,7 @@ namespace Quanlychitieu
                     " ♦                       ♦•♦                                                      ",
                     " ♦                       ♦•♦                                                      ",
                     " •♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦                                                      ",
-                };                                    // Khởi tạo mảng chứa các dòng intro
+                };                                   
 
             ConsoleColor defaultForeground = Console.ForegroundColor;            // Biến này lưu trữ màu chữ mặc định để có thể phục hồi lại sau khi in tiêu đề.
             ConsoleColor defaultBackground = Console.BackgroundColor;            //  Biến này lưu trữ màu nền mặc định để có thể phục hồi lại sau khi in tiêu đề.
@@ -1101,48 +1120,48 @@ namespace Quanlychitieu
             DrawCalendarHeader();                                            // Gọi phương thức để vẽ lại phần tiêu đề của lịch.
 
         }
-        public void ShowDayInfo()
+        public void ShowDayInfo()                                                                                                           //iển thị thông tin chi tiêu cho ngày đã chọn.                                                                                                         
         {
-            int selectedDay = calendarTracker[selectedRow, selectedCol];
-            if (selectedDay >= 0) // Kiểm tra nếu ngày hợp lệ
+            int selectedDay = calendarTracker[selectedRow, selectedCol];                                                                    //Lấy ngày đã chọn từ mảng calendarTracker dựa trên hàng và cột đã chọn.
+            if (selectedDay >= 0)                                                                                                           // Kiểm tra nếu ngày hợp lệ
             {
-                Console.Clear();
-                Console.WriteLine($"Nhật ký chi tiêu cho ngày {selectedDay}/{selectedMonth}/{selectedYear}:");
+                Console.Clear();                                                                                                            // Xóa toàn bộ nội dung đang hiển thị
+                Console.WriteLine($"Nhật ký chi tiêu cho ngày {selectedDay}/{selectedMonth}/{selectedYear}:");                              //Hiển thị tiêu đề với thông tin ngày, tháng và năm.
 
-                // Lọc các chi tiêu cho ngày đã chọn
-                var expensesForSelectedDay = expenseList.Where(expense =>
-                    expense.Date.Day == selectedDay &&
-                    expense.Date.Month == selectedMonth &&
-                    expense.Date.Year == selectedYear).ToList();
+                                                                                                                                            // Lọc các chi tiêu cho ngày đã chọn
+                var expensesForSelectedDay = expenseList.Where(expense =>                                                                   // Lọc ra danh sách chi tiêu dựa trên ngày, tháng và năm.
+                    expense.Date.Day == selectedDay &&                                                                                      // So sánh ngày của chi tiêu với ngày đã chọn.
+                    expense.Date.Month == selectedMonth &&                                                                                  // So sánh tháng của chi tiêu với tháng đã chọn.
+                    expense.Date.Year == selectedYear)
+                    .ToList();                                                                                                              // Chuyển đổi kết quả lọc thành danh sách.                                                                         // So sánh năm của chi tiêu với năm đã chọn.
 
-                // Nhóm các chi tiêu theo danh mục và tính tổng số tiền cho mỗi danh mục
+                                                                                                                                            // Nhóm các chi tiêu theo danh mục và tính tổng số tiền cho mỗi danh mục
                 var groupedExpenses = expensesForSelectedDay
-                    .GroupBy(expense => expense.Category)
-                    .Select(group => new
+                    .GroupBy(expense => expense.Category)                                                                                   //Nhóm chi tiêu theo danh mục.
+                    .Select(group => new                                                                                                    // Tạo một đối tượng mới cho mỗi nhóm.
                     {
-                        Category = group.Key,
-                        TotalAmount = group.Sum(expense => expense.Amount)
-                    }).ToList();
+                        Category = group.Key,                                                                                               // Lấy tên danh mục từ nhóm.
+                        TotalAmount = group.Sum(expense => expense.Amount)                                                                  // Tính tổng số tiền cho danh mục này.
+                    }).ToList();                                                                                                            // Chuyển đổi kết quả nhóm thành danh sách.
 
-                if (groupedExpenses.Any())
+                if (groupedExpenses.Any())                                                                                                  // Kiểm tra xem có chi tiêu nào đã được nhóm không.
                 {
-                    foreach (var groupedExpense in groupedExpenses)
+                    foreach (var groupedExpense in groupedExpenses)                                                                         // Duyệt qua từng nhóm chi tiêu.
                     {
-                        Console.WriteLine($"Danh mục: {groupedExpense.Category}, Tổng số tiền: {groupedExpense.TotalAmount:#,##0₫}");
+                        Console.WriteLine($"Danh mục: {groupedExpense.Category}, Tổng số tiền: {groupedExpense.TotalAmount:#,##0₫}");       // Hiển thị thông tin danh mục và tổng số tiền với định dạng tiền tệ.
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Không có chi tiêu nào ghi nhận cho ngày này.");
+                    Console.WriteLine("Không có chi tiêu nào ghi nhận cho ngày này.");                                                      // Nếu không có chi tiêu nào được ghi nhận. 
                 }
 
-                // Tùy chọn để người dùng quay lại
-                Console.WriteLine("\nNhấn phím bất kỳ để quay lại.");
-                Console.ReadKey();
+                Console.WriteLine("\nNhấn phím bất kỳ để quay lại.");                                                                       // Thông báo người dùng nhấn phím để quay lại.
+                Console.ReadKey();                                                                                                          // Chờ người dùng nhấn phím bất kỳ.
+               
 
-                // Hiển thị lại lịch sau khi xem thông tin chi tiêu
-                DrawHeader();
-                DrawCalendarHeader();
+                DrawHeader();                                                                                                                // Gọi phương thức để vẽ lại tiêu đề lịch.
+                DrawCalendarHeader();                                                                                                        // Gọi phương thức để vẽ lại phần tiêu đề của lịch.
             }
         }
     }
