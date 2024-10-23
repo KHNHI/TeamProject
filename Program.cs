@@ -387,7 +387,7 @@ class Program
     // INTRO MỞ ĐẦU BÀI
     static void Intro()
     {
-        int consoleWidth = Console.WindowWidth;
+       
         string[] content = {
     "                    ,,,,,,,        ,▄▄╬▓▓▓▓▄,                                ",
     "        ,▄╦▄▄@▄▄▓▓▓▓▓▓▒▒╣▒▒▒▓▓▄,  ▄▓▒╢╢╢╢▓▓╣▒▓▄                               ",

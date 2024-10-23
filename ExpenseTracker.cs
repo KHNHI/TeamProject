@@ -641,41 +641,126 @@ namespace Quanlychitieu
             }
         }
 
-       
+
 
 
         // LỰA CHỌN XEM CALENDAR 
 
-        static int selectedYear = new int();
-        static int selectedMonth = new int();
-        static int[,] calendarTracker = new int[6, 7];
-        static int selectedRow = 0;
-        static int selectedCol = 0;
-        static int windowWidth = Console.WindowWidth;
-        
+        private int selectedYear = 0;                                            // Khai báo biến kiểu int và khởi tạo nó với giá trị mặc định là 0. Mục tiêu: Lưu trữ năm hiện tại mà người dùng chọn.
+        private int selectedMonth = 0;                                           // Khai báo biến kiểu int và khởi tạo giá trị mặc định là 0. Mục tiêu: Lưu trữ tháng hiện tại người dùng chọn.
+        private int selectedRow = 0;                                             //Lưu trữ hàng của ngày được chọn.
+        private int selectedCol = 0;                                             // Lưu trữ cột của ngày được chọn.
+        private int[,] calendarTracker = new int[6, 7];                          // Đây là mảng 2 chiều với 6 hàng và 7 cột:6 hàng tương ung các tuần trong tháng ( trong 1 tháng nhiều nhất 6 tuần); 7 cột tương ứng các ngày trong tuần.
+        private int windowWidth = Console.WindowWidth;                           // Khai báo biên kiểu int và lấy giá trị chiều rộng hiện tại của cửa sổ console và lưu trữ vào biến windowWidth.
+
         public void CalendarTracker()
         {
-            
-            Console.Clear();
-            TitleIntroMemory();
-            Console.WriteLine("Bạn nhấn phím bất kì để tiếp tục.");
-            Console.ReadKey();
-            Console.Clear();
-            
-            static void TitleIntroMemory()
-            {
-                
-                Console.WriteLine();
-                string[] titleIconCalendar =
-                {
-            "\u263A\u263A\u263A",  // ☻☻☻ (Mặt cười)
-            "\u2665\u2665\u2665",  // ♥♥♥ (Trái tim)
-            "This is a smiley face: \u263A",
-            "This is a heart: \u2665"
-                };
 
-                string[] titleIntroCalendar =
+            Console.Clear();                                                  // Xóa màn hình console để chuẩn bị nội dung mới 
+            TitleIntroMoneymory();                                               // Gọi hàm để hiện thị một số kí tự và biểu tượng dưới dạng hình ảnh giới thiệu.
+            Console.WriteLine("Bạn nhấn phím bất kì để tiếp tục.");           // Hiển thị thông báo yêu cầu người dùng nhấn phím để tiếp tục.
+            Console.ReadKey();                                                // Đợi người dùng nhấn 1 phím bất kỳ trước khi tiếp tục.
+            Console.Clear();                                                  // Xóa màn hình một lần nữa khi người dùng nhấn phím.
+            TitleCalendar();                                                  // Gọi hàm để hiển thị tiêu đề của lịch
+            HandleInput();                                                    // Gọi hàm để xử lí đầu vào từ người dùng
+        }
+        public void HandleInput() 
+        {
+            bool isSelectingDay = false; // Thêm biến để theo dõi trạng thái chọn ngày
+            bool move = true;
+            
+            while (move)
+            {
+                Console.Clear();
+                DrawHeader();
+                DrawCalendarBox();
+                FillCalendar();
+                DrawCalendarHeader();
+                DrawOptions();
+
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                switch (keyInfo.Key)
                 {
+                    case ConsoleKey.UpArrow:
+                        if (isSelectingDay)
+                        {
+                            MoveSelection(-1, 0);
+                        }
+                        else
+                        {
+                            selectedYear++; // Tăng năm nếu không chọn ngày
+                        }
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (isSelectingDay)
+                        {
+                            MoveSelection(1, 0); // Di chuyển xuống nếu đang chọn ngày
+                        }
+                        else
+                        {
+                            selectedYear--; // Giảm năm nếu không chọn ngày
+                        }
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        if (isSelectingDay)
+                        {
+                            MoveSelection(0, -1); // Di chuyển sang trái nếu đang chọn ngày
+                        }
+                        else
+                        {
+                            selectedMonth--; // Giảm tháng nếu không chọn ngày
+                            if (selectedMonth < 1)
+                            {
+                                selectedMonth = 12; // Quay về tháng 12
+                                selectedYear--; // Giảm năm
+                            }
+                        }
+                        break;
+                    case ConsoleKey.RightArrow:
+                        if (isSelectingDay)
+                        {
+                            MoveSelection(0, 1); // Di chuyển sang phải nếu đang chọn ngày
+                        }
+                        else
+                        {
+                            selectedMonth++; // Tăng tháng nếu không chọn ngày
+                            if (selectedMonth > 12)
+                            {
+                                selectedMonth = 1; // Quay về tháng 1
+                                selectedYear++; // Tăng năm
+                            }
+                        }
+                        break;
+                    case ConsoleKey.Enter: // Nếu chọn ngày
+                        if (isSelectingDay)
+                        {
+                            ShowDayInfo(); // Hiển thị thông tin ngày được chọn
+                        }
+                        else
+                        {
+                            isSelectingDay = true;
+
+                        }
+                        break;
+                    case ConsoleKey.Delete:// Nếu muốn chọn tháng và năm 
+                        if (isSelectingDay)
+                        {
+                            isSelectingDay = false;
+                        }
+
+                        break;
+                    case ConsoleKey.Escape:
+                        move = false; // Thoát vòng lặp
+                        Console.WriteLine("Nhấn phím ESC để thoát:");
+                        break;
+                }
+
+            }
+        }
+        private void TitleIntroMoneymory()                                         // Khai báo hàm tĩnh để tạo và hiển thị intro. Hàm này tạo và hiển thị các biểu tượng, hình ảnh ASCII với màu sắc thay đổi để làm phần tiêu đề.
+        {
+            string[] titleIntroCalendar =
+            {
 
 
 
@@ -743,58 +828,54 @@ namespace Quanlychitieu
                     " ♦                       ♦•♦                                                      ",
                     " ♦                       ♦•♦                                                      ",
                     " •♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦                                                      ",
-                };
-            
-                ConsoleColor defaultForeground = Console.ForegroundColor;
-                ConsoleColor defaultBackground = Console.BackgroundColor;
-                
-                foreach (var line in titleIntroCalendar)
+                };                                    // Khởi tạo mảng chứa các dòng intro
+
+            ConsoleColor defaultForeground = Console.ForegroundColor;            // Biến này lưu trữ màu chữ mặc định để có thể phục hồi lại sau khi in tiêu đề.
+            ConsoleColor defaultBackground = Console.BackgroundColor;            //  Biến này lưu trữ màu nền mặc định để có thể phục hồi lại sau khi in tiêu đề.
+
+            foreach (var line in titleIntroCalendar)                             // Vòng lặp sẽ thực hiện cho từng dòng trong titleIntroCalendar.
+            {
+
+                int padding = (windowWidth - line.Length) / 2;                   // Tính toán khoảng cách cần thêm vào bên trái để căn giữa dòng trong cửa sổ console.
+                                                                                 // Ví dụ sử dụng màu khác nhau cho từng dòng
+                if (line.Contains("\u263B"))                                     // Nếu chứa biểu tượng mặt cười."\u263A\u263A\u263A", ☻☻☻ (Mặt cười)
                 {
-
-                    int padding = (windowWidth - line.Length) / 2;
-                    // Ví dụ sử dụng màu khác nhau cho từng dòng
-
-
-                    if (line.Contains("\u263B")) // Nếu chứa biểu tượng mặt cười
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green; // Màu chữ vàng
-                                                                      // Nền đen
-                    }
-                    else if (line.Contains("\u2665")) // Nếu chứa biểu tượng trái tim
-                    {
-                        Console.ForegroundColor = ConsoleColor.Yellow; // Màu chữ đỏ
-                                                                       // Nền trắng
-                    }
-                    else if (line.Contains("*"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-
-                    }
-                    else if (line.Contains("♦"))
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                    }
-
-
-                    else
-                    {
-                        // Màu mặc định
-                        Console.ForegroundColor = defaultForeground;
-                        Console.BackgroundColor = defaultBackground;
-                    }
-
-                    // In dòng với màu đã chọn
-                    Console.WriteLine(line.PadLeft(padding + line.Length));
-
+                    Console.ForegroundColor = ConsoleColor.Green;                // Màu chữ xanh
+                                                                                 
+                }
+                else if (line.Contains("\u2665"))                                // Nếu chứa biểu tượng trái tim."\u2665\u2665\u2665",  ♥♥♥ (Trái tim) 
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;               // Màu chữ vàng
+                                                                                 
+                }
+                else if (line.Contains("*"))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;             // Màu chữ Xám tối
 
                 }
-                // Khôi phục lại màu mặc định sau khi in xong
-                Console.ForegroundColor = defaultForeground;
-                Console.BackgroundColor = defaultBackground;
+                else if (line.Contains("♦"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;                // Màu chữ xanh
+                }
+                else
+                {
+                                                                                 // Màu mặc định
+                    Console.ForegroundColor = defaultForeground;
+                    Console.BackgroundColor = defaultBackground;
+                }
+
+                                                                                 
+                Console.WriteLine(line.PadLeft(padding + line.Length));          //n dòng đã được căn giữa. Sử dụng PadLeft để thêm khoảng trống bên trái.
+
+
             }
+                                                                                 // Khôi phục lại màu mặc định sau khi in xong
+            Console.ForegroundColor = defaultForeground;
+            Console.BackgroundColor = defaultBackground;
+        }
 
-
-
+        private void TitleCalendar()                                                                  // Hiển thị tên tiêu đề chính của lịch
+        {
             string[] titleCalendar =
             {
                 "███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗",
@@ -804,327 +885,218 @@ namespace Quanlychitieu
                 "██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║   ██║ ╚═╝ ██║╚██████╔╝██║  ██║   ██║   ",
                 "╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   "
 
-            };
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Program.DrawCenteredBorder(titleCalendar);
-
-            Console.ResetColor();
-
-            DrawInputBox();
+            };                                                            // Tạo mảng 1 chiều để chứa các dòng chữ ASCII để tạo thành tiêu đề lịch.
+            Console.ForegroundColor = ConsoleColor.Yellow;                                          // Đặt màu sắc cho chữ 
+            Program.DrawCenteredBorder(titleCalendar);                                              // Gọi phương thức từ lớp Program để hiển thị tiêu đề viền ở giữa màn hình.
+            Console.ResetColor();                                                                   // Đặt lại màu sắc.
+            DrawInputBox();                                                                         //Hiển thị phần nhập liệu
             GetUserInput();
-
-            static void DrawInputBox()
-            {
-                int windowWidth = Console.WindowWidth;
-                int windowHeight = Console.WindowHeight;
-
-
-                int boxWidth = 40;
-                int boxHeight = 10;
-                int yearBoxX = (windowWidth / 2) - boxWidth - 2;
-                int monthBoxX = (windowWidth / 2) + 2;
-                int boxY = 10;
-
-
-                DrawBox(yearBoxX, boxY, boxWidth, boxHeight, "Nhập năm bạn muốn xem:");
-
-
-                DrawBox(monthBoxX, boxY, boxWidth, boxHeight, "Nhập tháng bạn muốn xem:");
-
-
-            }
-            
-            static void GetUserInput()
-            {
-                int yearBoxX = (Console.WindowWidth / 2) - 40;
-                int inputY = 14;
-                Console.SetCursorPosition(yearBoxX + 9, inputY);
-                //Console.ForegroundColor = ConsoleColor.White;
-                Console.SetCursorPosition(yearBoxX + 9, inputY); // Vị trí nhập trong khung năm
-                while (!int.TryParse(Console.ReadLine(), out selectedYear) || selectedYear < 1)
-                {
-                    Console.SetCursorPosition(yearBoxX + 9, inputY);
-                   ClearCurrentLine(yearBoxX + 9, inputY);
-                   Console.SetCursorPosition(yearBoxX + 9, inputY);
-                   Console.Write("Vui lòng nhập năm hợp lệ.");
-                    System.Threading.Thread.Sleep(1000);
-                    ClearCurrentLine(yearBoxX +9, inputY);
-                    Console.SetCursorPosition(yearBoxX + 9, inputY);
-                }
-                Console.ResetColor();   
-                // Input cho tháng
-                int monthBoxX = (Console.WindowWidth / 2) + 2;
-                
-                Console.SetCursorPosition(monthBoxX + 12, inputY ); 
-               // Console.ForegroundColor = ConsoleColor.White;
-                while (!int.TryParse(Console.ReadLine(), out selectedMonth) || selectedMonth < 1 || selectedMonth > 12)
-                {
-                    Console.SetCursorPosition(monthBoxX + 12, inputY);
-                    ClearCurrentLine(monthBoxX +12,inputY);
-                   
-                    Console.Write("Vui lòng nhập tháng hợp lệ (1-12).");
-                    System.Threading.Thread.Sleep(1000);
-                    ClearCurrentLine(monthBoxX+12, inputY);
-                    Console.SetCursorPosition(monthBoxX + 12, inputY);
-                    //ClearCurrentLine();
-                    
-                }
-                Console.ResetColor();
-            }
-            static void DrawBox(int x, int y, int width, int height, string title)
-            {
-
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                // Draw top border
-                Console.SetCursorPosition(x, y);
-                Console.Write("╔" + new string('═', width - 2) + "╗");
-
-                // Draw title
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.SetCursorPosition(x + 9, y);
-                Console.Write(title);
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-
-                // Draw side borders
-                for (int i = 1; i < height - 1; i++)
-                {
-                    Console.SetCursorPosition(x, y + i);
-                    Console.Write("║" + new string(' ', width - 2) + "║");
-                }
-
-                // Draw bottom border
-                Console.SetCursorPosition(x, y + height - 1);
-                Console.Write("╚" + new string('═', width - 2) + "╝");
-                Console.ResetColor();
-            }
-            static void ClearCurrentLine(int startX, int startY)
-            {
-                Console.SetCursorPosition(startX, startY);
-
-              
-                Console.Write(new string(' ', Console.WindowWidth - startX));
-
-                
-                Console.SetCursorPosition(startX, startY);
-
-               
-            }
-
-            bool isSelectingDay = false; // Thêm biến để theo dõi trạng thái chọn ngày
-            bool move = true;
-            while (move)
-            {
-                Console.Clear();
-                DrawHeader();
-                DrawCalendarBox();
-                FillCalendar();
-                DrawCalendar();
-                DrawOptions();
-
-                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
-                switch (keyInfo.Key)
-                {
-                    case ConsoleKey.UpArrow:
-                        if (isSelectingDay)
-                        {
-                            MoveSelection(-1, 0); 
-                        }
-                        else
-                        {
-                            selectedYear++; // Tăng năm nếu không chọn ngày
-                        }
-                        break;
-                    case ConsoleKey.DownArrow:
-                        if (isSelectingDay)
-                        {
-                            MoveSelection(1, 0); // Di chuyển xuống nếu đang chọn ngày
-                        }
-                        else
-                        {
-                            selectedYear--; // Giảm năm nếu không chọn ngày
-                        }
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        if (isSelectingDay)
-                        {
-                            MoveSelection(0, -1); // Di chuyển sang trái nếu đang chọn ngày
-                        }
-                        else
-                        {
-                            selectedMonth--; // Giảm tháng nếu không chọn ngày
-                            if (selectedMonth < 1)
-                            {
-                                selectedMonth = 12; // Quay về tháng 12
-                                selectedYear--; // Giảm năm
-                            }
-                        }
-                        break;
-                    case ConsoleKey.RightArrow:
-                        if (isSelectingDay)
-                        {
-                            MoveSelection(0, 1); // Di chuyển sang phải nếu đang chọn ngày
-                        }
-                        else
-                        {
-                            selectedMonth++; // Tăng tháng nếu không chọn ngày
-                            if (selectedMonth > 12)
-                            {
-                                selectedMonth = 1; // Quay về tháng 1
-                                selectedYear++; // Tăng năm
-                            }
-                        }
-                        break;
-                    case ConsoleKey.Enter: // Nếu chọn ngày
-                        if (isSelectingDay)
-                        {
-                            ShowDayInfo(); // Hiển thị thông tin ngày được chọn
-                        }
-                        else 
-                        {
-                            isSelectingDay = true;
-                            
-                        }
-                        break;
-                    case ConsoleKey.Delete:// Nếu muốn chọn tháng và năm 
-                        if (isSelectingDay)
-                        {
-                            isSelectingDay = false;
-                        }
-
-                        break;
-                    case ConsoleKey.Escape:
-                        move = false; // Thoát vòng lặp
-                        Console.WriteLine("Nhấn phím ESC để thoát:");
-                        break;
-                }
-
-            }
-
-           
         }
-        static void DrawHeader()
+     
+        private void DrawInputBox()
+        {
+                int windowHeight = Console.WindowHeight;                                             // Khai báo và lưu giá trị chiều cao của cửa sổ hiện tại vào biến windowHeight
+                int boxWidth = 40;                                                                   // Khai báo hộp nhập liệu có chiều rộng là 40
+                int boxHeight = 10;                                                                  // Khai báo hộp nhập liệu có chiều cao là 10
+                int yearBoxX = (windowWidth / 2) - boxWidth - 2;                                     // Tính toán tọa độ X cho hộp nhập liệu năm 
+                int monthBoxX = (windowWidth / 2) + 2;                                               // Tính toán tọa độ X cho hộp nhập liệu tháng
+                int boxY = 10;                                                                       // Hộp nhập liệu sẽ hiện thị ở dòng thứ 10
+
+                DrawBox(yearBoxX, boxY, boxWidth, boxHeight, "Nhập năm bạn muốn xem:");              // Gọi phương thức DrawBox để vẽ hộp nhập liệu cho năm
+
+                DrawBox(monthBoxX, boxY, boxWidth, boxHeight, "Nhập tháng bạn muốn xem:");           // Gọi phương thức DrawBox để vẽ hộp nhập liệu cho tháng
+
+
+
+        }
+        private void GetUserInput()
+        {
+            int yearBoxX = (Console.WindowWidth / 2) - 40;                                                                 // Khởi tạo tọa độ nhập tháng và năm
+            int monthBoxX = (Console.WindowWidth / 2) + 2;                                                                
+            int inputY = 14;                                                                                               // //Vị trí Y là inputY để con trỏ nằm trên dòng thứ 14.
+
+            Console.SetCursorPosition(yearBoxX + 9, inputY);                                                               //Đặt ví trị con trỏ cho năm, Vị trí X là yearBoxX + 9 để con trỏ bắt đầu cách khung 9 ký tự nhằm căn chỉnh đẹp mắt.
+                                                                                                                                                                                        
+                                                    
+            while (!int.TryParse(Console.ReadLine(), out selectedYear) || selectedYear < 1)                                 //Vòng lặp để kiểm tra nhập năm hợp lệ. Đọc dữ liệu từ người dùng và cố gắng chuyển nó sang kiểu số nguyên.
+                                                                                                                            // Nếu không thể chuyển đổi (ví dụ, người dùng nhập chữ thay vì số), nó trả về false.
+                                                                                                                            // selectedYear < 1: Kiểm tra xem năm có nhỏ hơn 1 không, vì năm không thể là số âm hoặc bằng 0.
+                                                                                                                            //Nếu bất kỳ điều kiện nào không hợp lệ, vòng lặp tiếp tục cho đến khi người dùng nhập đúng.
+            {
+                Console.SetCursorPosition(yearBoxX + 9, inputY);                                                            //Đặt lại con trỏ đến vị trí bắt đầu để người dùng có thể nhập năm mới.
+                ClearCurrentLine(yearBoxX + 9, inputY,24);                                                                  // Xóa dòng hiện tại tại vị trí con trỏ để chuẩn bị cho việc hiển thị thông báo mới.Xóa đúng 24 ký tự.
+                Console.Write("Vui lòng nhập năm hợp lệ.");                                                                 // In ra thông báo
+                System.Threading.Thread.Sleep(1000);                                                                        // Tạm dừng chương trình 1 s để người dùng đọc.
+                ClearCurrentLine(yearBoxX + 9, inputY,24);
+            }
+            Console.ResetColor();                                                                                           // Đặt lại màu sắc mặc định
+            Console.SetCursorPosition(monthBoxX + 12, inputY);
+            while (!int.TryParse(Console.ReadLine(), out selectedMonth) || selectedMonth < 1 || selectedMonth > 12)         //Vòng lặp để kiểm tra nhập tháng hợp lệ. Tương tự như năm 
+            {
+                Console.SetCursorPosition(monthBoxX + 12, inputY);
+                ClearCurrentLine(monthBoxX + 12, inputY,24);
+                Console.Write("Vui lòng nhập tháng hợp lệ (1-12).");
+                System.Threading.Thread.Sleep(1000);
+                ClearCurrentLine(monthBoxX + 12, inputY,24);
+              
+            }
+            Console.ResetColor();
+        }
+        private void DrawBox(int x, int y, int width, int height, string title)                        
+        {
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;                                      // Đặt màu chữ thành vàng đậm để vẽ viền 
+          
+            Console.SetCursorPosition(x, y);                                                        // Đặt Đặt con trỏ tại vị trí (x, y) để bắt đầu vẽ đường viền trên cùng của hộp.
+            Console.Write("╔" + new string('═', width - 2) + "╗");                                  // Vẽ đường viền trên cùng bằng ký tự "╔" (góc trên bên trái), một dãy "═" (đường ngang) có chiều dài là width - 2, và kết thúc bằng ký tự "╗" (góc trên bên phải).
+
+            Console.ForegroundColor = ConsoleColor.Yellow;                                          //Thay đổi màu chữ thành màu vàng sáng để hiển thị tiêu đề.                          
+            Console.SetCursorPosition(x + 9, y);                                                    //Đặt con trỏ tại vị trí (x + 9, y) để căn chỉnh tiêu đề ở giữa hộp. Số 9 được chọn để căn tiêu đề vào bên trong hộp một cách cân đối.
+            Console.Write(title);                                                                   // In ra tiêu đề
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+            for (int i = 1; i < height - 1; i++)                                                    // Vẽ các cạnh dọc của hộp.                                                                                          
+            {                                                                                       //  Lặp qua các dòng từ 1 đến height - 2 để vẽ các cạnh dọc của hộp.
+                Console.SetCursorPosition(x, y + i);                                                // Đặt con trỏ tại vị trí (x, y + i) để vẽ cạnh của hộp trên mỗi dòng.
+                Console.Write("║" + new string(' ', width - 2) + "║");                              //Vẽ một cạnh dọc với ký tự "║" (cạnh dọc bên trái), một dãy khoảng trắng có chiều dài là width - 2, và kết thúc bằng ký tự "║" (cạnh dọc bên phải).
+            }
+
+                                                                                                     // Vẽ đường viền dưới cùng
+            Console.SetCursorPosition(x, y + height - 1);                                            //Đặt con trỏ tại vị trí để vẽ đường viền dưới cùng của hộp (dòng cuối cùng của hộp).
+            Console.Write("╚" + new string('═', width - 2) + "╝");                                   //Vẽ đường viền dưới cùng với ký tự "╚" (góc dưới bên trái), một dãy "═" (đường ngang) có chiều dài width - 2, và kết thúc bằng ký tự "╝" (góc dưới bên phải).
+            Console.ResetColor();
+        }
+        private void ClearCurrentLine(int startX, int startY, int length)                             //xóa nội dung hiện tại trên một dòng cụ thể tại vị trí xác định trong console. 
+        {
+            Console.SetCursorPosition(startX, startY);                                               //Đặt vị trí con trỏ (cursor) tại tọa độ (startX, startY) trong console.
+                                                                                                     //Đây là vị trí bắt đầu của dòng mà bạn muốn xóa.
+                                                                                                     //startX: Vị trí ngang(cột) trong console.
+                                                                                                     //startY: Vị trí dọc(dòng) trong console. length: số lượng ký tự muốn xóa 
+            Console.Write(new string(' ', length));                                                  // Tạo ra một chuỗi rỗng gồm các khoảng trắng có độ dài bằng length.                                
+
+
+            Console.SetCursorPosition(startX, startY);                                               //Sau khi xóa nội dung, con trỏ được đặt lại về vị trí startX, startY để người dùng có thể nhập lại thông tin mới tại vị trí đó.
+
+        }
+        private void DrawHeader()                                                                   //Hàm này có nhiệm vụ hiển thị tiêu đề lịch của năm đã chọn (selectedYear) ở phần trên cùng của console.
         {
             Console.Clear();
-            string titleYear =  "                    𝑪𝑨𝑳𝑬𝑵𝑫𝑨𝑹 𝑶𝑭 𝑻𝑯𝑬 𝒀𝑬𝑨𝑹 " + selectedYear ;
-
-
-                
-                         
-
-
-            Console.SetCursorPosition((Console.WindowWidth - titleYear.Length ) / 2, 2);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(titleYear);
-            Console.ResetColor();
+            string titleYear ="               𝑪𝑨𝑳𝑬𝑵𝑫𝑨𝑹 𝑶𝑭 𝑻𝑯𝑬 𝒀𝑬𝑨𝑹   " +  selectedYear ;               // Tạo chuỗi tiêu đè
+            int leftPadding = (windowWidth - titleYear.Length ) / 2;                               //Tính khoảng cách cần đệm để căn giữa
+            Console.SetCursorPosition(leftPadding, 2);                                             // Đặt vị trí con trỏ ở hàng thứ 2 và căn giữa theo chiều ngang
+            Console.ForegroundColor = ConsoleColor.Cyan;                                           // Đặt màu sắc cho chữ
+            Console.WriteLine(titleYear);                                                          //In ra tiêu đè
+            Console.ResetColor();                                                                  // Đặt lại màu sắc mặc định
 
         }
-        static void FillCalendar()
+        private void FillCalendar()                                                                  // hàm này được sử dụng để điền thông tin về ngày tháng vào một cấu trúc dữ liệu của lịch.
         {
-            int day = DateTime.DaysInMonth(selectedYear, selectedMonth);
-            int firstDayOfMonth = (int)new DateTime(selectedYear, selectedMonth, 1).DayOfWeek;
-            if (firstDayOfMonth == 0) firstDayOfMonth = 7; // Make Sunday the last column
-
-            int currentDay = 1;
-            for (int i = 0; i < calendarTracker.GetLength(0); i++)
+            int day = DateTime.DaysInMonth(selectedYear, selectedMonth);                             // Sử dụng phương thức DaysInMonth để lấy số lượng ngày trong tháng được chọn và kết quả lưu vào biến day.
+            int firstDayOfMonth = (int)new DateTime(selectedYear, selectedMonth, 1).DayOfWeek;       //Tạo một đối tượng DateTime cho ngày đầu tiên của tháng và chuyển đổi ngày đó sang số nguyên, đại diện cho ngày trong tuần      
+                                                                                                     //(0 = Chủ nhật, 1 = Thứ hai, ..., 6 = Thứ bảy). Kết quả được lưu vào firstDayOfMonth.
+            if (firstDayOfMonth == 0)                                                                //Nếu ngày đầu tiên của tháng là Chủ nhật (0), chuyển đổi giá trị đó thành 7 để dễ dàng xử lý trong vòng lặp,
+                                                                                                     //vì chúng ta sẽ dùng 7 để đại diện cho Chủ nhật trong mảng lịch.
             {
-                for (int j = 0; j < calendarTracker.GetLength(1); j++)
+                firstDayOfMonth = 7;
+            }
+                                                      
+
+            int currentDay = 1;                                                                      //Khởi tạo biến currentDay với giá trị 1, nó sẽ dùng để theo dõi ngày hiện tại mà chúng ta đang điền vào lịch.
+            for (int i = 0; i < calendarTracker.GetLength(0); i++)                                  //Bắt đầu vòng lặp qua từng hàng của mảng calendarTracker. GetLength(0) trả về số lượng hàng của mảng.
+            {
+                for (int j = 0; j < calendarTracker.GetLength(1); j++)                              //Bắt đầu vòng lặp qua từng cột của mảng calendarTracker. GetLength(1) trả về số lượng cột của mảng.
                 {
-                    if (i == 0 && j < firstDayOfMonth - 1)
+                    if (i == 0 && j < firstDayOfMonth - 1)                                          //Kiểm tra nếu đang ở hàng đầu tiên (i == 0) và cột hiện tại nhỏ hơn ngày đầu tiên của tháng (đã điều chỉnh với firstDayOfMonth - 1), nghĩa là chưa đến ngày bắt đầu của tháng.
                     {
-                        calendarTracker[i, j] = 0;
+                        calendarTracker[i, j] = 0;                                                  //Nếu điều kiện trên đúng, đặt giá trị của ô hiện tại trong calendarTracker thành 0, nghĩa là ô này không có ngày.
+
                     }
-                    else if (currentDay <= day)
+                    else if (currentDay <= day)                                                      //Nếu không phải ô trống và vẫn còn ngày để điền vào lịch (ngày hiện tại nhỏ hơn hoặc bằng số ngày trong tháng).
                     {
-                        calendarTracker[i, j] = currentDay;
-                        currentDay++;
+                        calendarTracker[i, j] = currentDay;                                          //Gán giá trị của currentDay vào ô hiện tại trong calendarTracker.
+                        currentDay++;                                                                //Tăng currentDay lên 1 để chuyển sang ngày tiếp theo.
                     }
                     else
                     {
-                        calendarTracker[i, j] = 0;
+                        calendarTracker[i, j] = 0;                                                   // Đặt ô này là 0, nghĩa là ô này không có ngày.
                     }
                 }
             }
         }
-        static void DrawCalendarBox()
-        {
-            // Drawing a box to contain the calendar
-            int boxWidth = 80;
-            int boxHeight = 16;
-            int startX = (Console.WindowWidth - boxWidth) / 2;
-            int startY = 3;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.SetCursorPosition(startX, startY);
-            Console.Write("╔" + new string('═', boxWidth) + "╗");
+        private void DrawCalendarBox()                                                                     //Hàm này có nhiệm vụ vẽ một khung cho lịch trong cửa sổ console, bao gồm các đường viền và tên tháng hiện tại.
+        {          
+            int boxWidth = 80;                                                                            // Đặt chiều rộng của khung lịch là 80
+            int boxHeight = 16;                                                                           // Đặt chiều cao của khung lịch là 15
+            int startX = (windowWidth - boxWidth) / 2;                                            // Tính toán vị trí X để bắt đầu căn giữa khung
+            int startY = 4;                                                                               // Đặt vị trí Y bắt đầu cho khung lịch 
+            Console.ForegroundColor = ConsoleColor.Yellow;                                                // Đặt màu chữ thành vàng
+            Console.SetCursorPosition(startX, startY);                                                    // Đặt con trỏ tại vị trí (startX, startY) 
+            Console.Write("╔" + new string('═', boxWidth) + "╗");                                         //Vẽ cạnh trên của khung 
 
-            for (int i = 0; i < boxHeight; i++)
+            for (int i = 0; i < boxHeight; i++)                                                           //Vòng lặp để vẽ các hàng bên trong khung
             {
-                Console.SetCursorPosition(startX, startY + i + 1);
-                Console.Write("║" + new string(' ', boxWidth) + "║");
+                Console.SetCursorPosition(startX, startY + i + 1);                                        // Đặt con trỏ tại hàng hiện tại
+                Console.Write("║" + new string(' ', boxWidth) + "║");                                     //Vẽ các hàng bên trong khung
             }
 
-            Console.SetCursorPosition(startX, startY + boxHeight + 1);
-            Console.Write("╚" + new string('═', boxWidth) + "╝");
-            Console.ResetColor();
+            Console.SetCursorPosition(startX, startY + boxHeight + 1);                                    // Đặt con trỏ tại hàng dưới cùng của khung
+            Console.Write("╚" + new string('═', boxWidth) + "╝");                                         // Vẽ cạnh dưới của khung
+            Console.ResetColor();                                                                         // Đặt lại màu chữ về mặc định
 
-            // Display current month inside the box
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            string monthName = new DateTime(selectedYear, selectedMonth, 1).ToString("MMMM");
-            string monthDisplay = $" {monthName} {selectedYear} ";
-            Console.SetCursorPosition(startX + (boxWidth - monthDisplay.Length) / 2, startY + 1);
-            Console.WriteLine(monthDisplay);
-            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Cyan;                                                  // Đặt màu chữ thành cyan    
+            string monthName = new DateTime(selectedYear, selectedMonth, 1).ToString("MMMM");             //Lấy tên tháng hiện tại
+            string monthDisplay = $" {monthName} {selectedYear} ";                                        // Tạo chuỗi hiển thị cho tháng và năm
+            Console.SetCursorPosition(startX + (boxWidth - monthDisplay.Length) / 2, startY + 1);         // Đặt con trỏ vào giữa khung
+            Console.WriteLine(monthDisplay);                                                              // In ra
+            Console.ResetColor();                                                                         // Đặt lại màu chữ về mặc định
         }
-        static void DrawOptions()
+        private void DrawOptions()                                                                          //hàm DrawOptions() có chức năng hiển thị hướng dẫn cho người dùng trong một ứng dụng console. 
         {
-            // Drawing bottom options
-            string options = "[Up/Down: Thay đổi năm] [Left/Right: Thay đổi tháng] [Esc: Exit] " +
+            string options = "[Up/Down: Thay đổi năm] [Left/Right: Thay đổi tháng] [Esc: Exit] " +             // Khai báo chuỗi options chứa các hướng dẫn cho người dùng
                 "[Enter: Chọn ngày] [Delete: Chọn tháng và năm] ";
-            Console.SetCursorPosition((Console.WindowWidth - options.Length) / 2, Console.WindowHeight - 2);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(options);
-            Console.ResetColor();
+            Console.SetCursorPosition((windowWidth - options.Length) / 2, Console.WindowHeight - 2);                   //Tính toán vị trí để căn giữa chuỗi options trong cửa sổ console
+            Console.ForegroundColor = ConsoleColor.Yellow;                                                     //Đặt màu chữ thành vàng để nổi bật
+            Console.WriteLine(options);                                                                        // In ra
+            Console.ResetColor();                                                                              // Đặt lại màu mặc định
         }
-        static void DrawCalendar()
-        {   Console.ForegroundColor = ConsoleColor.Yellow;
-            string[] dayNames = { "Thứ hai ", "Thứ ba ", "Thứ tư ", "Thứ năm ", "Thứ sáu ", "Thứ bảy ", "Chủ nhật " };
-            int startX = (Console.WindowWidth - 55 - dayNames.Length) / 2 ;
-            int startY = 6;
-            
+        private void DrawCalendarHeader()                                                                              // Hàm chức năng hiển thị tiêu đề của lịch và các ngày, thứ trong tuần:
+        {   Console.ForegroundColor = ConsoleColor.Yellow;                                                                // Đặt màu chữ thành màu vàng
+            string[] dayNames = { "Thứ hai ", "Thứ ba ", "Thứ tư ", "Thứ năm ", "Thứ sáu ", "Thứ bảy ", "Chủ nhật " };    // Khai báo mảng tên các ngày trong tuần
+            int startX = (Console.WindowWidth - 55 - dayNames.Length) / 2;                                                // Tính toán vị trí bắt đầu để căn giữa tiêu đề
+            int startY = 7;                                                                                               // Xác định vị trí dọc để in tiêu đề thứ ..
 
-            
-
-            Console.SetCursorPosition(startX, startY);
-            foreach (var day in dayNames)
+            Console.SetCursorPosition(startX, startY);                                                                    // Đặt con trỏ đến vị trí đã tính toán
+            foreach (var day in dayNames)                                                                                 // Lặp qua từng ngày trong mảng dayNames
             {
-                Console.Write(day.PadRight(10));
+                Console.Write(day.PadRight(10));                                                                          // In tên ngày và đệm thêm khoảng trắng bên phải
             }
-            for (int i = 0; i < calendarTracker.GetLength(0); i++)
+            for (int i = 0; i < calendarTracker.GetLength(0); i++)                                                        // Lặp qua các hàng của lịch
             {
-                Console.SetCursorPosition(startX, startY + i * 2 + 2); // khoảng cách giữa các số liền kề theo đường dọc ,
-                for (int j = 0; j < calendarTracker.GetLength(1); j++)
+                Console.SetCursorPosition(startX, startY + i * 2 + 2);                                                    // Đặt vị trí con trỏ cho mỗi hàng,khoảng cách giữa các số liền kề theo đường dọc
+                for (int j = 0; j < calendarTracker.GetLength(1); j++)                                                    // Lặp qua các cột của lịch
                 {
-                    if (calendarTracker[i, j] > 0)
+                    if (calendarTracker[i, j] > 0)                                                                        // Kiểm tra nếu có ngày hợp lệ
                     {
-                        if ( i == selectedRow && j == selectedCol )
+                        if ( i == selectedRow && j == selectedCol)                                                        // Nếu hàng và cột hiện tại là ô đã chọn
                         {
-                            Console.BackgroundColor = ConsoleColor.DarkBlue;
-                            
+                            Console.BackgroundColor = ConsoleColor.DarkBlue;                                              // Đặt màu nền thành xanh đậm cho ô đã chọn
+
                         }
-                        if (j == 6) // Sunday in red
+                        if (j == 6)                                                                                       // Chủ nhật màu đỏ
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                         }
-                        else
+                        else                                                                                              // Các ngày còn lại màu trắng
                         {
                             Console.ForegroundColor = ConsoleColor.White;
                         }
 
-                        Console.Write(calendarTracker[i, j].ToString("D2").PadRight(10));
+                        Console.Write(calendarTracker[i, j].ToString("D2").PadRight(10));                                 // In ngày, định dạng là 2 chữ số và đệm khoảng trắng bên phải
                     }
                     else
                     {
-                        Console.Write(" ".PadRight(10));
+                        Console.Write(" ".PadRight(10));                                                                  // Nếu không có ngày hợp lệ, in khoảng trắng
                     }
 
                     Console.ResetColor();
@@ -1133,18 +1105,20 @@ namespace Quanlychitieu
             }
 
         }
-        static void MoveSelection(int rowChange, int colChange)
+        private void MoveSelection(int rowChange, int colChange)             // người dùng di chuyển lựa chọn trong lịch bằng cách cập nhật hàng và cột dựa trên các thay đổi được cung cấp.                                        
 
         {
-            int newRow = selectedRow + rowChange;
-            int newCol = selectedCol + colChange;
-            if (newRow >= 0 && newRow < calendarTracker.GetLength(0) && newCol >= 0 && newCol < calendarTracker.GetLength(1) && calendarTracker[newRow, newCol] > 0)
+            int newRow = selectedRow + rowChange;                            // Tính toán hàng mới bằng cách cộng với thay đổi hàng.
+            int newCol = selectedCol + colChange;                            // Tính toán cột mới bằng cách cộng với thay đổi cột.
+            if (newRow >= 0 && newRow < calendarTracker.GetLength(0) &&      // Kiểm tra xem hàng mới và cột mới có nằm trong giới hạn hợp lệ và ô đó có giá trị lớn hơn 0 hay không.
+                newCol >= 0 && newCol < calendarTracker.GetLength(1) &&      // Hàng mới không âm và không vượt quá số hàng của mảng. Cột mới không âm và không vượt quá số cột của mảng.
+                calendarTracker[newRow, newCol] > 0)                         // Ô mới có giá trị lớn hơn 0 (ngày hợp lệ).                  
             {
-                selectedRow = newRow;
-                selectedCol = newCol;
+                selectedRow = newRow;                                        // Cập nhật hàng đã chọn thành hàng mới.
+                selectedCol = newCol;                                        // Cập nhật cột đã chọn thành cột mới
             }
-            DrawHeader();
-            DrawCalendar();
+            DrawHeader();                                                    // Gọi phương thức để vẽ lại tiêu đề lịch.
+            DrawCalendarHeader();                                            // Gọi phương thức để vẽ lại phần tiêu đề của lịch.
 
         }
         public void ShowDayInfo()
@@ -1179,7 +1153,7 @@ namespace Quanlychitieu
 
                 // Hiển thị lại lịch sau khi xem thông tin chi tiêu
                 DrawHeader();
-                DrawCalendar();
+                DrawCalendarHeader();
             }
         }
 
