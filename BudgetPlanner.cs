@@ -63,13 +63,7 @@
                 }
             }
             //check xem ngân sách có lớn hơn thu nhập không
-            if (!IsBudgetValid())
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("⚠️ Tổng ngân sách không thể lớn hơn hoặc bằng tổng thu nhập. Không thể tiếp tục đặt ngân sách.");
-                Console.ResetColor();
-                return; // Kết thúc phương thức nếu điều kiện không thỏa mãn
-            }
+            
 
             if (CheckAllBudgetsSet())
             {
@@ -85,7 +79,7 @@
                 Console.ReadKey(); //đợi người dùng nhấn phím
                 return;
             }
-
+ 
             bool continueInput = true;
             while (continueInput)
             {
@@ -108,7 +102,17 @@
                 // In dòng văn bản đã căn giữa
                 Console.WriteLine(subtitle.PadLeft(paddingSubtitle + subtitle.Length));
                 Console.ResetColor();
-                // Display categories with numbers
+                // Kiểm tra tổng ngân sách trước khi yêu cầu nhập ngân sách
+                if (!IsBudgetValid())
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("⚠️ Tổng ngân sách không thể lớn hơn hoặc bằng tổng thu nhập. Không thể tiếp tục đặt ngân sách.");
+                    Console.ResetColor();
+                    Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
+                    Console.ReadKey(); // Đợi người dùng nhấn phím
+                    break; // Kết thúc vòng lặp
+                }
+                // Hiện danh mục với số tương ứng
                 for (int i = 0; i < validCategories.Length; i++)
                 {
                     if (!categoryBudgetSet[validCategories[i]]) 
@@ -116,6 +120,7 @@
                         Console.WriteLine($"{i + 1}. {validCategories[i]}");
                     }
                 }
+           
                 // Yêu cầu người dùng chọn danh mục nhập ngân sách hoặc nhấn esc để thoát
                 Console.WriteLine("Chọn danh mục (1-7) để đặt ngân sách hoặc nhấn ESC để thoát: ");
                 ConsoleKeyInfo keyInfo = Console.ReadKey(); // 
@@ -135,6 +140,8 @@
                         Console.ReadLine();
                         continue; 
                     }
+                   
+
                     // Yêu cầu người dùng nhập ngân sách cho danh mục đã chọn. Nếu số tiền hợp lệ, lưu ngân sách và đánh dấu danh mục là đã được thiết lập.
                     // Nếu không hợp lệ, thông báo lỗi.
                     decimal budget;
@@ -157,12 +164,16 @@
 
                         Console.ReadLine();
                     }
+                 
+
                 }
                 else
                 {
                     Console.WriteLine("Danh mục không hợp lệ. Vui lòng thử lại.");
                 }
+               
             }
+          
             // Lưu dữ liệu vào file csv sau khi đặt xong ngân sách
             SaveBudgetToCSV(categoryBudgets);
             SaveLastCategoryBudgetSetTime();
@@ -172,7 +183,6 @@
         {
             decimal totalBudget = GetTotalBudget(); // Lấy tổng ngân sách
             decimal totalIncome = expenseTracker.TotalIncome; // Lấy tổng thu nhập từ ExpenseTracker
-
             return totalBudget < totalIncome; // Trả về true nếu tổng ngân sách nhỏ hơn tổng thu nhập
         }
         private void SaveBudgetToCSV(Dictionary<string, decimal> budgets)
