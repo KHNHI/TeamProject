@@ -132,13 +132,14 @@ namespace Quanlychitieu
                         Console.Write("Nhập số tiền chi tiêu: ");
                         if (decimal.TryParse(Console.ReadLine(), out decimal amount) && amount > 0)
                         {
+                            
                             // Ghi lại thời gian giao dịch
-                            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            DateTime transactionTime = DateTime.Now;
 
                             // Thêm chi tiêu vào danh sách
-                            Expense expense = new Expense(category, amount, DateTime.Now);
+                            Expense expense = new Expense(category, amount, transactionTime);
                             expenseList.Add(expense); // Thêm chi tiêu vào danh sách
-
+                            SaveExpenses();
                             // Kiểm tra và khởi tạo danh mục chi tiêu trong monthlyExpenses
                             if (!monthlyExpenses.ContainsKey(category))
                             {
@@ -183,7 +184,7 @@ namespace Quanlychitieu
 
                             // Lưu chi tiêu, hiện thông báo
                             SaveExpenses();
-                            Console.WriteLine($"Đã lưu chi tiêu: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {timestamp}.");
+                            Console.WriteLine($"Đã lưu chi tiêu: {Math.Abs(amount)} vào danh mục '{category}' vào lúc {transactionTime}");
                             Console.WriteLine($"Số tiền bằng chữ: {ConvertNumberToWords((long)Math.Abs(amount))}");
                         }
                         else
@@ -202,15 +203,63 @@ namespace Quanlychitieu
                 }
             }
         }
+        private void SaveExpenses()
+        {
+            var json = JsonConvert.SerializeObject(expenseList, Formatting.Indented);
+            File.WriteAllText(filePath, json);
+        }
+
+        private void LoadExpenses()
+        {
+            if (File.Exists(filePath))
+            {
+                var json = File.ReadAllText(filePath);
+                expenseList = JsonConvert.DeserializeObject<List<Expense>>(json) ?? new List<Expense>();
+
+                // Cập nhật expenses và monthlyExpenses từ expenseList
+                expenses.Clear(); // Xóa dữ liệu cũ
+                monthlyExpenses.Clear(); // Xóa dữ liệu cũ
+
+                foreach (var expense in expenseList)
+                {
+                    // Cập nhật expenses
+                    if (expenses.ContainsKey(expense.Category))
+                    {
+                        expenses[expense.Category] += expense.Amount;
+                    }
+                    else
+                    {
+                        expenses[expense.Category] = expense.Amount;
+                    }
+
+                    // Cập nhật monthlyExpenses
+                    int month = expense.Date.Month;
+                    if (!monthlyExpenses.ContainsKey(expense.Category))
+                    {
+                        monthlyExpenses[expense.Category] = new Dictionary<int, double>();
+                    }
+                    if (!monthlyExpenses[expense.Category].ContainsKey(month))
+                    {
+                        monthlyExpenses[expense.Category][month] = 0;
+                    }
+                    monthlyExpenses[expense.Category][month] += (double)expense.Amount;
+                }
+            }
+            else
+            {
+                expenseList = new List<Expense>(); // Khởi tạo danh sách rỗng nếu tệp không tồn tại
+            }
+        }
+
 
         private void ShowExpenseInfo(string category, decimal budgetForCategory, decimal amountSpent)
         {
-           
+
             string header = $"Danh mục: {category}";
             string budgetInfo = $"Ngân sách đã đặt cho '{category}': {budgetForCategory:#,##0₫}";
             string expenseInfo = $"Số tiền đã chi tiêu cho '{category}': {Math.Abs(amountSpent):#,##0₫}";
 
-           
+
             int maxLength = Math.Max(Math.Max(header.Length, budgetInfo.Length), expenseInfo.Length) + 4;
 
             // Tạo khung trang trí
@@ -238,14 +287,14 @@ namespace Quanlychitieu
                 }
                 else
                 {
-                    Console.ForegroundColor= ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Khoản thu nhập đã được nhập cho tháng này. Không thể nhập lại.");
                     Console.ResetColor();
                     return;
                 }
             }
             string[] enterIncomee = { " NHẬP THU NHẬP " };
-            Console.ForegroundColor= ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Program.DrawCenteredBorder(enterIncomee);
             Console.ResetColor();
 
@@ -274,7 +323,7 @@ namespace Quanlychitieu
             SaveTotalIncome();
             SaveIncomeEnteredStatus();
         }
-      
+
 
         private void SaveTotalIncome()
         {
@@ -295,7 +344,8 @@ namespace Quanlychitieu
                 TotalIncome = 0; // Nếu chưa có file, thì tổng thu nhập là 0
             }
         }
-        public bool CanEnterIncome()
+
+         public bool CanEnterIncome()
         {
             if (DateTime.Now >= lastIncomeEntryTime.AddMonths(1))
             {
@@ -320,6 +370,7 @@ namespace Quanlychitieu
                 incomeEnteredThisMonth = false; // Nếu không có tệp, đặt giá trị mặc định là false
             }
         }
+   
         private void SaveIncomeEntryTime()
         {
             File.WriteAllText("income_entry_time.txt", lastIncomeEntryTime.ToString("o")); // Lưu thời gian theo định dạng ISO
@@ -347,47 +398,22 @@ namespace Quanlychitieu
         {
             return monthlyExpenses;
         }
-
-
-        private void SaveExpenses()
-        {
-            var json = JsonConvert.SerializeObject(expenses);
-            File.WriteAllText(filePath, json);
-        }
-
-        private Dictionary<string, decimal> LoadExpenses()
-        {
-            if (File.Exists(filePath))
-            {
-                var json = File.ReadAllText(filePath);
-                expenses = JsonConvert.DeserializeObject<Dictionary<string, decimal>>(json) ?? new Dictionary<string, decimal>();
-            }
-            return expenses;
-        }
-
+       
         public Dictionary<string, decimal> GetExpenses()
         {
             return expenses;
         }
 
-        private decimal GetTotalExpenses()
+        public decimal GetTotalExpenses()
         {
-            decimal total = 0;
-            foreach (var expense in expenses)
-            {
-                if (expense.Key != "Thu nhập")
-                {
-                    total += expense.Value;
-                }
-            }
-            return total;
+          return expenseList.Sum(expense => expense.Amount);
         }
         //Tình trạng tiết kiệm
         public string GetSavingsStatus()
         {
-            decimal totalExpenses = GetTotalExpenses(); 
-            decimal totalBudget = TotalBudget; 
-            decimal totalIncome = TotalIncome; 
+            decimal totalExpenses = GetTotalExpenses();
+            decimal totalBudget = TotalBudget;
+            decimal totalIncome = TotalIncome;
             decimal savings;
             // Calculate savings based on the conditions
             if (totalExpenses <= totalBudget)
@@ -564,7 +590,7 @@ namespace Quanlychitieu
             }
         }
 
-   
+
         public Dictionary<int, Dictionary<string, double>> GetMonthlyTotals()
         {
             var monthlyTotals = new Dictionary<int, Dictionary<string, double>>();
@@ -594,6 +620,9 @@ namespace Quanlychitieu
         }
 
         // LỰA CHỌN XEM CALENDAR 
+    
+        
+
 
         static int selectedYear = new int();
         static int selectedMonth = new int();
@@ -604,7 +633,7 @@ namespace Quanlychitieu
         
         public void CalendarTracker()
         {
-            
+
             Console.Clear();
             TitleIntroMemory();
             Console.WriteLine("Bạn nhấn phím bất kì để tiếp tục.");
@@ -1104,17 +1133,26 @@ namespace Quanlychitieu
                 Console.Clear();
                 Console.WriteLine($"Nhật ký chi tiêu cho ngày {selectedDay}/{selectedMonth}/{selectedYear}:");
 
-                // Hiển thị thông tin chi tiêu cho ngày đã chọn
+                // Lọc các chi tiêu cho ngày đã chọn
                 var expensesForSelectedDay = expenseList.Where(expense =>
                     expense.Date.Day == selectedDay &&
                     expense.Date.Month == selectedMonth &&
                     expense.Date.Year == selectedYear).ToList();
 
-                if (expensesForSelectedDay.Any())
-                {
-                    foreach (var expense in expensesForSelectedDay)
+                // Nhóm các chi tiêu theo danh mục và tính tổng số tiền cho mỗi danh mục
+                var groupedExpenses = expensesForSelectedDay
+                    .GroupBy(expense => expense.Category)
+                    .Select(group => new
                     {
-                        Console.WriteLine($"Danh mục: {expense.Category}, Số tiền: {expense.Amount:#,##0₫}, Ngày: {expense.Date}");
+                        Category = group.Key,
+                        TotalAmount = group.Sum(expense => expense.Amount)
+                    }).ToList();
+
+                if (groupedExpenses.Any())
+                {
+                    foreach (var groupedExpense in groupedExpenses)
+                    {
+                        Console.WriteLine($"Danh mục: {groupedExpense.Category}, Tổng số tiền: {groupedExpense.TotalAmount:#,##0₫}");
                     }
                 }
                 else
@@ -1122,17 +1160,13 @@ namespace Quanlychitieu
                     Console.WriteLine("Không có chi tiêu nào ghi nhận cho ngày này.");
                 }
 
-                // Tùy chọn để người dùng quay lại
                 Console.WriteLine("\nNhấn phím bất kỳ để quay lại.");
                 Console.ReadKey();
 
-                // Hiển thị lại lịch sau khi xem thông tin chi tiêu
                 DrawHeader();
                 DrawCalendar();
             }
         }
-
-       
     }
 
 }

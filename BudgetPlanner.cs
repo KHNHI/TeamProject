@@ -6,14 +6,15 @@
         private ExpenseTracker expenseTracker;
         //private DataSync dataSync;
         private const string BUDGET_FILE = "budget1.csv"; // Tên file bạn muốn lưu
-        public Dictionary<string, decimal> categoryBudgets { get;  set; }
-        Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
         private Dictionary<string, bool> categoryBudgetSet; // track việc nhập ngân sách cho danh mục
         private readonly string[] validCategories = new string[]
         {
                "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
         };
         private DateTime lastBudgetSetTime;
+        Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
+        public Dictionary<string, decimal> categoryBudgets { get; set; }
+
         public BudgetPlanner(ExpenseTracker expenseTracker)
         {
             categoryBudgets = new Dictionary<string, decimal>(); 

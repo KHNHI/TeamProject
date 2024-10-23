@@ -53,23 +53,12 @@ namespace Quanlychitieu
         {
             var transactions = expenseTracker.GetExpenses();
             var expenses = new Dictionary<string, decimal>();
-            var income = new Dictionary<string, decimal>();
             decimal totalBudget = expenseTracker.TotalBudget; // Lấy tổng ngân sách
-            // Phân loại giao dịch dựa trên danh mục
-            foreach (var transaction in transactions)
-            {
-                if (transaction.Key == "Thu nhập")
-                {
-                    income[transaction.Key] = transaction.Value;
-                }
-                else
-                {
-                    expenses[transaction.Key] = Math.Abs(transaction.Value);
-                }
-            }
+       
+        
 
-            var totalExpense = expenses.Sum(e => e.Value);
-            var totalIncome = income.Sum(e => e.Value);
+            var totalExpense = expenseTracker.TotalExpenses;
+            var totalIncome = expenseTracker.TotalIncome;
             var accountBalance = totalIncome - totalExpense;
             var temptSaving = expenseTracker.GetSavingsStatus();
 
