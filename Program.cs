@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
@@ -380,75 +381,118 @@ class Program
     // INTRO MỞ ĐẦU BÀI
     static void Intro()
     {
-       
+        SoundPlayer Background = new SoundPlayer("cash3.wav");
+        Background.Load(); // Tải file nhạc
+        Background.Play();  // Phát nhạc một lần
+        int consoleWidth = Console.WindowWidth;
+        int consoleHeight = Console.WindowHeight;
         string[] content = {
-    "                    ,,,,,,,        ,▄▄╬▓▓▓▓▄,                                ",
-    "        ,▄╦▄▄@▄▄▓▓▓▓▓▓▒▒╣▒▒▒▓▓▄,  ▄▓▒╢╢╢╢▓▓╣▒▓▄                               ",
-    "        ▓╢╢╢▒╢╢▓▓▓╢╢╢╢╢╢╢╢╢╢╢╢╢▒▓█▒╢╢╢╢╢╢╢╣╢╢╢▒▓,,▄▄▓▒▓▄▄▄,                   ",
-    "        ▄▓▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▓▒╢╢╢╢╢╢╢▒▓▓▀▒▒╣╢╢╢╢▒▒█▓▒▒▓▓▄               ",
-    "      ▄▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓╣╢╢╢╢▒▓▒▒▓▓▓╣╢╢╢╢╢▒▒▒╢╢╢╢╢╢▒▓             ",
-    "     ▓▒▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╫▌╢╢▒▓▒╢▓▓▓▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▄           ",
-    "    ▐▒╫╣▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█▓▓▓▒╢╢╢╢╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▌         ",
-    "    ▓╣╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█▓▌╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓          ",
-    "    ╙▌╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▒▒╣▓▓╣╢╢╢╢██╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓         ",
-    "      ▀▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▒▒▒▓▓╢╢╢╢╢█▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▌         ",
-    "        ▀▀▓▒▒▒╢╢╢╢╢╢╢▒▒▒▓▓█╣╢╢╢╢╢╢╢╫▌╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▌         ",
-    "           '▀` `▀█▒▒▒▒▒▒▓█╣╢╢╢╢╢╢╢╢▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█          ",
-    "                 ▌╣╢╢╢╢╢╢▓▓▓▒▓▒╢╢╢╢▒╢╢╢╢╢▓▓▓▓▓▓▓▓▒▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▀           ",
-    "                  ▀▓▒▄▓╣╢╢╢╣▓╢╢╢╢╢╢╢╢╢╢╢╢▒▒╣╢▓▓▓▒▒▒▀█▓▒▒▒╢╢╢╣▒▒▓▀'            ",
-    "                    ▀▓▓▓▒╢▒▓▒╢╢╢╢╢▒▒╢╢╢╢▒╣╢╢╢╢╫▓╢╢▒▓`   ```                   ",
-    "                     ╙▌▀▀▀▐▌╢╢▒▓▒▓╜\"╩╣▒╩`╙▒╢╢╢╢▒▌`                           ",
-    };
+     "                    ,,,,,,,        ,▄▄╬▓▓▓▓▄,                                ",
+     "        ,▄╦▄▄@▄▄▓▓▓▓▓▓▒▒╣▒▒▒▓▓▄,  ▄▓▒╢╢╢╢▓▓╣▒▓▄                               ",
+     "        ▓╢╢╢▒╢╢▓▓▓╢╢╢╢╢╢╢╢╢╢╢╢╢▒▓█▒╢╢╢╢╢╢╢╣╢╢╢▒▓,,▄▄▓▒▓▄▄▄,                   ",
+     "        ▄▓▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▓▒╢╢╢╢╢╢╢▒▓▓▀▒▒╣╢╢╢╢▒▒█▓▒▒▓▓▄               ",
+     "      ▄▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓╣╢╢╢╢▒▓▒▒▓▓▓╣╢╢╢╢╢▒▒▒╢╢╢╢╢╢▒▓             ",
+     "     ▓▒▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╫▌╢╢▒▓▒╢▓▓▓▓▓╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▄           ",
+     "    ▐▒╫╣▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█▓▓▓▒╢╢╢╢╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▌         ",
+     "    ▓╣╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█▓▌╣╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓          ",
+     "    ╙▌╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╣▒▒╣▓▓╣╢╢╢╢██╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓         ",
+     "      ▀▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▒▒▒▓▓╢╢╢╢╢█▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▓▌         ",
+     "        ▀▀▓▒▒▒╢╢╢╢╢╢╢▒▒▒▓▓█╣╢╢╢╢╢╢╢╫▌╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢▓▌         ",
+     "           '▀` `▀█▒▒▒▒▒▒▓█╣╢╢╢╢╢╢╢╢▓╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢╢█          ",
+     "                 ▌╣╢╢╢╢╢╢▓▓▓▒▓▒╢╢╢╢▒╢╢╢╢╢▓▓▓▓▓▓▓▓▒▒╢╢╢╢╢╢╢╢╢╢╢╢╢╢▒▀           ",
+     "                  ▀▓▒▄▓╣╢╢╢╣▓╢╢╢╢╢╢╢╢╢╢╢╢▒▒╣╢▓▓▓▒▒▒▀█▓▒▒▒╢╢╢╣▒▒▓▀'            ",
+     "                    ▀▓▓▓▒╢▒▓▒╢╢╢╢╢▒▒╢╢╢╢▒╣╢╢╢╢╫▓╢╢▒▓`   ```                   ",
+     "                     ╙▌▀▀▀▐▌╢╢▒▓▒▓╜\"╩╣▒╩`╙▒╢╢╢╢▒▌`                           ",
+ };
 
         string[] content2 =
         {
-         "                      ▐  ╒▀╩▓╨  ,▄▄       ,▄╙╨▓╩▓▄                            ",
-    "                       [ ▌       ▄▄      ,▄▄     ╙▄                           ",
-    "                       ╙▀▄       ▌█      ▐▓█      ▐                           ",
-    "                      ▄▐▀    ,,  ▀`       ▀  ,,    ▓                          ",
-    "                     ╓▀█▄    ```    ▓▓▓▓     ```   ▄▌                         ",
-    "                    ▄╖▓▓███▄▄                 ,▄▄████▄▄                       ",
-    };
+     "                      ▐  ╒▀╩▓╨  ,▄▄       ,▄╙╨▓╩▓▄                            ",
+     "                       [ ▌       ▄▄      ,▄▄     ╙▄                           ",
+     "                       ╙▀▄       ▌█      ▐▓█      ▐                           ",
+     "                      ▄▐▀    ,,  ▀`       ▀  ,,    ▓                          ",
+     "                     ╓▀█▄    ```    ▓▓▓▓     ```   ▄▌                         ",
+     "                    ▄╖▓▓███▄▄                 ,▄▄████▄▄                       ",
+ };
         string[] content3 =
         {
-    "                   ▀▄▓▓▓▓▓██████▄▄▄▄▄, ▄▄▄▄▄██████▓▓▓▌╢╢▀\"²N&M--╕            ",
-    "                   █▓▓▓▓▓▓▓▓▓▓███████▓████████▓▓▓▓▓▓▓█╢╢▌  Ñ▓W▐╙▀▌            ",
-    "                 ╓█▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▌ UEH ▓▓█╣▓   ▒▐▓▄▄▄Γ            ",
-    "                ╓▌▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█╬█M²═══╩▌æ╜             ",
-    };
+     "                   ▀▄▓▓▓▓▓██████▄▄▄▄▄, ▄▄▄▄▄██████▓▓▓▌╢╢▀\"²N&M--╕            ",
+     "                   █▓▓▓▓▓▓▓▓▓▓███████▓████████▓▓▓▓▓▓▓█╢╢▌  Ñ▓W▐╙▀▌            ",
+     "                 ╓█▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▌ UEH ▓▓█╣▓   ▒▐▓▄▄▄Γ            ",
+     "                ╓▌▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█╬█M²═══╩▌æ╜             ",
+ };
 
         string[] lines = {
-"███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗    ██████╗ ██╗   ██╗██████╗ ██████╗ ██╗   ██╗",
-"████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝    ██╔══██╗██║   ██║██╔══██╗██╔══██╗╚██╗ ██╔╝",
-"██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     ██████╔╝██║   ██║██║  ██║██║  ██║ ╚████╔╝ ",
-"██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ██╔══██╗██║   ██║██║  ██║██║  ██║  ╚██╔╝  ",
-"██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║       ██████╔╝╚██████╔╝██████╔╝██████╔╝   ██║   ",
-"╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝       ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝   ",
+     "███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗    ██████╗ ██╗   ██╗██████╗ ██████╗ ██╗   ██╗",
+     "████╗ ████║██╔═══██╗████╗  ██║██╔════╝╚██╗ ██╔╝    ██╔══██╗██║   ██║██╔══██╗██╔══██╗╚██╗ ██╔╝",
+     "██╔████╔██║██║   ██║██╔██╗ ██║█████╗   ╚████╔╝     ██████╔╝██║   ██║██║  ██║██║  ██║ ╚████╔╝ ",
+     "██║╚██╔╝██║██║   ██║██║╚██╗██║██╔══╝    ╚██╔╝      ██╔══██╗██║   ██║██║  ██║██║  ██║  ╚██╔╝  ",
+     "██║ ╚═╝ ██║╚██████╔╝██║ ╚████║███████╗   ██║       ██████╔╝╚██████╔╝██████╔╝██████╔╝   ██║   ",
+     "╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝       ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝   ",
+ };
 
-                };
-        Console.ForegroundColor = ConsoleColor.Green;
-        foreach (string line in content)
-        {
-            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
-        }
-        Console.ForegroundColor = ConsoleColor.White;
-        foreach (string line in content2)
-        {
-            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
-        }
-        Console.ForegroundColor = ConsoleColor.White;
-        foreach (string line in content3)
-        {
-            Console.Write(line.PadLeft((Console.WindowWidth + line.Length) / 2).PadRight(Console.WindowWidth));
-        }
+        ConsoleColor[] colors = {
+     ConsoleColor.Red,
+     ConsoleColor.Green,
+     ConsoleColor.Yellow,
+     ConsoleColor.Blue,
+     ConsoleColor.Magenta,
+     ConsoleColor.Cyan,
+     ConsoleColor.White
+ };
+
+        int blinkDuration = 4000; // Thời gian nhấp nháy tổng cộng (4 giây)
+        int blinkInterval = 500; // Thời gian giữa các lần nhấp nháy (0.5 giây)
+        int blinkCount = blinkDuration / blinkInterval; // Số lần nhấp nháy
 
         Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine(new string('▓', consoleWidth));
+
+        foreach (string line in content)
+        {
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(line.PadLeft((consoleWidth + line.Length) / 2).PadRight(consoleWidth));
+        }
+        Console.ResetColor();
+        foreach (string line in content2)
+        {
+            Console.Write(line.PadLeft((consoleWidth + line.Length) / 2).PadRight(consoleWidth));
+        }
+        foreach (string line in content3)
+        {
+            Console.Write(line.PadLeft((consoleWidth + line.Length) / 2).PadRight(consoleWidth));
+        }
+        // Vẽ khung cho lines lần đầu
         DrawCenteredBorder(lines);
 
-        Console.ResetColor();
+        // Lưu vị trí hiện tại của con trỏ
+        int cursorTop = Console.CursorTop;
 
-        // Hiển thị màn hình trong 4 giây
-        System.Threading.Thread.Sleep(4000);
+        for (int i = 0; i < blinkCount; i++)
+        {
+            // Di chuyển con trỏ về vị trí khung
+            Console.SetCursorPosition(0, cursorTop - lines.Length - 2); // Di chuyển lên trên khung
+
+            // Sử dụng màu sắc từ mảng colors
+            var color = colors[i % colors.Length]; // Lặp qua 7 màu
+            Console.ForegroundColor = color;
+
+            // Vẽ lại khung với màu mới
+            DrawCenteredBorder(lines);
+
+            Console.ResetColor();
+            System.Threading.Thread.Sleep(blinkInterval); // Thời gian nhấp nháy
+            Console.WriteLine();
+            Console.WriteLine();
+
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(new string('▓', consoleWidth));
+            Console.ResetColor();
+        }
+
     }
+
+
 
 }
