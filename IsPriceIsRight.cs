@@ -79,7 +79,7 @@ namespace Quanlychitieu
 
 
             // Phát nhạc background
-            SoundPlayer Background = new SoundPlayer("loto.wav");
+            SoundPlayer Background = new SoundPlayer("backGroundMusic.wav");
             Background.Load(); // Tải file nhạc
             Background.Play();  // Phát nhạc một lần
             Background.PlayLooping();  // Lặp lại nhạc
@@ -198,7 +198,7 @@ namespace Quanlychitieu
         static void StartGame(List<Dictionary<string, object>> products)
         {
             Random rnd = new Random();
-            int correctGuesses = 0;
+
 
             // Chọn ngẫu nhiên 3 sản phẩm từ danh sách sản phẩm
             var randomProducts = products.OrderBy(x => rnd.Next()).Take(3).ToList();

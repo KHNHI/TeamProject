@@ -919,7 +919,7 @@ namespace Quanlychitieu
                 ClearCurrentLine(monthBoxX + 12, inputY,24);
               
             }
-            Console.ResetColor()
+            Console.ResetColor();
         }
         private void DrawBox(int x, int y, int width, int height, string title)                        
         {
