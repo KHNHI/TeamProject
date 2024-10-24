@@ -46,8 +46,8 @@ namespace Quanlychitieu
             // Gọi hàm DrawCenteredBorder() đã định nghĩa ở class Program
             Program.DrawCenteredBorder(title);
 
-
-            Console.WriteLine("                                                                Nhấn 'Enter' để bắt đầu nhiệm vụ");
+           
+            Console.WriteLine("                                                            Nhấn phím bất kì để bắt đầu nhiệm vụ");
             Console.ReadKey(); // Chờ user nhấn 'Enter'
 
             // Sau khi nhấn Enter, xóa màn hình và hiển thị luật chơi
@@ -85,38 +85,41 @@ namespace Quanlychitieu
             Background.PlayLooping();  // Lặp lại nhạc
 
 
-            // Thiết lập headers cho các yêu cầu HTTP để giả lập một người dùng
+            // Thiết lập headers 
             var headers = new Dictionary<string, string>
         {
-            { "User-Agent", "Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0" },
+            { "User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36" },
             { "Accept", "application/json, text/plain, */*" },
-            { "Accept-Language", "vi-VN,vi;q=0.8,en-US;q=0.5,en;q=0.3" },
-            { "Referer", "https://tiki.vn/?src=header_tiki" },
-            { "x-guest-token", "8jWSuIDBb2NGVzr6hsUZXpkP1FRin7lY" },
-            { "Connection", "keep-alive" },
-            { "TE", "Trailers" }
+            { "Accept-Language", "en-US,en;q=0.9,vi;q=0.8" },
+            { "Referer", "https://tiki.vn/nha-cua-doi-song/c1883" },
+            { "x-guest-token", "U3bu08MpC9HcGmaK1RdJTsND6Ix7yZrl" },
+         
         };
 
             // Danh sách lưu trữ thông tin sản phẩm
             var productsInfo = new List<Dictionary<string, object>>();
 
             // Danh sách chứa các tasks tải dữ liệu sản phẩm song song
-            var tasks = new List<Task<List<Dictionary<string, object>>>>();
+            var tasks = new List<Task>();
 
             // Tạo 5 tasks để lấy dữ liệu từ 5 trang khác nhau
             for (int i = 1; i <= 5; i++)
             {
-                tasks.Add(LoadProductsAsync(i, headers));
+                // Sử dụng Task.Run để chạy mỗi tác vụ trên một luồng riêng
+                tasks.Add(Task.Run(async () =>
+                {
+                    var result = await LoadProductsAsync(i, headers);
+                    // Khóa để đảm bảo rằng productsInfo được cập nhật một cách an toàn khi đa luồng
+                    lock (productsInfo)
+                    {
+                        productsInfo.AddRange(result);
+                    }
+                }));
             }
 
-            // Đợi tất cả các task hoàn thành và thu thập dữ liệu từ chúng
-            var results = Task.WhenAll(tasks).Result;
 
-            // Gộp tất cả các sản phẩm từ các tasks khác nhau
-            foreach (var result in results)
-            {
-                productsInfo.AddRange(result);
-            }
+            // Đợi tất cả các task hoàn thành
+            Task.WaitAll(tasks.ToArray());
 
             // Bắt đầu trò chơi
             StartGame(productsInfo);
@@ -134,13 +137,12 @@ namespace Quanlychitieu
             // Tạo các tham số query để gửi kèm yêu cầu HTTP
             var queryParams = new Dictionary<string, string>
         {
-            { "limit", "48" }, // Giới hạn số sản phẩm trên mỗi trang
-            { "include", "sale-attrs,badges,product_links,brand,category,stock_item,advertisement" }, // Bao gồm các thuộc tính cần thiết
-            { "aggregations", "1" },
-            { "trackity_id", "70e316b0-96f2-dbe1-a2ed-43ff60419991" }, // ID theo dõi session
+            { "limit", "40" }, // Giới hạn số sản phẩm trên mỗi trang
+            { "include", "advertisement" }, // Bao gồm các thuộc tính cần thiết
+            { "aggregations", "2" },
+            { "trackity_id", "817823f9-f82f-d7b5-1536-a6b336989bd2" }, 
             { "category", "1883" },  // ID danh mục sản phẩm
             { "page", page.ToString() }, // Số trang
-            { "src", "c1883" },
             { "urlKey", "nha-cua-doi-song" }
         };
 

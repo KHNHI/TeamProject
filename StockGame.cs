@@ -22,6 +22,9 @@ namespace Quanlychitieu
         // Lớp Company đại diện cho thông tin về công ty trong trò chơi
         public class Company
         {
+            // get: Được dùng để truy xuất (đọc) giá trị của một thuộc tính.
+           //  set: Được dùng để gán(ghi) giá trị cho một thuộc tính.
+
             public string Name { get; set; }  // Tên công ty
             public string Industry { get; set; }  // Ngành công nghiệp của công ty
             public decimal SharePrice { get; set; }  // Giá cổ phiếu hiện tại
@@ -418,7 +421,7 @@ namespace Quanlychitieu
 
         private void InitializeEvents()
         {
-            string jsonFilePath = "events.json"; // Đường dẫn đến file JSON của bạn
+            string jsonFilePath = "events.json"; // Đường dẫn đến file JSON 
             if (File.Exists(jsonFilePath))
             {
                 // Đọc nội dung của file JSON
