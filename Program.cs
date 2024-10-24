@@ -269,11 +269,6 @@ class Program
 
 
 
-
-
-
-
-
     // HÀM TẠO HỘP NHẬP LIỆU CHO NGƯỜI DÙNG: GỒM 3 HÀM 
     public static string InputWithBox(string title, string prompt, int minSpaceAbove = 2)
     {
