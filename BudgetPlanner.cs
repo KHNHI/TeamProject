@@ -6,22 +6,19 @@
         private ExpenseTracker expenseTracker;
         //private DataSync dataSync;
         private const string BUDGET_FILE = "budget1.csv"; // Tên file bạn muốn lưu
-        public Dictionary<string, decimal> categoryBudgets { get;  set; }
-        Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
-        private Dictionary<string, bool> categoryBudgetSet; // Tracks if a budget is set for each category
-        private HashSet<string> enteredCategories; // Khai báo biến thành viên
-        private List<string> remainingCategories; // Khai báo biến thành viên
+        private Dictionary<string, bool> categoryBudgetSet; // track việc nhập ngân sách cho danh mục
         private readonly string[] validCategories = new string[]
         {
                "Ăn uống", "Đi lại", "Chi phí cố định", "Giải trí", "Giáo dục", "Mua sắm", "Khác"
         };
         private DateTime lastBudgetSetTime;
+        Dictionary<string, DateTime> categoryLastSetTimes = new Dictionary<string, DateTime>();
+        public Dictionary<string, decimal> categoryBudgets { get; set; }
+
         public BudgetPlanner(ExpenseTracker expenseTracker)
         {
-            enteredCategories = new HashSet<string>(); // Khởi tạo HashSet
-            remainingCategories = new List<string>(); // Khởi tạo List
-            categoryBudgets = new Dictionary<string, decimal>(); // Khởi tạo ở đây
-            categoryBudgetSet = new Dictionary<string, bool>(); // Initialize the budget set tracking dictionary
+            categoryBudgets = new Dictionary<string, decimal>(); 
+            categoryBudgetSet = new Dictionary<string, bool>(); 
             LoadBudgetFromCSV(); // Tải ngân sách khi khởi tạo
             this.expenseTracker = expenseTracker;
             LoadLastCategoryBudgetSetTime();
@@ -40,9 +37,6 @@
 
          public void SetCategoryBudget()
         {
-
-            List<string> remainingCategories = new List<string>(validCategories);
-            HashSet<string> enteredCategories = new HashSet<string>();
             int windowWidth = Console.WindowWidth;
             int originalTop = Console.CursorTop;
             string[] titleMoneyTidy =
@@ -68,6 +62,9 @@
                     categoryBudgetSet[category] = false; // Not set yet
                 }
             }
+            //check xem ngân sách có lớn hơn thu nhập không
+            
+
             if (CheckAllBudgetsSet())
             {
                 // Nếu phương thức trả về true nghĩa là tất cả danh mục đều đẫ được đặt ngân sách
@@ -82,7 +79,7 @@
                 Console.ReadKey(); //đợi người dùng nhấn phím
                 return;
             }
-
+ 
             bool continueInput = true;
             while (continueInput)
             {
@@ -105,7 +102,17 @@
                 // In dòng văn bản đã căn giữa
                 Console.WriteLine(subtitle.PadLeft(paddingSubtitle + subtitle.Length));
                 Console.ResetColor();
-                // Display categories with numbers
+                // Kiểm tra tổng ngân sách trước khi yêu cầu nhập ngân sách
+                if (!IsBudgetValid())
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("⚠️ Tổng ngân sách không thể lớn hơn hoặc bằng tổng thu nhập. Không thể tiếp tục đặt ngân sách.");
+                    Console.ResetColor();
+                    Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
+                    Console.ReadKey(); // Đợi người dùng nhấn phím
+                    break; // Kết thúc vòng lặp
+                }
+                // Hiện danh mục với số tương ứng
                 for (int i = 0; i < validCategories.Length; i++)
                 {
                     if (!categoryBudgetSet[validCategories[i]]) 
@@ -113,6 +120,7 @@
                         Console.WriteLine($"{i + 1}. {validCategories[i]}");
                     }
                 }
+           
                 // Yêu cầu người dùng chọn danh mục nhập ngân sách hoặc nhấn esc để thoát
                 Console.WriteLine("Chọn danh mục (1-7) để đặt ngân sách hoặc nhấn ESC để thoát: ");
                 ConsoleKeyInfo keyInfo = Console.ReadKey(); // 
@@ -132,6 +140,8 @@
                         Console.ReadLine();
                         continue; 
                     }
+                   
+
                     // Yêu cầu người dùng nhập ngân sách cho danh mục đã chọn. Nếu số tiền hợp lệ, lưu ngân sách và đánh dấu danh mục là đã được thiết lập.
                     // Nếu không hợp lệ, thông báo lỗi.
                     decimal budget;
@@ -154,18 +164,27 @@
 
                         Console.ReadLine();
                     }
+                 
+
                 }
                 else
                 {
                     Console.WriteLine("Danh mục không hợp lệ. Vui lòng thử lại.");
                 }
+               
             }
+          
             // Lưu dữ liệu vào file csv sau khi đặt xong ngân sách
             SaveBudgetToCSV(categoryBudgets);
             SaveLastCategoryBudgetSetTime();
              }
 
-
+        private bool IsBudgetValid()
+        {
+            decimal totalBudget = GetTotalBudget(); // Lấy tổng ngân sách
+            decimal totalIncome = expenseTracker.TotalIncome; // Lấy tổng thu nhập từ ExpenseTracker
+            return totalBudget < totalIncome; // Trả về true nếu tổng ngân sách nhỏ hơn tổng thu nhập
+        }
         private void SaveBudgetToCSV(Dictionary<string, decimal> budgets)
         {
             using (StreamWriter writer = new StreamWriter(BUDGET_FILE))
