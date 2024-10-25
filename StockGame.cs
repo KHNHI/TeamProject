@@ -17,7 +17,7 @@ namespace Quanlychitieu
 {
     internal class StockGame
     {
-#nullable disable   // Tắt tính năng kiểm tra null để đơn giản hóa xử lý giá trị null
+  #nullable disable   // Tắt tính năng kiểm tra null để đơn giản hóa xử lý giá trị null
 
         // Lớp Company đại diện cho thông tin về công ty trong trò chơi
         public class Company

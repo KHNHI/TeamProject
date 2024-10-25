@@ -181,6 +181,7 @@ namespace Quanlychitieu
                 }
             }
         }
+
         private void UpdateExpensesAndMonthlyExpenses(Expense expense)
         {
             // Cập nhật expenses
@@ -205,6 +206,7 @@ namespace Quanlychitieu
             }
             monthlyExpenses[expense.Category][month] += (double)expense.Amount;
         }
+
         private void SaveExpenses()
         {
             var json = JsonConvert.SerializeObject(expenseList, Formatting.Indented);
@@ -397,17 +399,17 @@ namespace Quanlychitieu
             decimal totalBudget = TotalBudget;
             decimal totalIncome = TotalIncome;
             decimal savings;
-            // Calculate savings based on the conditions
+            // Tính toán tiết kiệm dựa trên từng tình thuống
             if (totalExpenses <= totalBudget)
             {
-                savings = totalIncome - totalBudget; // Savings when within budget
+                savings = totalIncome - totalBudget; // Tiết kiệm khi chi tiêu bé hơn ngân sách, không thâm hụt
             }
             else
             {
-                savings = totalIncome - totalExpenses; // Savings when exceeding budget
+                savings = totalIncome - totalExpenses; // Tiết kiệm khi chi tiêu lớn hơn ngân sách, thâm hụt
             }
 
-            // Return the savings status message
+            // Trả về trạng thái tiết kiệm
             if (savings > 0)
             {
                 return $" Tiết kiệm tạm thời: {savings:#,##0₫}";
@@ -1149,18 +1151,18 @@ namespace Quanlychitieu
                     var expenseForCategory = groupedExpenses.Where(g=>g.Category == category).SelectMany(group=> expenseList.Where(expense=> expense.Category== group.Category)).ToList();
                     var expenseRows = expenseForCategory.Select(e => $"{e.Category}: {e.Amount:#,##0₫}").ToArray();
                     // Tạo bảng cho mỗi danh mục
-                  
+
                     var categoryTable = new Table()
                         .Border(TableBorder.Rounded) // Đặt viền tròn như trong hình
                         .Title($"[yellow]{category}[/]")
-                        .AddColumn("Chi tiêu");
+                        .AddColumn("Chi tiêu")
+                        .AddColumn("Tổng chi tiêu");
                     foreach(var row in expenseRows)
                     {
-                        categoryTable.AddRow(row);
+                        categoryTable.AddRow(row,totalAmount);
                     }
 
-                    categoryTable.AddColumn("Tổng chi tiêu");
-                    categoryTable.AddRow(totalAmount);
+                 
                     rowTables.Add(categoryTable);
                     categoryCount++;
 
