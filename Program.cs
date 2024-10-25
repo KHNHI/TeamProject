@@ -29,6 +29,7 @@ class Program
         {
             Console.Clear();
             int consoleWidth = Console.WindowWidth;
+            Console.SetCursorPosition(0, 0);
             string[] lines =  {
 
 "███╗   ███╗ ██████╗ ███╗   ██╗███████╗██╗   ██╗    ██████╗ ██╗   ██╗██████╗ ██████╗ ██╗   ██╗",
@@ -39,9 +40,6 @@ class Program
 "╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝       ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝   ",
              
                 };
-
-
-
             Console.ForegroundColor = ConsoleColor.Yellow;
             DrawCenteredBorder(lines);
             Console.ResetColor();
@@ -430,7 +428,8 @@ class Program
      "╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝   ╚═╝       ╚═════╝  ╚═════╝ ╚═════╝ ╚═════╝    ╚═╝   ",
  };
 
-        ConsoleColor[] colors = {
+
+     ConsoleColor[] colors = {
      ConsoleColor.Red,
      ConsoleColor.Green,
      ConsoleColor.Yellow,
@@ -443,13 +442,12 @@ class Program
         int blinkDuration = 4000; // Thời gian nhấp nháy tổng cộng (4 giây)
         int blinkInterval = 500; // Thời gian giữa các lần nhấp nháy (0.5 giây)
         int blinkCount = blinkDuration / blinkInterval; // Số lần nhấp nháy
-
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine(new string('▓', consoleWidth));
 
+
         foreach (string line in content)
         {
-
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(line.PadLeft((consoleWidth + line.Length) / 2).PadRight(consoleWidth));
         }
@@ -464,7 +462,6 @@ class Program
         }
         // Vẽ khung cho lines lần đầu
         DrawCenteredBorder(lines);
-
         // Lưu vị trí hiện tại của con trỏ
         int cursorTop = Console.CursorTop;
 
@@ -472,19 +469,15 @@ class Program
         {
             // Di chuyển con trỏ về vị trí khung
             Console.SetCursorPosition(0, cursorTop - lines.Length - 2); // Di chuyển lên trên khung
-
             // Sử dụng màu sắc từ mảng colors
             var color = colors[i % colors.Length]; // Lặp qua 7 màu
             Console.ForegroundColor = color;
-
             // Vẽ lại khung với màu mới
             DrawCenteredBorder(lines);
-
             Console.ResetColor();
             System.Threading.Thread.Sleep(blinkInterval); // Thời gian nhấp nháy
             Console.WriteLine();
             Console.WriteLine();
-
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(new string('▓', consoleWidth));
             Console.ResetColor();

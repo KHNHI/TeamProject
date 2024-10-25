@@ -181,6 +181,7 @@ namespace Quanlychitieu
                 }
             }
         }
+
         private void UpdateExpensesAndMonthlyExpenses(Expense expense)
         {
             // Cập nhật expenses
@@ -205,6 +206,7 @@ namespace Quanlychitieu
             }
             monthlyExpenses[expense.Category][month] += (double)expense.Amount;
         }
+
         private void SaveExpenses()
         {
             var json = JsonConvert.SerializeObject(expenseList, Formatting.Indented);

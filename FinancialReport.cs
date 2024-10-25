@@ -51,8 +51,8 @@ namespace Quanlychitieu
 
         private void ShowTextReport(ExpenseTracker expenseTracker)
         {
-            var transactions = expenseTracker.GetExpenses();
-            var expenses = new Dictionary<string, decimal>();
+           
+            var expenses = expenseTracker.GetExpenses();
             decimal totalBudget = expenseTracker.TotalBudget; // Lấy tổng ngân sách
        
         
