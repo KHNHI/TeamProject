@@ -908,7 +908,7 @@ namespace Quanlychitieu
                 Console.SetCursorPosition(yearBoxX + 9, inputY);                                                            //Đặt lại con trỏ đến vị trí bắt đầu để người dùng có thể nhập năm mới.
                 ClearCurrentLine(yearBoxX + 9, inputY,24);                                                                  // Xóa dòng hiện tại tại vị trí con trỏ để chuẩn bị cho việc hiển thị thông báo mới.Xóa đúng 24 ký tự.
                 Console.Write("Vui lòng nhập năm hợp lệ.");                                                                 // In ra thông báo
-                System.Threading.Thread.Sleep(1000);                                                                        // Tạm dừng chương trình 1 s để người dùng đọc.
+                Thread.Sleep(1000);                                                                                         // Tạm dừng chương trình 1 s để người dùng đọc.
                 ClearCurrentLine(yearBoxX + 9, inputY,24);
             }
             Console.ResetColor();                                                                                           // Đặt lại màu sắc mặc định
@@ -918,7 +918,7 @@ namespace Quanlychitieu
                 Console.SetCursorPosition(monthBoxX + 12, inputY);
                 ClearCurrentLine(monthBoxX + 12, inputY,24);
                 Console.Write("Vui lòng nhập tháng hợp lệ (1-12).");
-                System.Threading.Thread.Sleep(1000);
+                Thread.Sleep(1000);
                 ClearCurrentLine(monthBoxX + 12, inputY,24);
               
             }
