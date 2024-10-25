@@ -14,12 +14,21 @@ class Program
 {
     static void Main(string[] args)
     {
-        //Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-        //Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
-        Intro();
-
         Console.OutputEncoding = Encoding.UTF8;
         Console.InputEncoding = Encoding.UTF8;
+
+        //Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+        //Console.SetBufferSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+
+        Console.WriteLine("Chương trình quản lý chi tiêu được thực hiện bởi nhóm 3");
+        Console.WriteLine("Gồm: Khải Nhi - Anh Thư - Minh Thư - Thảo Vy");
+        Console.WriteLine("Nhấn phím bất kỳ để tiếp tục");
+        Console.ReadKey();
+        Console.Clear();
+
+        Intro();
+
+        
         ExpenseTracker expenseTracker = new ExpenseTracker();
         BudgetPlanner budgetPlanner = new BudgetPlanner(expenseTracker);
         FinancialReport financialReport = new FinancialReport();
