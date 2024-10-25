@@ -1149,18 +1149,18 @@ namespace Quanlychitieu
                     var expenseForCategory = groupedExpenses.Where(g=>g.Category == category).SelectMany(group=> expenseList.Where(expense=> expense.Category== group.Category)).ToList();
                     var expenseRows = expenseForCategory.Select(e => $"{e.Category}: {e.Amount:#,##0₫}").ToArray();
                     // Tạo bảng cho mỗi danh mục
-                  
+
                     var categoryTable = new Table()
                         .Border(TableBorder.Rounded) // Đặt viền tròn như trong hình
                         .Title($"[yellow]{category}[/]")
-                        .AddColumn("Chi tiêu");
+                        .AddColumn("Chi tiêu")
+                        .AddColumn("Tổng chi tiêu");
                     foreach(var row in expenseRows)
                     {
-                        categoryTable.AddRow(row);
+                        categoryTable.AddRow(row,totalAmount);
                     }
 
-                    categoryTable.AddColumn("Tổng chi tiêu");
-                    categoryTable.AddRow(totalAmount);
+                 
                     rowTables.Add(categoryTable);
                     categoryCount++;
 
