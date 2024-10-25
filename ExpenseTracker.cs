@@ -399,17 +399,17 @@ namespace Quanlychitieu
             decimal totalBudget = TotalBudget;
             decimal totalIncome = TotalIncome;
             decimal savings;
-            // Calculate savings based on the conditions
+            // Tính toán tiết kiệm dựa trên từng tình thuống
             if (totalExpenses <= totalBudget)
             {
-                savings = totalIncome - totalBudget; // Savings when within budget
+                savings = totalIncome - totalBudget; // Tiết kiệm khi chi tiêu bé hơn ngân sách, không thâm hụt
             }
             else
             {
-                savings = totalIncome - totalExpenses; // Savings when exceeding budget
+                savings = totalIncome - totalExpenses; // Tiết kiệm khi chi tiêu lớn hơn ngân sách, thâm hụt
             }
 
-            // Return the savings status message
+            // Trả về trạng thái tiết kiệm
             if (savings > 0)
             {
                 return $" Tiết kiệm tạm thời: {savings:#,##0₫}";
