@@ -4,7 +4,7 @@
     {
 
         private ExpenseTracker expenseTracker;
-        //private DataSync dataSync;
+        
         private const string BUDGET_FILE = "budget1.csv"; // Tên file bạn muốn lưu
         private Dictionary<string, bool> categoryBudgetSet; // track việc nhập ngân sách cho danh mục
         private readonly string[] validCategories = new string[]

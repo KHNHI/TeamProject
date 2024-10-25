@@ -182,8 +182,7 @@ class Program
                             stockGame.Run();
                             break;
                         case "2":
-                            // Call the static method directly on the class
-                            // Use 'Wait' to block the calling thread
+                            
                             IsPriceIsRight.BeginGameAsync().Wait();
                             break;
                         default:
