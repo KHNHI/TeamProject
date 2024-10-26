@@ -97,7 +97,11 @@ namespace Quanlychitieu
                     ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                     // Kiểm tra người dùng có nhấn ESC để thoát
-                    if (keyInfo.Key == ConsoleKey.Escape) break;
+                    if (keyInfo.Key == ConsoleKey.Escape)
+                    {
+                        Console.WriteLine($" {Console.CursorLeft}, {Console.CursorTop}");
+                        break;
+                     };
 
                     Console.WriteLine();
                     if (int.TryParse(keyInfo.KeyChar.ToString(), out int categoryIndex) && categoryIndex >= 1 && categoryIndex <= validCategories.Length)
@@ -121,13 +125,14 @@ namespace Quanlychitieu
                                 try
                                 {
                                     budgetPlanner.SetCategoryBudget();
+                                    Console.WriteLine($" {Console.CursorLeft}, {Console.CursorTop}");
                                 }
                                 catch (Exception ex)
                                 {
                                     Console.WriteLine("Đã xảy ra lỗi khi gọi SetCategoryBudget: " + ex.Message);
                                 }
                             }
-                            continue;
+                            break;
                         }
 
                         // Nhập số tiền chi tiêu
