@@ -149,11 +149,14 @@ class Program
                         Console.ResetColor();
                         Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
                         Console.ReadKey(); // Đợi người dùng nhấn phím để quay lại menu chính
+                        Console.WriteLine($"Cursor Position: {Console.CursorLeft}, {Console.CursorTop}");
                         break;
                     }
                     else
                     {
                         budgetPlanner.SetCategoryBudget();
+                        Console.ReadKey();
+                        Console.WriteLine($" {Console.CursorLeft}, {Console.CursorTop}");
                     }
                   
                     break;

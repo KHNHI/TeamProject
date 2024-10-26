@@ -1,4 +1,6 @@
-﻿namespace Quanlychitieu
+﻿using Spectre.Console;
+
+namespace Quanlychitieu
 {
      internal class BudgetPlanner
     {
@@ -37,8 +39,8 @@
 
          public void SetCategoryBudget()
         {
+            Console.Clear();
             int windowWidth = Console.WindowWidth;
-            int originalTop = Console.CursorTop;
             string[] titleMoneyTidy =
             {
 
@@ -78,20 +80,16 @@
                 Console.WriteLine("Nhấn phím bất kỳ để quay lại menu chính...");
                 Console.ReadKey(); //đợi người dùng nhấn phím
                 return;
+
             }
  
             bool continueInput = true;
             while (continueInput)
             {
                 Console.Clear();
-                Console.SetCursorPosition(0, originalTop);
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                // Redraw the title
-                foreach (string line in titleMoneyTidy)
-                {
-                    int padding = (windowWidth - line.Length) / 2; // Tính toán khoảng cách cần thiết
-                    Console.WriteLine(line.PadLeft(padding + line.Length)); // Căn giữa bằng cách thêm khoảng trắng
-                };
+                Program.DrawCenteredBorder(titleMoneyTidy);
+                Console.ResetColor();
                 
                       // Dòng văn bản cần căn giữa
                 Console.ForegroundColor= ConsoleColor.Green;
@@ -140,8 +138,6 @@
                         Console.ReadLine();
                         continue; 
                     }
-                   
-
                     // Yêu cầu người dùng nhập ngân sách cho danh mục đã chọn. Nếu số tiền hợp lệ, lưu ngân sách và đánh dấu danh mục là đã được thiết lập.
                     // Nếu không hợp lệ, thông báo lỗi.
                     decimal budget;
